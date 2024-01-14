@@ -2,9 +2,10 @@ import React from 'react';
 import useCanvas from './useCanvas';
 
 
-export default function Canvas({ canvas, tileSize, onTileClick }: {
+export default function Canvas({ canvas, tileSize, displayTileSize, onTileClick }: {
     canvas: ReturnType<typeof useCanvas>
     tileSize: number
+    displayTileSize: number
     onTileClick: (tile: { x: number, y: number }) => void
 }) {
     const { layers } = canvas;
@@ -12,9 +13,7 @@ export default function Canvas({ canvas, tileSize, onTileClick }: {
     return (
         <div
             style={{
-                position: 'relative',
-                scale: '2',
-                transformOrigin: 'left top'
+                position: 'relative'
             }}
         >
             {layers.map((layer, layerIndex) => (
@@ -42,10 +41,10 @@ export default function Canvas({ canvas, tileSize, onTileClick }: {
                                         }}
                                         style={{
                                             position: 'absolute',
-                                            width: tileSize + 'px',
-                                            height: tileSize + 'px',
-                                            top: rowIndex * tileSize + 'px',
-                                            left: cellIndex * tileSize + 'px',
+                                            width: displayTileSize + 'px',
+                                            height: displayTileSize + 'px',
+                                            top: rowIndex * displayTileSize + 'px',
+                                            left: cellIndex * displayTileSize + 'px',
                                             outline: '1px solid black'
                                         }}
                                     >
@@ -53,6 +52,8 @@ export default function Canvas({ canvas, tileSize, onTileClick }: {
                                             style={{
                                                 width: tileSize + 'px',
                                                 height: tileSize + 'px',
+                                                scale: (displayTileSize / tileSize).toString(),
+                                                transformOrigin: 'top left',
                                                 backgroundImage: cell.path ? `url('./${cell.path}')` : undefined,
                                                 backgroundRepeat: 'no-repeat',
                                                 backgroundPosition: `${cell.x * tileSize}px ${cell.y * tileSize}px`

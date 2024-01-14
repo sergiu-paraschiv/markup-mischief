@@ -7,8 +7,9 @@ import Canvas from '../mapDesigner/Canvas';
 import useCanvas from '../mapDesigner/useCanvas';
 
 
-export default function MapDesignerApp({ tileSize }: {
+export default function MapDesignerApp({ tileSize, displayTileSize }: {
     tileSize: number
+    displayTileSize: number
 }) {
     const [ sprite, setSprite ] = useState<Sprite | undefined>(undefined);
     const [ activeLayer, setActiveLayer ] = useState<number>(0);
@@ -38,6 +39,7 @@ export default function MapDesignerApp({ tileSize }: {
                     <Canvas
                         canvas={canvas}
                         tileSize={tileSize}
+                        displayTileSize={displayTileSize}
                         onTileClick={tile => {
                             if (sprite) {
                                 canvas.paintTile(activeLayer, tile, sprite)
@@ -88,7 +90,8 @@ export default function MapDesignerApp({ tileSize }: {
                     </div>
 
                     <SpriteAtlas
-                        selectionSize={tileSize}
+                        tileSize={tileSize}
+                        displayTileSize={displayTileSize}
                         selectedSprite={sprite}
                         onSelect={setSprite}
                     />

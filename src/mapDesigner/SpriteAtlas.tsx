@@ -22,8 +22,9 @@ function generateData(nodes: SpriteAtlasDataNode[]): TreeDataNode[] {
 
 const treeData: TreeDataNode[] = generateData(spriteAtlasData.children);
 
-export default function SpriteAtlas({ selectionSize, selectedSprite, onSelect }: {
-    selectionSize: number
+export default function SpriteAtlas({ tileSize, displayTileSize, selectedSprite, onSelect }: {
+    tileSize: number
+    displayTileSize: number
     selectedSprite?: Sprite
     onSelect: (sprite?: Sprite) => void
 }) {
@@ -44,6 +45,7 @@ export default function SpriteAtlas({ selectionSize, selectedSprite, onSelect }:
                 onSelect={newSelectedKeys => {
                     if (newSelectedKeys.length === 0) {
                         onSelect(undefined);
+                        return;
                     }
     
                     const newSelectedKey = newSelectedKeys[0] as string;
@@ -58,6 +60,9 @@ export default function SpriteAtlas({ selectionSize, selectedSprite, onSelect }:
                         if (expandedKeys.indexOf(newSelectedKey) === -1) {
                             setExpandedKeys([...expandedKeys, newSelectedKey]);
                         }
+                        else {
+                            setExpandedKeys([...expandedKeys.filter(item => item !== newSelectedKey)]);
+                        }
                         onSelect(undefined);
                     }
                 }}
@@ -65,7 +70,8 @@ export default function SpriteAtlas({ selectionSize, selectedSprite, onSelect }:
 
             {selectedSprite ? (
                 <SpriteSectionPicker
-                    selectionSize={selectionSize}
+                    tileSize={tileSize}
+                    displayTileSize={displayTileSize}
                     selectedSprite={selectedSprite}
                     onSelect={onSelect}
                 />
@@ -74,8 +80,9 @@ export default function SpriteAtlas({ selectionSize, selectedSprite, onSelect }:
     );
 }
 
-function SpriteSectionPicker({ selectionSize, selectedSprite, onSelect }: {
-    selectionSize: number
+function SpriteSectionPicker({ tileSize, displayTileSize, selectedSprite, onSelect }: {
+    tileSize: number
+    displayTileSize: number
     selectedSprite: Sprite
     onSelect: (sprite: Sprite) => void
 }) {
@@ -84,14 +91,11 @@ function SpriteSectionPicker({ selectionSize, selectedSprite, onSelect }: {
     return (
         <div>
             <SpriteViewer
-                selectionSize={selectionSize}
+                tileSize={tileSize}
+                displayTileSize={displayTileSize}
                 asThumbnail={true}
                 onSelect={() => setShowPicker(true)}
                 selectedSprite={selectedSprite}
-                style={{
-                    scale: '2',
-                    transformOrigin: 'left top'
-                }}
             />
 
             <Modal
@@ -102,16 +106,13 @@ function SpriteSectionPicker({ selectionSize, selectedSprite, onSelect }: {
                 footer={null}
             >
                 <SpriteViewer
-                    selectionSize={selectionSize}
+                    tileSize={tileSize}
+                    displayTileSize={displayTileSize}
                     onSelect={sprite => {
                         onSelect(sprite);
                         setShowPicker(false);
                     }}
                     selectedSprite={selectedSprite}
-                    style={{
-                        scale: '2',
-                        transformOrigin: 'left top'
-                    }}
                 />
             </Modal>
         </div>
@@ -133,8 +134,9 @@ function useImageSize(src: string) {
     return size;
 }
 
-function SpriteViewer({ selectionSize, selectedSprite, onSelect, asThumbnail, style }: {
-    selectionSize: number
+function SpriteViewer({ tileSize, displayTileSize, selectedSprite, onSelect, asThumbnail, style }: {
+    tileSize: number
+    displayTileSize: number
     asThumbnail?: boolean
     selectedSprite: Sprite
     onSelect: (sprite: Sprite) => void
@@ -143,8 +145,8 @@ function SpriteViewer({ selectionSize, selectedSprite, onSelect, asThumbnail, st
     const src = `./${selectedSprite.path}`;
     const atlasSize = useImageSize(src);
     let viewSize = {
-        width: Math.ceil(atlasSize.width / selectionSize),
-        height: Math.ceil(atlasSize.height / selectionSize)
+        width: Math.ceil(atlasSize.width / tileSize),
+        height: Math.ceil(atlasSize.height / tileSize)
     };
 
     if (asThumbnail) {
@@ -159,14 +161,26 @@ function SpriteViewer({ selectionSize, selectedSprite, onSelect, asThumbnail, st
     return (
         <div
             style={{
-                width: viewSize.width * selectionSize + 'px',
-                height: viewSize.height * selectionSize + 'px',
-                backgroundImage: `url('${src}')`,
-                backgroundRepeat: 'no-repeat',
-                backgroundPosition: !asThumbnail ? '0 0' : `${selectedSprite.x * selectionSize}px ${selectedSprite.y * selectionSize}px`,
+                position: 'relative',
+                width: viewSize.width * displayTileSize + 'px',
+                height: viewSize.height * displayTileSize + 'px',
                 ...style
             }}
         >
+            <div
+                style={{
+                    position: 'absolute',
+                    top: '0',
+                    left: '0',
+                    width: '50%',
+                    height: '50%',
+                    scale: (displayTileSize / tileSize).toString(),
+                    transformOrigin: 'top left',
+                    backgroundImage: `url('${src}')`,
+                    backgroundRepeat: 'no-repeat',
+                    backgroundPosition: !asThumbnail ? '0 0' : `${selectedSprite.x * tileSize}px ${selectedSprite.y * tileSize}px`,
+                }}
+            ></div>
             {tiles.map((row, rowIndex) => (
                 <div
                     key={rowIndex}
@@ -175,6 +189,7 @@ function SpriteViewer({ selectionSize, selectedSprite, onSelect, asThumbnail, st
                     }}
                 >
                     {row.map((cell, cellIndex) => {
+                        const isSelected = -rowIndex === selectedSprite.y && -cellIndex === selectedSprite.x;
                         return (
                             <div
                                 key={cellIndex}
@@ -185,11 +200,12 @@ function SpriteViewer({ selectionSize, selectedSprite, onSelect, asThumbnail, st
                                 })}
                                 style={{
                                     position: 'absolute',
-                                    width: selectionSize + 'px',
-                                    height: selectionSize + 'px',
-                                    top: rowIndex * selectionSize + 'px',
-                                    left: cellIndex * selectionSize + 'px',
-                                    outline: -rowIndex === selectedSprite.y && -cellIndex === selectedSprite.x ? '3px solid red' : '1px solid black',
+                                    width: displayTileSize + 'px',
+                                    height: displayTileSize + 'px',
+                                    top: rowIndex * displayTileSize + 'px',
+                                    left: cellIndex * displayTileSize + 'px',
+                                    outline: isSelected ? '3px solid red' : '1px solid black',
+                                    zIndex: isSelected ? '2': '1',
                                     cursor: 'pointer'
                                 }}
                             ></div>
