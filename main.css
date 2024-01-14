@@ -1,0 +1,151 @@
+html, body, #app {
+    margin: 0;
+    padding: 0;
+    background-color: rgba(51, 50, 61, 1);
+    width: 100%;
+    height: 100%;
+}
+
+* {
+    box-sizing: border-box;
+
+    image-rendering: optimizeSpeed;             /* STOP SMOOTHING, GIVE ME SPEED  */
+    image-rendering: -moz-crisp-edges;          /* Firefox                        */
+    image-rendering: -o-crisp-edges;            /* Opera                          */
+    image-rendering: -webkit-optimize-contrast; /* Chrome (and eventually Safari) */
+    image-rendering: pixelated;                 /* Universal support since 2021   */
+    image-rendering: optimize-contrast;         /* CSS3 Proposed                  */
+    -ms-interpolation-mode: nearest-neighbor;   /* IE8+                           */
+}
+
+.GameBoard {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.TileMap {
+}
+
+    .TileMapRow {
+        display: flex;
+        width: 100%;
+    }
+
+        .TileMapCell {
+            position: relative;
+            /* outline: 1px solid red; */
+        }
+
+            .TileMapCellBg,
+            .TileMapCellFg {
+                display: block;
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 64px;
+                height: 64px;
+                transform-origin: 0 0;
+                background-image: url('./sprites/terrain.png');
+                background-position: 0 0;
+                background-repeat: no-repeat;
+            }
+
+                .wood-fg-nw {
+                    background-position: 0 0;
+                }
+
+                .wood-fg-n {
+                    background-position: -64px 0;
+                }
+
+                .wood-fg-ne {
+                    background-position: -128px 0;
+                }
+
+                .wood-fg-w {
+                    background-position: 0 -64px;
+                }
+
+                .wood-fg-e {
+                    background-position: -128px -64px;
+                }
+
+                .wood-fg-sw {
+                    background-position: 0 -128px;
+                }
+
+                .wood-fg-s {
+                    background-position: -64px -128px;
+                }
+
+                .wood-fg-se {
+                    background-position: -128px -128px;
+                }
+
+                .wood-fg-c {
+                    background-position: -64px -64px;
+                }
+
+                .wood-board-w {
+                    background-position: -192px 0;
+                }
+
+                .wood-board-c {
+                    background-position: -256px 0;
+                }
+
+                .wood-board-e {
+                    background-position: -320px 0;
+                }
+
+
+.GameEntity {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform-origin: 0 0;
+}
+
+    .GameEntity > .Hero {
+        width: 100%;
+        height: 100%;
+        background-size: contain;
+        background-position: bottom center;
+        background-repeat: no-repeat;
+    }
+
+.TileMapCellEmbelishment {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 64px;
+    height: 64px;
+}
+
+    .TileMapCellEmbelishment > * {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: -50%;
+        background-position: center center;
+        background-repeat: no-repeat;
+    }
+
+.TileMapCellBg {
+    z-index: 1;
+}
+
+.TileMapCellEmbelishment {
+    z-index: 5;
+}
+
+.TileMapCellBg.Board {
+    z-index: 10;
+}
+
+.Hero {
+    position: relative;
+    z-index: 50;
+}

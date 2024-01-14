@@ -1,0 +1,27 @@
+{
+  "name": "markup-mischief",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "build": "tsc",
+    "build-atlas": "node sprite-atlas.js",
+    "dev": "concurrently 'npm:dev:*'",
+    "dev:build": "tsc -w",
+    "dev:serve": "http-server ."
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/react": "^18.2.47",
+    "@types/react-dom": "^18.2.18",
+    "concurrently": "^8.2.2",
+    "http-server": "^14.1.1",
+    "typescript": "^5.3.3",
+    "directory-tree": "^3.5.1"
+  },
+  "dependencies": {
+    "antd": "^5.13.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+  }
+}

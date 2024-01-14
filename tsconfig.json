@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "module": "AMD",
+        "moduleResolution": "Node",
+        "esModuleInterop": true,
+        "lib": ["DOM", "ES2015"],
+        "jsx": "react",
+        "outFile": "main.js",
+        "incremental": true,
+        "strict": true,
+        "sourceMap": true,
+        "resolveJsonModule": true
+    },
+    "files": [
+        "src/main.tsx"
+    ]
+  }
