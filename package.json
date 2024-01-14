@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "build": "tsc",
-    "build-atlas": "node sprite-atlas.js",
+    "build-sprite-atlas": "node sprite-atlas.js",
     "dev": "concurrently 'npm:dev:*'",
     "dev:build": "tsc -w",
     "dev:serve": "http-server ."

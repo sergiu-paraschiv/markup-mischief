@@ -1,26 +1,10 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Tree, Modal } from 'antd';
-import type { TreeDataNode } from 'antd';
 import spriteAtlasData from '../sprite-atlas.json';
-import { Sprite, makeSpriteMap } from './spriteUtils';
+import { Sprite, makeSpriteMap, processAtlas, getNode } from '../engine/spriteUtils';
+import useAnimation from '../engine/useAnimation';
 
-interface SpriteAtlasDataNode {
-    path: string
-    name: string
-    children?: SpriteAtlasDataNode[]
-}
-
-function generateData(nodes: SpriteAtlasDataNode[]): TreeDataNode[] {
-    return nodes.map(node => {
-        return {
-            key: node.path,
-            title: node.name,
-            children: node.children ? generateData(node.children) : undefined
-        };
-    })
-}
-
-const treeData: TreeDataNode[] = generateData(spriteAtlasData.children);
+const treeData = processAtlas(spriteAtlasData.children);
 
 export default function SpriteAtlas({ tileSize, displayTileSize, selectedSprite, onSelect }: {
     tileSize: number
@@ -49,7 +33,10 @@ export default function SpriteAtlas({ tileSize, displayTileSize, selectedSprite,
                     }
     
                     const newSelectedKey = newSelectedKeys[0] as string;
-                    if (newSelectedKey.endsWith('.png')) {
+                    if (
+                        newSelectedKey.endsWith('.png')
+                        || newSelectedKey.startsWith('ANIMATION:')
+                    ) {
                         onSelect({
                             path: newSelectedKey,
                             x: 0,
@@ -134,6 +121,28 @@ function useImageSize(src: string) {
     return size;
 }
 
+function getNodePaths(path?: string) {
+    if (!path) {
+        return [];
+    }
+
+    const paths: string[] = [];
+    if (path.startsWith('ANIMATION:')) {
+        path = path.replace('ANIMATION:', '');
+        const animationNode = getNode(path, spriteAtlasData.children);
+        if (animationNode && animationNode.children && animationNode.children.length > 0) {
+            for (const child of animationNode.children) {
+                paths.push(child.path);
+            }
+        }
+    }
+    else {
+        paths.push(path);
+    }
+
+    return paths;
+}
+
 function SpriteViewer({ tileSize, displayTileSize, selectedSprite, onSelect, asThumbnail, style }: {
     tileSize: number
     displayTileSize: number
@@ -142,7 +151,9 @@ function SpriteViewer({ tileSize, displayTileSize, selectedSprite, onSelect, asT
     onSelect: (sprite: Sprite) => void
     style?: React.CSSProperties
 }) {
-    const src = `./${selectedSprite.path}`;
+    const paths = useMemo(() => getNodePaths(selectedSprite.path), [(selectedSprite.path]);
+    const currentPath = useAnimation(paths);
+    const src = `./${currentPath}`;
     const atlasSize = useImageSize(src);
     let viewSize = {
         width: Math.ceil(atlasSize.width / tileSize),

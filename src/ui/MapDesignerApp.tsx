@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Layout, Flex, InputNumber, Button, Switch } from 'antd';
 const { Content, Sider }  = Layout;
 import SpriteAtlas from '../mapDesigner/SpriteAtlas';
-import { Sprite } from '../mapDesigner/spriteUtils';
+import { Sprite } from '../engine/spriteUtils';
 import Canvas from '../mapDesigner/Canvas';
 import useCanvas from '../mapDesigner/useCanvas';
 import useLayers from '../mapDesigner/useLayers';
