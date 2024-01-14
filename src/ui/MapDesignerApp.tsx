@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Layout, Flex, InputNumber, Button } from 'antd';
+import { Layout, Flex, InputNumber, Button, Switch } from 'antd';
 const { Content, Sider }  = Layout;
 import SpriteAtlas from '../mapDesigner/SpriteAtlas';
 import { Sprite } from '../mapDesigner/spriteUtils';
 import Canvas from '../mapDesigner/Canvas';
 import useCanvas from '../mapDesigner/useCanvas';
+import useLayers from '../mapDesigner/useLayers';
 
 
 export default function MapDesignerApp({ tileSize, displayTileSize }: {
@@ -14,11 +15,7 @@ export default function MapDesignerApp({ tileSize, displayTileSize }: {
     const [ sprite, setSprite ] = useState<Sprite | undefined>(undefined);
     const [ activeLayer, setActiveLayer ] = useState<number>(0);
     const canvas = useCanvas();
-
-    const layerButtons: number[] = [];
-    for (let i = 0; i < canvas.numLayers; i += 1) {
-        layerButtons.push(i);
-    }
+    const { layers, toggleLayer, hiddenLayers } = useLayers(canvas.numLayers);
 
     return (
         <Flex
@@ -38,6 +35,7 @@ export default function MapDesignerApp({ tileSize, displayTileSize }: {
                 >
                     <Canvas
                         canvas={canvas}
+                        hiddenLayers={hiddenLayers}
                         tileSize={tileSize}
                         displayTileSize={displayTileSize}
                         onTileClick={tile => {
@@ -48,7 +46,12 @@ export default function MapDesignerApp({ tileSize, displayTileSize }: {
                     />
                 </Content>
                 
-                <Sider width="25%">
+                <Sider
+                    width="25%"
+                    style={{
+                        background: 'white'
+                    }}
+                >
                     <div>
                         <Button onClick={canvas.undo} disabled={!canvas.canUndo}>Undo</Button>
                         <Button onClick={canvas.redo} disabled={!canvas.canRedo}>Redo</Button>
@@ -78,13 +81,22 @@ export default function MapDesignerApp({ tileSize, displayTileSize }: {
                         />
 
                         <div>
-                            {layerButtons.map(layerButton => (
-                                <Button
-                                    key={layerButton}
-                                    onClick={() => setActiveLayer(layerButton)}
-                                >
-                                    Layer #{layerButton}
-                                </Button>
+                            {layers.map(layer => (
+                                <div key={layer.index}>
+                                    <Button
+                                        onClick={() => setActiveLayer(layer.index)}
+                                        type={activeLayer === layer.index ? 'primary' : 'default'}
+                                    >
+                                        Layer #{layer.index}
+                                    </Button>
+
+                                    <Switch
+                                        checkedChildren="Visible"
+                                        unCheckedChildren="Hidden"
+                                        checked={layer.isVisible}
+                                        onChange={() => toggleLayer(layer.index)}
+                                    />
+                                </div>
                             ))}
                         </div>
                     </div>
