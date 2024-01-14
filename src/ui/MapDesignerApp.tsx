@@ -130,6 +130,22 @@ export default function MapDesignerApp({ tileSize, displayTileSize }: {
                             />
                         </div>
                     ) : null}
+
+                    <div>
+                        <textarea
+                            readOnly={true}
+                            value={JSON.stringify(canvas)}
+                            onPaste={event => {
+                                try {
+                                    const newState = JSON.parse(event.clipboardData.getData('Text'));
+                                    canvas.load(newState);
+                                }
+                                catch (e) {
+                                    console.error(e);
+                                }
+                            }}
+                        ></textarea>
+                    </div>
                 </Sider>
             </Layout>
         </Flex>

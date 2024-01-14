@@ -11,13 +11,15 @@ function makeLayers(numLayers: number, width: number, height: number): Sprite[][
     return layers;
 }
 
+interface State {
+    numLayers: number
+    width: number
+    height: number
+    layers: Sprite[][][]
+}
+
 export default function useCanvas() {
-    const history = useHistoryState<{
-        numLayers: number
-        width: number
-        height: number
-        layers: Sprite[][][]
-    }>({
+    const history = useHistoryState<State>({
         numLayers: 2,
         width: 15,
         height: 7,
@@ -93,6 +95,10 @@ export default function useCanvas() {
         });
     }
 
+    const load = (newState: State) => {
+        history.set(newState);
+    }
+
     return {
         ...history.state,
         setNumLayers,
@@ -102,6 +108,7 @@ export default function useCanvas() {
         undo: history.undo,
         redo: history.redo,
         canUndo: history.canUndo,
-        canRedo: history.canRedo
+        canRedo: history.canRedo,
+        load
     };
 }
