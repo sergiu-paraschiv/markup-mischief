@@ -5,6 +5,8 @@ export interface Sprite {
     path?: string
     x: number
     y: number
+    w: number
+    h: number
 }
 
 interface SpriteAtlasDataNode {
@@ -27,7 +29,9 @@ export function makeSpriteMap(
             row.push({
                 path: spritePath,
                 x: i,
-                y: j
+                y: j,
+                w: 1,
+                h: 1
             });
         }
 
@@ -76,6 +80,28 @@ export function getNode(path: string, nodes: SpriteAtlasDataNode[]): SpriteAtlas
             }
         }
     }
+}
+
+export function getNodePaths(path: string | undefined, nodes: SpriteAtlasDataNode[]) {
+    if (!path) {
+        return [];
+    }
+
+    const paths: string[] = [];
+    if (path.startsWith('ANIMATION:')) {
+        path = path.replace('ANIMATION:', '');
+        const animationNode = getNode(path, nodes);
+        if (animationNode && animationNode.children && animationNode.children.length > 0) {
+            for (const child of animationNode.children) {
+                paths.push(child.path);
+            }
+        }
+    }
+    else {
+        paths.push(path);
+    }
+
+    return paths;
 }
 
 export function processAtlas(nodes: SpriteAtlasDataNode[]): TreeDataNode[] {

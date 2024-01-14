@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import { Sprite, makeSpriteMap } from '../engine/spriteUtils';
 import useHistoryState from './useHistoryState';
 

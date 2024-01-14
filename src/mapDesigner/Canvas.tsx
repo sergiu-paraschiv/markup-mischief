@@ -1,4 +1,7 @@
-import React from 'react';
+import React, { useMemo } from 'react';
+import spriteAtlasData from '../sprite-atlas.json';
+import useAnimation from '../engine/useAnimation';
+import { Sprite, getNodePaths } from '../engine/spriteUtils';
 import useCanvas from './useCanvas';
 
 
@@ -54,17 +57,11 @@ export default function Canvas({ canvas, hiddenLayers, tileSize, displayTileSize
                                                 outline: '1px solid black'
                                             }}
                                         >
-                                            <div
-                                                style={{
-                                                    width: tileSize + 'px',
-                                                    height: tileSize + 'px',
-                                                    scale: (displayTileSize / tileSize).toString(),
-                                                    transformOrigin: 'top left',
-                                                    backgroundImage: cell.path ? `url('./${cell.path}')` : undefined,
-                                                    backgroundRepeat: 'no-repeat',
-                                                    backgroundPosition: `${cell.x * tileSize}px ${cell.y * tileSize}px`
-                                                }}
-                                            ></div>
+                                            <CellGraphics
+                                                tileSize={tileSize} 
+                                                displayTileSize={displayTileSize}
+                                                cell={cell}
+                                            />
                                         </div>
                                     );
                                 })}
@@ -74,5 +71,28 @@ export default function Canvas({ canvas, hiddenLayers, tileSize, displayTileSize
                 );
             })}
         </div>
+    );
+}
+
+function CellGraphics({ tileSize, displayTileSize, cell }: {
+    tileSize: number
+    displayTileSize: number
+    cell: Sprite
+}) {
+    const paths = useMemo(() => getNodePaths(cell.path, spriteAtlasData.children), [cell.path]);
+    const path = useAnimation(paths);
+
+    return (
+        <div
+            style={{
+                width: (tileSize * cell.w) + 'px',
+                height: ( tileSize * cell.h) + 'px',
+                scale: (displayTileSize / tileSize).toString(),
+                transformOrigin: 'top left',
+                backgroundImage: path ? `url('./${path}')` : undefined,
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: `${cell.x * tileSize}px ${cell.y * tileSize}px`
+            }}
+        ></div>
     );
 }

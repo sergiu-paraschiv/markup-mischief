@@ -107,6 +107,29 @@ export default function MapDesignerApp({ tileSize, displayTileSize }: {
                         selectedSprite={sprite}
                         onSelect={setSprite}
                     />
+
+                    {sprite ? (
+                        <div>
+                            W: <InputNumber
+                                min={1}
+                                max={6}
+                                value={sprite.w}
+                                onChange={newW => newW !== null ? setSprite({
+                                    ...sprite,
+                                    w: newW
+                                }) : undefined}
+                            />
+                            H: <InputNumber
+                                min={1}
+                                max={6}
+                                value={sprite.h}
+                                onChange={newH => newH !== null ? setSprite({
+                                    ...sprite,
+                                    h: newH
+                                }) : undefined}
+                            />
+                        </div>
+                    ) : null}
                 </Sider>
             </Layout>
         </Flex>

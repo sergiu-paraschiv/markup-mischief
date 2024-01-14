@@ -605,24 +605,36 @@
                                     "name": "Dead",
                                     "children": [
                                         {
-                                            "path": "sprites/Treasure Hunters/Captain Clown Nose/Dialogue/Dead/Dead In 01.png",
-                                            "name": "Dead In 01.png"
+                                            "path": "sprites/Treasure Hunters/Captain Clown Nose/Dialogue/Dead/In",
+                                            "name": "In",
+                                            "children": [
+                                                {
+                                                    "path": "sprites/Treasure Hunters/Captain Clown Nose/Dialogue/Dead/In/Dead In 01.png",
+                                                    "name": "Dead In 01.png"
+                                                },
+                                                {
+                                                    "path": "sprites/Treasure Hunters/Captain Clown Nose/Dialogue/Dead/In/Dead In 02.png",
+                                                    "name": "Dead In 02.png"
+                                                },
+                                                {
+                                                    "path": "sprites/Treasure Hunters/Captain Clown Nose/Dialogue/Dead/In/Dead In 03.png",
+                                                    "name": "Dead In 03.png"
+                                                }
+                                            ]
                                         },
                                         {
-                                            "path": "sprites/Treasure Hunters/Captain Clown Nose/Dialogue/Dead/Dead In 02.png",
-                                            "name": "Dead In 02.png"
-                                        },
-                                        {
-                                            "path": "sprites/Treasure Hunters/Captain Clown Nose/Dialogue/Dead/Dead In 03.png",
-                                            "name": "Dead In 03.png"
-                                        },
-                                        {
-                                            "path": "sprites/Treasure Hunters/Captain Clown Nose/Dialogue/Dead/Dead Out 01.png",
-                                            "name": "Dead Out 01.png"
-                                        },
-                                        {
-                                            "path": "sprites/Treasure Hunters/Captain Clown Nose/Dialogue/Dead/Dead Out 02.png",
-                                            "name": "Dead Out 02.png"
+                                            "path": "sprites/Treasure Hunters/Captain Clown Nose/Dialogue/Dead/Out",
+                                            "name": "Out",
+                                            "children": [
+                                                {
+                                                    "path": "sprites/Treasure Hunters/Captain Clown Nose/Dialogue/Dead/Out/Dead Out 01.png",
+                                                    "name": "Dead Out 01.png"
+                                                },
+                                                {
+                                                    "path": "sprites/Treasure Hunters/Captain Clown Nose/Dialogue/Dead/Out/Dead Out 02.png",
+                                                    "name": "Dead Out 02.png"
+                                                }
+                                            ]
                                         }
                                     ]
                                 },
@@ -631,24 +643,36 @@
                                     "name": "Exclamation",
                                     "children": [
                                         {
-                                            "path": "sprites/Treasure Hunters/Captain Clown Nose/Dialogue/Exclamation/Exclamation In 01.png",
-                                            "name": "Exclamation In 01.png"
+                                            "path": "sprites/Treasure Hunters/Captain Clown Nose/Dialogue/Exclamation/In",
+                                            "name": "In",
+                                            "children": [
+                                                {
+                                                    "path": "sprites/Treasure Hunters/Captain Clown Nose/Dialogue/Exclamation/In/Exclamation In 01.png",
+                                                    "name": "Exclamation In 01.png"
+                                                },
+                                                {
+                                                    "path": "sprites/Treasure Hunters/Captain Clown Nose/Dialogue/Exclamation/In/Exclamation In 02.png",
+                                                    "name": "Exclamation In 02.png"
+                                                },
+                                                {
+                                                    "path": "sprites/Treasure Hunters/Captain Clown Nose/Dialogue/Exclamation/In/Exclamation In 03.png",
+                                                    "name": "Exclamation In 03.png"
+                                                }
+                                            ]
                                         },
                                         {
-                                            "path": "sprites/Treasure Hunters/Captain Clown Nose/Dialogue/Exclamation/Exclamation In 02.png",
-                                            "name": "Exclamation In 02.png"
-                                        },
-                                        {
-                                            "path": "sprites/Treasure Hunters/Captain Clown Nose/Dialogue/Exclamation/Exclamation In 03.png",
-                                            "name": "Exclamation In 03.png"
-                                        },
-                                        {
-                                            "path": "sprites/Treasure Hunters/Captain Clown Nose/Dialogue/Exclamation/Exclamation Out 01.png",
-                                            "name": "Exclamation Out 01.png"
-                                        },
-                                        {
-                                            "path": "sprites/Treasure Hunters/Captain Clown Nose/Dialogue/Exclamation/Exclamation Out 02.png",
-                                            "name": "Exclamation Out 02.png"
+                                            "path": "sprites/Treasure Hunters/Captain Clown Nose/Dialogue/Exclamation/Out",
+                                            "name": "Out",
+                                            "children": [
+                                                {
+                                                    "path": "sprites/Treasure Hunters/Captain Clown Nose/Dialogue/Exclamation/Out/Exclamation Out 01.png",
+                                                    "name": "Exclamation Out 01.png"
+                                                },
+                                                {
+                                                    "path": "sprites/Treasure Hunters/Captain Clown Nose/Dialogue/Exclamation/Out/Exclamation Out 02.png",
+                                                    "name": "Exclamation Out 02.png"
+                                                }
+                                            ]
                                         }
                                     ]
                                 },
@@ -657,24 +681,36 @@
                                     "name": "Interrogation",
                                     "children": [
                                         {
-                                            "path": "sprites/Treasure Hunters/Captain Clown Nose/Dialogue/Interrogation/Interrogation In 01.png",
-                                            "name": "Interrogation In 01.png"
+                                            "path": "sprites/Treasure Hunters/Captain Clown Nose/Dialogue/Interrogation/In",
+                                            "name": "In",
+                                            "children": [
+                                                {
+                                                    "path": "sprites/Treasure Hunters/Captain Clown Nose/Dialogue/Interrogation/In/Interrogation In 01.png",
+                                                    "name": "Interrogation In 01.png"
+                                                },
+                                                {
+                                                    "path": "sprites/Treasure Hunters/Captain Clown Nose/Dialogue/Interrogation/In/Interrogation In 02.png",
+                                                    "name": "Interrogation In 02.png"
+                                                },
+                                                {
+                                                    "path": "sprites/Treasure Hunters/Captain Clown Nose/Dialogue/Interrogation/In/Interrogation In 03.png",
+                                                    "name": "Interrogation In 03.png"
+                                                }
+                                            ]
                                         },
                                         {
-                                            "path": "sprites/Treasure Hunters/Captain Clown Nose/Dialogue/Interrogation/Interrogation In 02.png",
-                                            "name": "Interrogation In 02.png"
-                                        },
-                                        {
-                                            "path": "sprites/Treasure Hunters/Captain Clown Nose/Dialogue/Interrogation/Interrogation In 03.png",
-                                            "name": "Interrogation In 03.png"
-                                        },
-                                        {
-                                            "path": "sprites/Treasure Hunters/Captain Clown Nose/Dialogue/Interrogation/Interrogation Out 01.png",
-                                            "name": "Interrogation Out 01.png"
-                                        },
-                                        {
-                                            "path": "sprites/Treasure Hunters/Captain Clown Nose/Dialogue/Interrogation/Interrogation Out 02.png",
-                                            "name": "Interrogation Out 02.png"
+                                            "path": "sprites/Treasure Hunters/Captain Clown Nose/Dialogue/Interrogation/Out",
+                                            "name": "Out",
+                                            "children": [
+                                                {
+                                                    "path": "sprites/Treasure Hunters/Captain Clown Nose/Dialogue/Interrogation/Out/Interrogation Out 01.png",
+                                                    "name": "Interrogation Out 01.png"
+                                                },
+                                                {
+                                                    "path": "sprites/Treasure Hunters/Captain Clown Nose/Dialogue/Interrogation/Out/Interrogation Out 02.png",
+                                                    "name": "Interrogation Out 02.png"
+                                                }
+                                            ]
                                         }
                                     ]
                                 }
@@ -685,68 +721,86 @@
                             "name": "Dust Particles",
                             "children": [
                                 {
-                                    "path": "sprites/Treasure Hunters/Captain Clown Nose/Dust Particles/Fall 01.png",
-                                    "name": "Fall 01.png"
+                                    "path": "sprites/Treasure Hunters/Captain Clown Nose/Dust Particles/Fall",
+                                    "name": "Fall",
+                                    "children": [
+                                        {
+                                            "path": "sprites/Treasure Hunters/Captain Clown Nose/Dust Particles/Fall/Fall 01.png",
+                                            "name": "Fall 01.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/Captain Clown Nose/Dust Particles/Fall/Fall 02.png",
+                                            "name": "Fall 02.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/Captain Clown Nose/Dust Particles/Fall/Fall 03.png",
+                                            "name": "Fall 03.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/Captain Clown Nose/Dust Particles/Fall/Fall 04.png",
+                                            "name": "Fall 04.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/Captain Clown Nose/Dust Particles/Fall/Fall 05.png",
+                                            "name": "Fall 05.png"
+                                        }
+                                    ]
                                 },
                                 {
-                                    "path": "sprites/Treasure Hunters/Captain Clown Nose/Dust Particles/Fall 02.png",
-                                    "name": "Fall 02.png"
+                                    "path": "sprites/Treasure Hunters/Captain Clown Nose/Dust Particles/Jump",
+                                    "name": "Jump",
+                                    "children": [
+                                        {
+                                            "path": "sprites/Treasure Hunters/Captain Clown Nose/Dust Particles/Jump/Jump 01.png",
+                                            "name": "Jump 01.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/Captain Clown Nose/Dust Particles/Jump/Jump 02.png",
+                                            "name": "Jump 02.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/Captain Clown Nose/Dust Particles/Jump/Jump 03.png",
+                                            "name": "Jump 03.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/Captain Clown Nose/Dust Particles/Jump/Jump 04.png",
+                                            "name": "Jump 04.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/Captain Clown Nose/Dust Particles/Jump/Jump 05.png",
+                                            "name": "Jump 05.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/Captain Clown Nose/Dust Particles/Jump/Jump 06.png",
+                                            "name": "Jump 06.png"
+                                        }
+                                    ]
                                 },
                                 {
-                                    "path": "sprites/Treasure Hunters/Captain Clown Nose/Dust Particles/Fall 03.png",
-                                    "name": "Fall 03.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Captain Clown Nose/Dust Particles/Fall 04.png",
-                                    "name": "Fall 04.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Captain Clown Nose/Dust Particles/Fall 05.png",
-                                    "name": "Fall 05.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Captain Clown Nose/Dust Particles/Jump 01.png",
-                                    "name": "Jump 01.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Captain Clown Nose/Dust Particles/Jump 02.png",
-                                    "name": "Jump 02.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Captain Clown Nose/Dust Particles/Jump 03.png",
-                                    "name": "Jump 03.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Captain Clown Nose/Dust Particles/Jump 04.png",
-                                    "name": "Jump 04.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Captain Clown Nose/Dust Particles/Jump 05.png",
-                                    "name": "Jump 05.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Captain Clown Nose/Dust Particles/Jump 06.png",
-                                    "name": "Jump 06.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Captain Clown Nose/Dust Particles/Run 01.png",
-                                    "name": "Run 01.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Captain Clown Nose/Dust Particles/Run 02.png",
-                                    "name": "Run 02.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Captain Clown Nose/Dust Particles/Run 03.png",
-                                    "name": "Run 03.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Captain Clown Nose/Dust Particles/Run 04.png",
-                                    "name": "Run 04.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Captain Clown Nose/Dust Particles/Run 05.png",
-                                    "name": "Run 05.png"
+                                    "path": "sprites/Treasure Hunters/Captain Clown Nose/Dust Particles/Run",
+                                    "name": "Run",
+                                    "children": [
+                                        {
+                                            "path": "sprites/Treasure Hunters/Captain Clown Nose/Dust Particles/Run/Run 01.png",
+                                            "name": "Run 01.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/Captain Clown Nose/Dust Particles/Run/Run 02.png",
+                                            "name": "Run 02.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/Captain Clown Nose/Dust Particles/Run/Run 03.png",
+                                            "name": "Run 03.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/Captain Clown Nose/Dust Particles/Run/Run 04.png",
+                                            "name": "Run 04.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/Captain Clown Nose/Dust Particles/Run/Run 05.png",
+                                            "name": "Run 05.png"
+                                        }
+                                    ]
                                 }
                             ]
                         }
@@ -1049,11 +1103,6 @@
                                             "name": "3.png"
                                         }
                                     ]
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Merchant Ship/Ship/New Folder",
-                                    "name": "New Folder",
-                                    "children": []
                                 },
                                 {
                                     "path": "sprites/Treasure Hunters/Merchant Ship/Ship/Sail",
@@ -1380,52 +1429,70 @@
                             "name": "Back Palm Trees",
                             "children": [
                                 {
-                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Back Palm Trees/Back Palm Tree Left 01.png",
-                                    "name": "Back Palm Tree Left 01.png"
+                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Back Palm Trees/Left",
+                                    "name": "Left",
+                                    "children": [
+                                        {
+                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Back Palm Trees/Left/Back Palm Tree Left 01.png",
+                                            "name": "Back Palm Tree Left 01.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Back Palm Trees/Left/Back Palm Tree Left 02.png",
+                                            "name": "Back Palm Tree Left 02.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Back Palm Trees/Left/Back Palm Tree Left 03.png",
+                                            "name": "Back Palm Tree Left 03.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Back Palm Trees/Left/Back Palm Tree Left 04.png",
+                                            "name": "Back Palm Tree Left 04.png"
+                                        }
+                                    ]
                                 },
                                 {
-                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Back Palm Trees/Back Palm Tree Left 02.png",
-                                    "name": "Back Palm Tree Left 02.png"
+                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Back Palm Trees/Regular",
+                                    "name": "Regular",
+                                    "children": [
+                                        {
+                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Back Palm Trees/Regular/Back Palm Tree Regular 01.png",
+                                            "name": "Back Palm Tree Regular 01.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Back Palm Trees/Regular/Back Palm Tree Regular 02.png",
+                                            "name": "Back Palm Tree Regular 02.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Back Palm Trees/Regular/Back Palm Tree Regular 03.png",
+                                            "name": "Back Palm Tree Regular 03.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Back Palm Trees/Regular/Back Palm Tree Regular 04.png",
+                                            "name": "Back Palm Tree Regular 04.png"
+                                        }
+                                    ]
                                 },
                                 {
-                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Back Palm Trees/Back Palm Tree Left 03.png",
-                                    "name": "Back Palm Tree Left 03.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Back Palm Trees/Back Palm Tree Left 04.png",
-                                    "name": "Back Palm Tree Left 04.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Back Palm Trees/Back Palm Tree Regular 01.png",
-                                    "name": "Back Palm Tree Regular 01.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Back Palm Trees/Back Palm Tree Regular 02.png",
-                                    "name": "Back Palm Tree Regular 02.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Back Palm Trees/Back Palm Tree Regular 03.png",
-                                    "name": "Back Palm Tree Regular 03.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Back Palm Trees/Back Palm Tree Regular 04.png",
-                                    "name": "Back Palm Tree Regular 04.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Back Palm Trees/Back Palm Tree Right 01.png",
-                                    "name": "Back Palm Tree Right 01.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Back Palm Trees/Back Palm Tree Right 02.png",
-                                    "name": "Back Palm Tree Right 02.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Back Palm Trees/Back Palm Tree Right 03.png",
-                                    "name": "Back Palm Tree Right 03.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Back Palm Trees/Back Palm Tree Right 04.png",
-                                    "name": "Back Palm Tree Right 04.png"
+                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Back Palm Trees/Right",
+                                    "name": "Right",
+                                    "children": [
+                                        {
+                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Back Palm Trees/Right/Back Palm Tree Right 01.png",
+                                            "name": "Back Palm Tree Right 01.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Back Palm Trees/Right/Back Palm Tree Right 02.png",
+                                            "name": "Back Palm Tree Right 02.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Back Palm Trees/Right/Back Palm Tree Right 03.png",
+                                            "name": "Back Palm Tree Right 03.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Back Palm Trees/Right/Back Palm Tree Right 04.png",
+                                            "name": "Back Palm Tree Right 04.png"
+                                        }
+                                    ]
                                 }
                             ]
                         },
@@ -1450,64 +1517,88 @@
                                     "name": "Big Clouds.png"
                                 },
                                 {
-                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Background/Small Cloud 1.png",
-                                    "name": "Small Cloud 1.png"
+                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Background/Small Cloud",
+                                    "name": "Small Cloud",
+                                    "children": [
+                                        {
+                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Background/Small Cloud/Small Cloud 1.png",
+                                            "name": "Small Cloud 1.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Background/Small Cloud/Small Cloud 2.png",
+                                            "name": "Small Cloud 2.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Background/Small Cloud/Small Cloud 3.png",
+                                            "name": "Small Cloud 3.png"
+                                        }
+                                    ]
                                 },
                                 {
-                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Background/Small Cloud 2.png",
-                                    "name": "Small Cloud 2.png"
+                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Background/Water Reflect Big",
+                                    "name": "Water Reflect Big",
+                                    "children": [
+                                        {
+                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Background/Water Reflect Big/Water Reflect Big 01.png",
+                                            "name": "Water Reflect Big 01.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Background/Water Reflect Big/Water Reflect Big 02.png",
+                                            "name": "Water Reflect Big 02.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Background/Water Reflect Big/Water Reflect Big 03.png",
+                                            "name": "Water Reflect Big 03.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Background/Water Reflect Big/Water Reflect Big 04.png",
+                                            "name": "Water Reflect Big 04.png"
+                                        }
+                                    ]
                                 },
                                 {
-                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Background/Small Cloud 3.png",
-                                    "name": "Small Cloud 3.png"
+                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Background/Water Reflect Medium",
+                                    "name": "Water Reflect Medium",
+                                    "children": [
+                                        {
+                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Background/Water Reflect Medium/Water Reflect Medium 01.png",
+                                            "name": "Water Reflect Medium 01.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Background/Water Reflect Medium/Water Reflect Medium 02.png",
+                                            "name": "Water Reflect Medium 02.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Background/Water Reflect Medium/Water Reflect Medium 03.png",
+                                            "name": "Water Reflect Medium 03.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Background/Water Reflect Medium/Water Reflect Medium 04.png",
+                                            "name": "Water Reflect Medium 04.png"
+                                        }
+                                    ]
                                 },
                                 {
-                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Background/Water Reflect Big 01.png",
-                                    "name": "Water Reflect Big 01.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Background/Water Reflect Big 02.png",
-                                    "name": "Water Reflect Big 02.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Background/Water Reflect Big 03.png",
-                                    "name": "Water Reflect Big 03.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Background/Water Reflect Big 04.png",
-                                    "name": "Water Reflect Big 04.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Background/Water Reflect Medium 01.png",
-                                    "name": "Water Reflect Medium 01.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Background/Water Reflect Medium 02.png",
-                                    "name": "Water Reflect Medium 02.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Background/Water Reflect Medium 03.png",
-                                    "name": "Water Reflect Medium 03.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Background/Water Reflect Medium 04.png",
-                                    "name": "Water Reflect Medium 04.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Background/Water Reflect Small 01.png",
-                                    "name": "Water Reflect Small 01.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Background/Water Reflect Small 02.png",
-                                    "name": "Water Reflect Small 02.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Background/Water Reflect Small 03.png",
-                                    "name": "Water Reflect Small 03.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Background/Water Reflect Small 04.png",
-                                    "name": "Water Reflect Small 04.png"
+                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Background/Water Reflect Small",
+                                    "name": "Water Reflect Small",
+                                    "children": [
+                                        {
+                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Background/Water Reflect Small/Water Reflect Small 01.png",
+                                            "name": "Water Reflect Small 01.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Background/Water Reflect Small/Water Reflect Small 02.png",
+                                            "name": "Water Reflect Small 02.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Background/Water Reflect Small/Water Reflect Small 03.png",
+                                            "name": "Water Reflect Small 03.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Background/Water Reflect Small/Water Reflect Small 04.png",
+                                            "name": "Water Reflect Small 04.png"
+                                        }
+                                    ]
                                 }
                             ]
                         },
@@ -1520,20 +1611,26 @@
                                     "name": "Front Palm Bottom and Grass (32x32).png"
                                 },
                                 {
-                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Front Palm Trees/Front Palm Tree Top 01.png",
-                                    "name": "Front Palm Tree Top 01.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Front Palm Trees/Front Palm Tree Top 02.png",
-                                    "name": "Front Palm Tree Top 02.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Front Palm Trees/Front Palm Tree Top 03.png",
-                                    "name": "Front Palm Tree Top 03.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Front Palm Trees/Front Palm Tree Top 04.png",
-                                    "name": "Front Palm Tree Top 04.png"
+                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Front Palm Trees/Top",
+                                    "name": "Top",
+                                    "children": [
+                                        {
+                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Front Palm Trees/Top/Front Palm Tree Top 01.png",
+                                            "name": "Front Palm Tree Top 01.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Front Palm Trees/Top/Front Palm Tree Top 02.png",
+                                            "name": "Front Palm Tree Top 02.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Front Palm Trees/Top/Front Palm Tree Top 03.png",
+                                            "name": "Front Palm Tree Top 03.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Front Palm Trees/Top/Front Palm Tree Top 04.png",
+                                            "name": "Front Palm Tree Top 04.png"
+                                        }
+                                    ]
                                 }
                             ]
                         },
@@ -1546,84 +1643,96 @@
                                     "name": "Chest",
                                     "children": [
                                         {
-                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Chest/Chest Close 01.png",
-                                            "name": "Chest Close 01.png"
+                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Chest/Close",
+                                            "name": "Close",
+                                            "children": [
+                                                {
+                                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Chest/Close/Chest Close 01.png",
+                                                    "name": "Chest Close 01.png"
+                                                },
+                                                {
+                                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Chest/Close/Chest Close 02.png",
+                                                    "name": "Chest Close 02.png"
+                                                },
+                                                {
+                                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Chest/Close/Chest Close 03.png",
+                                                    "name": "Chest Close 03.png"
+                                                },
+                                                {
+                                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Chest/Close/Chest Close 04.png",
+                                                    "name": "Chest Close 04.png"
+                                                },
+                                                {
+                                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Chest/Close/Chest Close 05.png",
+                                                    "name": "Chest Close 05.png"
+                                                },
+                                                {
+                                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Chest/Close/Chest Close 06.png",
+                                                    "name": "Chest Close 06.png"
+                                                },
+                                                {
+                                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Chest/Close/Chest Close 07.png",
+                                                    "name": "Chest Close 07.png"
+                                                },
+                                                {
+                                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Chest/Close/Chest Close 08.png",
+                                                    "name": "Chest Close 08.png"
+                                                },
+                                                {
+                                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Chest/Close/Chest Close 09.png",
+                                                    "name": "Chest Close 09.png"
+                                                },
+                                                {
+                                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Chest/Close/Chest Close 10.png",
+                                                    "name": "Chest Close 10.png"
+                                                }
+                                            ]
                                         },
                                         {
-                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Chest/Chest Close 02.png",
-                                            "name": "Chest Close 02.png"
-                                        },
-                                        {
-                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Chest/Chest Close 03.png",
-                                            "name": "Chest Close 03.png"
-                                        },
-                                        {
-                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Chest/Chest Close 04.png",
-                                            "name": "Chest Close 04.png"
-                                        },
-                                        {
-                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Chest/Chest Close 05.png",
-                                            "name": "Chest Close 05.png"
-                                        },
-                                        {
-                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Chest/Chest Close 06.png",
-                                            "name": "Chest Close 06.png"
-                                        },
-                                        {
-                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Chest/Chest Close 07.png",
-                                            "name": "Chest Close 07.png"
-                                        },
-                                        {
-                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Chest/Chest Close 08.png",
-                                            "name": "Chest Close 08.png"
-                                        },
-                                        {
-                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Chest/Chest Close 09.png",
-                                            "name": "Chest Close 09.png"
-                                        },
-                                        {
-                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Chest/Chest Close 10.png",
-                                            "name": "Chest Close 10.png"
-                                        },
-                                        {
-                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Chest/Chest Open 01.png",
-                                            "name": "Chest Open 01.png"
-                                        },
-                                        {
-                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Chest/Chest Open 02.png",
-                                            "name": "Chest Open 02.png"
-                                        },
-                                        {
-                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Chest/Chest Open 03.png",
-                                            "name": "Chest Open 03.png"
-                                        },
-                                        {
-                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Chest/Chest Open 04.png",
-                                            "name": "Chest Open 04.png"
-                                        },
-                                        {
-                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Chest/Chest Open 05.png",
-                                            "name": "Chest Open 05.png"
-                                        },
-                                        {
-                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Chest/Chest Open 06.png",
-                                            "name": "Chest Open 06.png"
-                                        },
-                                        {
-                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Chest/Chest Open 07.png",
-                                            "name": "Chest Open 07.png"
-                                        },
-                                        {
-                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Chest/Chest Open 08.png",
-                                            "name": "Chest Open 08.png"
-                                        },
-                                        {
-                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Chest/Chest Open 09.png",
-                                            "name": "Chest Open 09.png"
-                                        },
-                                        {
-                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Chest/Chest Open 10.png",
-                                            "name": "Chest Open 10.png"
+                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Chest/Open",
+                                            "name": "Open",
+                                            "children": [
+                                                {
+                                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Chest/Open/Chest Open 01.png",
+                                                    "name": "Chest Open 01.png"
+                                                },
+                                                {
+                                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Chest/Open/Chest Open 02.png",
+                                                    "name": "Chest Open 02.png"
+                                                },
+                                                {
+                                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Chest/Open/Chest Open 03.png",
+                                                    "name": "Chest Open 03.png"
+                                                },
+                                                {
+                                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Chest/Open/Chest Open 04.png",
+                                                    "name": "Chest Open 04.png"
+                                                },
+                                                {
+                                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Chest/Open/Chest Open 05.png",
+                                                    "name": "Chest Open 05.png"
+                                                },
+                                                {
+                                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Chest/Open/Chest Open 06.png",
+                                                    "name": "Chest Open 06.png"
+                                                },
+                                                {
+                                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Chest/Open/Chest Open 07.png",
+                                                    "name": "Chest Open 07.png"
+                                                },
+                                                {
+                                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Chest/Open/Chest Open 08.png",
+                                                    "name": "Chest Open 08.png"
+                                                },
+                                                {
+                                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Chest/Open/Chest Open 09.png",
+                                                    "name": "Chest Open 09.png"
+                                                },
+                                                {
+                                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Chest/Open/Chest Open 10.png",
+                                                    "name": "Chest Open 10.png"
+                                                }
+                                            ]
                                         }
                                     ]
                                 },
@@ -1666,56 +1775,68 @@
                                         {
                                             "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Flag/Flag 09.png",
                                             "name": "Flag 09.png"
-                                        },
-                                        {
-                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Flag/Platform.png",
-                                            "name": "Platform.png"
                                         }
                                     ]
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Platform.png",
+                                    "name": "Platform.png"
                                 },
                                 {
                                     "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Ship Helm",
                                     "name": "Ship Helm",
                                     "children": [
                                         {
-                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Ship Helm/Ship Helm Idle 01.png",
-                                            "name": "Ship Helm Idle 01.png"
+                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Ship Helm/Idle",
+                                            "name": "Idle",
+                                            "children": [
+                                                {
+                                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Ship Helm/Idle/Ship Helm Idle 01.png",
+                                                    "name": "Ship Helm Idle 01.png"
+                                                },
+                                                {
+                                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Ship Helm/Idle/Ship Helm Idle 02.png",
+                                                    "name": "Ship Helm Idle 02.png"
+                                                },
+                                                {
+                                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Ship Helm/Idle/Ship Helm Idle 03.png",
+                                                    "name": "Ship Helm Idle 03.png"
+                                                },
+                                                {
+                                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Ship Helm/Idle/Ship Helm Idle 04.png",
+                                                    "name": "Ship Helm Idle 04.png"
+                                                },
+                                                {
+                                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Ship Helm/Idle/Ship Helm Idle 05.png",
+                                                    "name": "Ship Helm Idle 05.png"
+                                                },
+                                                {
+                                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Ship Helm/Idle/Ship Helm Idle 06.png",
+                                                    "name": "Ship Helm Idle 06.png"
+                                                }
+                                            ]
                                         },
                                         {
-                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Ship Helm/Ship Helm Idle 02.png",
-                                            "name": "Ship Helm Idle 02.png"
-                                        },
-                                        {
-                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Ship Helm/Ship Helm Idle 03.png",
-                                            "name": "Ship Helm Idle 03.png"
-                                        },
-                                        {
-                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Ship Helm/Ship Helm Idle 04.png",
-                                            "name": "Ship Helm Idle 04.png"
-                                        },
-                                        {
-                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Ship Helm/Ship Helm Idle 05.png",
-                                            "name": "Ship Helm Idle 05.png"
-                                        },
-                                        {
-                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Ship Helm/Ship Helm Idle 06.png",
-                                            "name": "Ship Helm Idle 06.png"
-                                        },
-                                        {
-                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Ship Helm/Ship Helm Turn 01.png",
-                                            "name": "Ship Helm Turn 01.png"
-                                        },
-                                        {
-                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Ship Helm/Ship Helm Turn 02.png",
-                                            "name": "Ship Helm Turn 02.png"
-                                        },
-                                        {
-                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Ship Helm/Ship Helm Turn 03.png",
-                                            "name": "Ship Helm Turn 03.png"
-                                        },
-                                        {
-                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Ship Helm/Ship Helm Turn 04.png",
-                                            "name": "Ship Helm Turn 04.png"
+                                            "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Ship Helm/Turn",
+                                            "name": "Turn",
+                                            "children": [
+                                                {
+                                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Ship Helm/Turn/Ship Helm Turn 01.png",
+                                                    "name": "Ship Helm Turn 01.png"
+                                                },
+                                                {
+                                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Ship Helm/Turn/Ship Helm Turn 02.png",
+                                                    "name": "Ship Helm Turn 02.png"
+                                                },
+                                                {
+                                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Ship Helm/Turn/Ship Helm Turn 03.png",
+                                                    "name": "Ship Helm Turn 03.png"
+                                                },
+                                                {
+                                                    "path": "sprites/Treasure Hunters/Palm Tree Island/Objects/Ship Helm/Turn/Ship Helm Turn 04.png",
+                                                    "name": "Ship Helm Turn 04.png"
+                                                }
+                                            ]
                                         }
                                     ]
                                 },
@@ -4106,24 +4227,36 @@
                                     "name": "Dead",
                                     "children": [
                                         {
-                                            "path": "sprites/Treasure Hunters/The Crusty Crew/Dialogue/Dead/Dead In 01.png",
-                                            "name": "Dead In 01.png"
+                                            "path": "sprites/Treasure Hunters/The Crusty Crew/Dialogue/Dead/In",
+                                            "name": "In",
+                                            "children": [
+                                                {
+                                                    "path": "sprites/Treasure Hunters/The Crusty Crew/Dialogue/Dead/In/Dead In 01.png",
+                                                    "name": "Dead In 01.png"
+                                                },
+                                                {
+                                                    "path": "sprites/Treasure Hunters/The Crusty Crew/Dialogue/Dead/In/Dead In 02.png",
+                                                    "name": "Dead In 02.png"
+                                                },
+                                                {
+                                                    "path": "sprites/Treasure Hunters/The Crusty Crew/Dialogue/Dead/In/Dead In 03.png",
+                                                    "name": "Dead In 03.png"
+                                                }
+                                            ]
                                         },
                                         {
-                                            "path": "sprites/Treasure Hunters/The Crusty Crew/Dialogue/Dead/Dead In 02.png",
-                                            "name": "Dead In 02.png"
-                                        },
-                                        {
-                                            "path": "sprites/Treasure Hunters/The Crusty Crew/Dialogue/Dead/Dead In 03.png",
-                                            "name": "Dead In 03.png"
-                                        },
-                                        {
-                                            "path": "sprites/Treasure Hunters/The Crusty Crew/Dialogue/Dead/Dead Out 01.png",
-                                            "name": "Dead Out 01.png"
-                                        },
-                                        {
-                                            "path": "sprites/Treasure Hunters/The Crusty Crew/Dialogue/Dead/Dead Out 02.png",
-                                            "name": "Dead Out 02.png"
+                                            "path": "sprites/Treasure Hunters/The Crusty Crew/Dialogue/Dead/Out",
+                                            "name": "Out",
+                                            "children": [
+                                                {
+                                                    "path": "sprites/Treasure Hunters/The Crusty Crew/Dialogue/Dead/Out/Dead Out 01.png",
+                                                    "name": "Dead Out 01.png"
+                                                },
+                                                {
+                                                    "path": "sprites/Treasure Hunters/The Crusty Crew/Dialogue/Dead/Out/Dead Out 02.png",
+                                                    "name": "Dead Out 02.png"
+                                                }
+                                            ]
                                         }
                                     ]
                                 },
@@ -4132,24 +4265,36 @@
                                     "name": "Exclamation",
                                     "children": [
                                         {
-                                            "path": "sprites/Treasure Hunters/The Crusty Crew/Dialogue/Exclamation/Exclamation In 01.png",
-                                            "name": "Exclamation In 01.png"
+                                            "path": "sprites/Treasure Hunters/The Crusty Crew/Dialogue/Exclamation/In",
+                                            "name": "In",
+                                            "children": [
+                                                {
+                                                    "path": "sprites/Treasure Hunters/The Crusty Crew/Dialogue/Exclamation/In/Exclamation In 01.png",
+                                                    "name": "Exclamation In 01.png"
+                                                },
+                                                {
+                                                    "path": "sprites/Treasure Hunters/The Crusty Crew/Dialogue/Exclamation/In/Exclamation In 02.png",
+                                                    "name": "Exclamation In 02.png"
+                                                },
+                                                {
+                                                    "path": "sprites/Treasure Hunters/The Crusty Crew/Dialogue/Exclamation/In/Exclamation In 03.png",
+                                                    "name": "Exclamation In 03.png"
+                                                }
+                                            ]
                                         },
                                         {
-                                            "path": "sprites/Treasure Hunters/The Crusty Crew/Dialogue/Exclamation/Exclamation In 02.png",
-                                            "name": "Exclamation In 02.png"
-                                        },
-                                        {
-                                            "path": "sprites/Treasure Hunters/The Crusty Crew/Dialogue/Exclamation/Exclamation In 03.png",
-                                            "name": "Exclamation In 03.png"
-                                        },
-                                        {
-                                            "path": "sprites/Treasure Hunters/The Crusty Crew/Dialogue/Exclamation/Exclamation Out 01.png",
-                                            "name": "Exclamation Out 01.png"
-                                        },
-                                        {
-                                            "path": "sprites/Treasure Hunters/The Crusty Crew/Dialogue/Exclamation/Exclamation Out 02.png",
-                                            "name": "Exclamation Out 02.png"
+                                            "path": "sprites/Treasure Hunters/The Crusty Crew/Dialogue/Exclamation/Out",
+                                            "name": "Out",
+                                            "children": [
+                                                {
+                                                    "path": "sprites/Treasure Hunters/The Crusty Crew/Dialogue/Exclamation/Out/Exclamation Out 01.png",
+                                                    "name": "Exclamation Out 01.png"
+                                                },
+                                                {
+                                                    "path": "sprites/Treasure Hunters/The Crusty Crew/Dialogue/Exclamation/Out/Exclamation Out 02.png",
+                                                    "name": "Exclamation Out 02.png"
+                                                }
+                                            ]
                                         }
                                     ]
                                 },
@@ -4158,24 +4303,36 @@
                                     "name": "Interrogation",
                                     "children": [
                                         {
-                                            "path": "sprites/Treasure Hunters/The Crusty Crew/Dialogue/Interrogation/Interrogation In 01.png",
-                                            "name": "Interrogation In 01.png"
+                                            "path": "sprites/Treasure Hunters/The Crusty Crew/Dialogue/Interrogation/In",
+                                            "name": "In",
+                                            "children": [
+                                                {
+                                                    "path": "sprites/Treasure Hunters/The Crusty Crew/Dialogue/Interrogation/In/Interrogation In 01.png",
+                                                    "name": "Interrogation In 01.png"
+                                                },
+                                                {
+                                                    "path": "sprites/Treasure Hunters/The Crusty Crew/Dialogue/Interrogation/In/Interrogation In 02.png",
+                                                    "name": "Interrogation In 02.png"
+                                                },
+                                                {
+                                                    "path": "sprites/Treasure Hunters/The Crusty Crew/Dialogue/Interrogation/In/Interrogation In 03.png",
+                                                    "name": "Interrogation In 03.png"
+                                                }
+                                            ]
                                         },
                                         {
-                                            "path": "sprites/Treasure Hunters/The Crusty Crew/Dialogue/Interrogation/Interrogation In 02.png",
-                                            "name": "Interrogation In 02.png"
-                                        },
-                                        {
-                                            "path": "sprites/Treasure Hunters/The Crusty Crew/Dialogue/Interrogation/Interrogation In 03.png",
-                                            "name": "Interrogation In 03.png"
-                                        },
-                                        {
-                                            "path": "sprites/Treasure Hunters/The Crusty Crew/Dialogue/Interrogation/Interrogation Out 01.png",
-                                            "name": "Interrogation Out 01.png"
-                                        },
-                                        {
-                                            "path": "sprites/Treasure Hunters/The Crusty Crew/Dialogue/Interrogation/Interrogation Out 02.png",
-                                            "name": "Interrogation Out 02.png"
+                                            "path": "sprites/Treasure Hunters/The Crusty Crew/Dialogue/Interrogation/Out",
+                                            "name": "Out",
+                                            "children": [
+                                                {
+                                                    "path": "sprites/Treasure Hunters/The Crusty Crew/Dialogue/Interrogation/Out/Interrogation Out 01.png",
+                                                    "name": "Interrogation Out 01.png"
+                                                },
+                                                {
+                                                    "path": "sprites/Treasure Hunters/The Crusty Crew/Dialogue/Interrogation/Out/Interrogation Out 02.png",
+                                                    "name": "Interrogation Out 02.png"
+                                                }
+                                            ]
                                         }
                                     ]
                                 }
@@ -4186,68 +4343,86 @@
                             "name": "Dust Particles",
                             "children": [
                                 {
-                                    "path": "sprites/Treasure Hunters/The Crusty Crew/Dust Particles/Fall 01.png",
-                                    "name": "Fall 01.png"
+                                    "path": "sprites/Treasure Hunters/The Crusty Crew/Dust Particles/01-Fall",
+                                    "name": "01-Fall",
+                                    "children": [
+                                        {
+                                            "path": "sprites/Treasure Hunters/The Crusty Crew/Dust Particles/01-Fall/Fall 01.png",
+                                            "name": "Fall 01.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/The Crusty Crew/Dust Particles/01-Fall/Fall 02.png",
+                                            "name": "Fall 02.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/The Crusty Crew/Dust Particles/01-Fall/Fall 03.png",
+                                            "name": "Fall 03.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/The Crusty Crew/Dust Particles/01-Fall/Fall 04.png",
+                                            "name": "Fall 04.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/The Crusty Crew/Dust Particles/01-Fall/Fall 05.png",
+                                            "name": "Fall 05.png"
+                                        }
+                                    ]
                                 },
                                 {
-                                    "path": "sprites/Treasure Hunters/The Crusty Crew/Dust Particles/Fall 02.png",
-                                    "name": "Fall 02.png"
+                                    "path": "sprites/Treasure Hunters/The Crusty Crew/Dust Particles/02-Jump",
+                                    "name": "02-Jump",
+                                    "children": [
+                                        {
+                                            "path": "sprites/Treasure Hunters/The Crusty Crew/Dust Particles/02-Jump/Jump 01.png",
+                                            "name": "Jump 01.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/The Crusty Crew/Dust Particles/02-Jump/Jump 02.png",
+                                            "name": "Jump 02.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/The Crusty Crew/Dust Particles/02-Jump/Jump 03.png",
+                                            "name": "Jump 03.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/The Crusty Crew/Dust Particles/02-Jump/Jump 04.png",
+                                            "name": "Jump 04.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/The Crusty Crew/Dust Particles/02-Jump/Jump 05.png",
+                                            "name": "Jump 05.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/The Crusty Crew/Dust Particles/02-Jump/Jump 06.png",
+                                            "name": "Jump 06.png"
+                                        }
+                                    ]
                                 },
                                 {
-                                    "path": "sprites/Treasure Hunters/The Crusty Crew/Dust Particles/Fall 03.png",
-                                    "name": "Fall 03.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/The Crusty Crew/Dust Particles/Fall 04.png",
-                                    "name": "Fall 04.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/The Crusty Crew/Dust Particles/Fall 05.png",
-                                    "name": "Fall 05.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/The Crusty Crew/Dust Particles/Jump 01.png",
-                                    "name": "Jump 01.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/The Crusty Crew/Dust Particles/Jump 02.png",
-                                    "name": "Jump 02.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/The Crusty Crew/Dust Particles/Jump 03.png",
-                                    "name": "Jump 03.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/The Crusty Crew/Dust Particles/Jump 04.png",
-                                    "name": "Jump 04.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/The Crusty Crew/Dust Particles/Jump 05.png",
-                                    "name": "Jump 05.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/The Crusty Crew/Dust Particles/Jump 06.png",
-                                    "name": "Jump 06.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/The Crusty Crew/Dust Particles/Run 01.png",
-                                    "name": "Run 01.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/The Crusty Crew/Dust Particles/Run 02.png",
-                                    "name": "Run 02.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/The Crusty Crew/Dust Particles/Run 03.png",
-                                    "name": "Run 03.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/The Crusty Crew/Dust Particles/Run 04.png",
-                                    "name": "Run 04.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/The Crusty Crew/Dust Particles/Run 05.png",
-                                    "name": "Run 05.png"
+                                    "path": "sprites/Treasure Hunters/The Crusty Crew/Dust Particles/03-Run",
+                                    "name": "03-Run",
+                                    "children": [
+                                        {
+                                            "path": "sprites/Treasure Hunters/The Crusty Crew/Dust Particles/03-Run/Run 01.png",
+                                            "name": "Run 01.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/The Crusty Crew/Dust Particles/03-Run/Run 02.png",
+                                            "name": "Run 02.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/The Crusty Crew/Dust Particles/03-Run/Run 03.png",
+                                            "name": "Run 03.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/The Crusty Crew/Dust Particles/03-Run/Run 04.png",
+                                            "name": "Run 04.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/The Crusty Crew/Dust Particles/03-Run/Run 05.png",
+                                            "name": "Run 05.png"
+                                        }
+                                    ]
                                 }
                             ]
                         },
@@ -4750,8 +4925,40 @@
                             "name": "Big Banner",
                             "children": [
                                 {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Big Banner/1.png",
-                                    "name": "1.png"
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Big Banner/01.png",
+                                    "name": "01.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Big Banner/02.png",
+                                    "name": "02.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Big Banner/03.png",
+                                    "name": "03.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Big Banner/04.png",
+                                    "name": "04.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Big Banner/05.png",
+                                    "name": "05.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Big Banner/06.png",
+                                    "name": "06.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Big Banner/07.png",
+                                    "name": "07.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Big Banner/08.png",
+                                    "name": "08.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Big Banner/09.png",
+                                    "name": "09.png"
                                 },
                                 {
                                     "path": "sprites/Treasure Hunters/Wood and Paper UI/Big Banner/10.png",
@@ -4794,10 +5001,6 @@
                                     "name": "19.png"
                                 },
                                 {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Big Banner/2.png",
-                                    "name": "2.png"
-                                },
-                                {
                                     "path": "sprites/Treasure Hunters/Wood and Paper UI/Big Banner/20.png",
                                     "name": "20.png"
                                 },
@@ -4838,10 +5041,6 @@
                                     "name": "29.png"
                                 },
                                 {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Big Banner/3.png",
-                                    "name": "3.png"
-                                },
-                                {
                                     "path": "sprites/Treasure Hunters/Wood and Paper UI/Big Banner/30.png",
                                     "name": "30.png"
                                 },
@@ -4856,44 +5055,52 @@
                                 {
                                     "path": "sprites/Treasure Hunters/Wood and Paper UI/Big Banner/33.png",
                                     "name": "33.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Big Banner/4.png",
-                                    "name": "4.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Big Banner/5.png",
-                                    "name": "5.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Big Banner/6.png",
-                                    "name": "6.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Big Banner/7.png",
-                                    "name": "7.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Big Banner/8.png",
-                                    "name": "8.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Big Banner/9.png",
-                                    "name": "9.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Big Banner/Big Banner (guide).png",
-                                    "name": "Big Banner (guide).png"
                                 }
                             ]
+                        },
+                        {
+                            "path": "sprites/Treasure Hunters/Wood and Paper UI/Big Banner (guide).png",
+                            "name": "Big Banner (guide).png"
                         },
                         {
                             "path": "sprites/Treasure Hunters/Wood and Paper UI/Big Text",
                             "name": "Big Text",
                             "children": [
                                 {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Big Text/1.png",
-                                    "name": "1.png"
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Big Text/01.png",
+                                    "name": "01.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Big Text/02.png",
+                                    "name": "02.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Big Text/03.png",
+                                    "name": "03.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Big Text/04.png",
+                                    "name": "04.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Big Text/05.png",
+                                    "name": "05.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Big Text/06.png",
+                                    "name": "06.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Big Text/07.png",
+                                    "name": "07.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Big Text/08.png",
+                                    "name": "08.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Big Text/09.png",
+                                    "name": "09.png"
                                 },
                                 {
                                     "path": "sprites/Treasure Hunters/Wood and Paper UI/Big Text/10.png",
@@ -4936,10 +5143,6 @@
                                     "name": "19.png"
                                 },
                                 {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Big Text/2.png",
-                                    "name": "2.png"
-                                },
-                                {
                                     "path": "sprites/Treasure Hunters/Wood and Paper UI/Big Text/20.png",
                                     "name": "20.png"
                                 },
@@ -4980,10 +5183,6 @@
                                     "name": "29.png"
                                 },
                                 {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Big Text/3.png",
-                                    "name": "3.png"
-                                },
-                                {
                                     "path": "sprites/Treasure Hunters/Wood and Paper UI/Big Text/30.png",
                                     "name": "30.png"
                                 },
@@ -5010,30 +5209,6 @@
                                 {
                                     "path": "sprites/Treasure Hunters/Wood and Paper UI/Big Text/36.png",
                                     "name": "36.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Big Text/4.png",
-                                    "name": "4.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Big Text/5.png",
-                                    "name": "5.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Big Text/6.png",
-                                    "name": "6.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Big Text/7.png",
-                                    "name": "7.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Big Text/8.png",
-                                    "name": "8.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Big Text/9.png",
-                                    "name": "9.png"
                                 }
                             ]
                         },
@@ -5042,8 +5217,40 @@
                             "name": "Green Board",
                             "children": [
                                 {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Green Board/1.png",
-                                    "name": "1.png"
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Green Board/01.png",
+                                    "name": "01.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Green Board/02.png",
+                                    "name": "02.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Green Board/03.png",
+                                    "name": "03.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Green Board/04.png",
+                                    "name": "04.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Green Board/05.png",
+                                    "name": "05.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Green Board/06.png",
+                                    "name": "06.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Green Board/07.png",
+                                    "name": "07.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Green Board/08.png",
+                                    "name": "08.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Green Board/09.png",
+                                    "name": "09.png"
                                 },
                                 {
                                     "path": "sprites/Treasure Hunters/Wood and Paper UI/Green Board/10.png",
@@ -5072,52 +5279,52 @@
                                 {
                                     "path": "sprites/Treasure Hunters/Wood and Paper UI/Green Board/16.png",
                                     "name": "16.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Green Board/2.png",
-                                    "name": "2.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Green Board/3.png",
-                                    "name": "3.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Green Board/4.png",
-                                    "name": "4.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Green Board/5.png",
-                                    "name": "5.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Green Board/6.png",
-                                    "name": "6.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Green Board/7.png",
-                                    "name": "7.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Green Board/8.png",
-                                    "name": "8.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Green Board/9.png",
-                                    "name": "9.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Green Board/Green Board (guide).png",
-                                    "name": "Green Board (guide).png"
                                 }
                             ]
+                        },
+                        {
+                            "path": "sprites/Treasure Hunters/Wood and Paper UI/Green Board (guide).png",
+                            "name": "Green Board (guide).png"
                         },
                         {
                             "path": "sprites/Treasure Hunters/Wood and Paper UI/Green Button",
                             "name": "Green Button",
                             "children": [
                                 {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Green Button/1.png",
-                                    "name": "1.png"
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Green Button/01.png",
+                                    "name": "01.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Green Button/02.png",
+                                    "name": "02.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Green Button/03.png",
+                                    "name": "03.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Green Button/04.png",
+                                    "name": "04.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Green Button/05.png",
+                                    "name": "05.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Green Button/06.png",
+                                    "name": "06.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Green Button/07.png",
+                                    "name": "07.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Green Button/08.png",
+                                    "name": "08.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Green Button/09.png",
+                                    "name": "09.png"
                                 },
                                 {
                                     "path": "sprites/Treasure Hunters/Wood and Paper UI/Green Button/10.png",
@@ -5146,52 +5353,52 @@
                                 {
                                     "path": "sprites/Treasure Hunters/Wood and Paper UI/Green Button/16.png",
                                     "name": "16.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Green Button/2.png",
-                                    "name": "2.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Green Button/3.png",
-                                    "name": "3.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Green Button/4.png",
-                                    "name": "4.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Green Button/5.png",
-                                    "name": "5.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Green Button/6.png",
-                                    "name": "6.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Green Button/7.png",
-                                    "name": "7.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Green Button/8.png",
-                                    "name": "8.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Green Button/9.png",
-                                    "name": "9.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Green Button/Green Button (guide).png",
-                                    "name": "Green Button (guide).png"
                                 }
                             ]
+                        },
+                        {
+                            "path": "sprites/Treasure Hunters/Wood and Paper UI/Green Button (guide).png",
+                            "name": "Green Button (guide).png"
                         },
                         {
                             "path": "sprites/Treasure Hunters/Wood and Paper UI/Inventory",
                             "name": "Inventory",
                             "children": [
                                 {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Inventory/1.png",
-                                    "name": "1.png"
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Inventory/01.png",
+                                    "name": "01.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Inventory/02.png",
+                                    "name": "02.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Inventory/03.png",
+                                    "name": "03.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Inventory/04.png",
+                                    "name": "04.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Inventory/05.png",
+                                    "name": "05.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Inventory/06.png",
+                                    "name": "06.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Inventory/07.png",
+                                    "name": "07.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Inventory/08.png",
+                                    "name": "08.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Inventory/09.png",
+                                    "name": "09.png"
                                 },
                                 {
                                     "path": "sprites/Treasure Hunters/Wood and Paper UI/Inventory/10.png",
@@ -5220,44 +5427,12 @@
                                 {
                                     "path": "sprites/Treasure Hunters/Wood and Paper UI/Inventory/16.png",
                                     "name": "16.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Inventory/2.png",
-                                    "name": "2.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Inventory/3.png",
-                                    "name": "3.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Inventory/4.png",
-                                    "name": "4.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Inventory/5.png",
-                                    "name": "5.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Inventory/6.png",
-                                    "name": "6.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Inventory/7.png",
-                                    "name": "7.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Inventory/8.png",
-                                    "name": "8.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Inventory/9.png",
-                                    "name": "9.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Inventory/Inventory (guide).png",
-                                    "name": "Inventory (guide).png"
                                 }
                             ]
+                        },
+                        {
+                            "path": "sprites/Treasure Hunters/Wood and Paper UI/Inventory (guide).png",
+                            "name": "Inventory (guide).png"
                         },
                         {
                             "path": "sprites/Treasure Hunters/Wood and Paper UI/Life Bars",
@@ -5408,8 +5583,40 @@
                                     "name": "Mobile Buttons Cooldown",
                                     "children": [
                                         {
-                                            "path": "sprites/Treasure Hunters/Wood and Paper UI/Mobile Buttons/Mobile Buttons Cooldown/1.png",
-                                            "name": "1.png"
+                                            "path": "sprites/Treasure Hunters/Wood and Paper UI/Mobile Buttons/Mobile Buttons Cooldown/01.png",
+                                            "name": "01.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/Wood and Paper UI/Mobile Buttons/Mobile Buttons Cooldown/02.png",
+                                            "name": "02.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/Wood and Paper UI/Mobile Buttons/Mobile Buttons Cooldown/03.png",
+                                            "name": "03.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/Wood and Paper UI/Mobile Buttons/Mobile Buttons Cooldown/04.png",
+                                            "name": "04.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/Wood and Paper UI/Mobile Buttons/Mobile Buttons Cooldown/05.png",
+                                            "name": "05.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/Wood and Paper UI/Mobile Buttons/Mobile Buttons Cooldown/06.png",
+                                            "name": "06.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/Wood and Paper UI/Mobile Buttons/Mobile Buttons Cooldown/07.png",
+                                            "name": "07.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/Wood and Paper UI/Mobile Buttons/Mobile Buttons Cooldown/08.png",
+                                            "name": "08.png"
+                                        },
+                                        {
+                                            "path": "sprites/Treasure Hunters/Wood and Paper UI/Mobile Buttons/Mobile Buttons Cooldown/09.png",
+                                            "name": "09.png"
                                         },
                                         {
                                             "path": "sprites/Treasure Hunters/Wood and Paper UI/Mobile Buttons/Mobile Buttons Cooldown/10.png",
@@ -5422,38 +5629,6 @@
                                         {
                                             "path": "sprites/Treasure Hunters/Wood and Paper UI/Mobile Buttons/Mobile Buttons Cooldown/12.png",
                                             "name": "12.png"
-                                        },
-                                        {
-                                            "path": "sprites/Treasure Hunters/Wood and Paper UI/Mobile Buttons/Mobile Buttons Cooldown/2.png",
-                                            "name": "2.png"
-                                        },
-                                        {
-                                            "path": "sprites/Treasure Hunters/Wood and Paper UI/Mobile Buttons/Mobile Buttons Cooldown/3.png",
-                                            "name": "3.png"
-                                        },
-                                        {
-                                            "path": "sprites/Treasure Hunters/Wood and Paper UI/Mobile Buttons/Mobile Buttons Cooldown/4.png",
-                                            "name": "4.png"
-                                        },
-                                        {
-                                            "path": "sprites/Treasure Hunters/Wood and Paper UI/Mobile Buttons/Mobile Buttons Cooldown/5.png",
-                                            "name": "5.png"
-                                        },
-                                        {
-                                            "path": "sprites/Treasure Hunters/Wood and Paper UI/Mobile Buttons/Mobile Buttons Cooldown/6.png",
-                                            "name": "6.png"
-                                        },
-                                        {
-                                            "path": "sprites/Treasure Hunters/Wood and Paper UI/Mobile Buttons/Mobile Buttons Cooldown/7.png",
-                                            "name": "7.png"
-                                        },
-                                        {
-                                            "path": "sprites/Treasure Hunters/Wood and Paper UI/Mobile Buttons/Mobile Buttons Cooldown/8.png",
-                                            "name": "8.png"
-                                        },
-                                        {
-                                            "path": "sprites/Treasure Hunters/Wood and Paper UI/Mobile Buttons/Mobile Buttons Cooldown/9.png",
-                                            "name": "9.png"
                                         }
                                     ]
                                 }
@@ -5464,8 +5639,40 @@
                             "name": "Orange Paper",
                             "children": [
                                 {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Orange Paper/1.png",
-                                    "name": "1.png"
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Orange Paper/01.png",
+                                    "name": "01.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Orange Paper/02.png",
+                                    "name": "02.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Orange Paper/03.png",
+                                    "name": "03.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Orange Paper/04.png",
+                                    "name": "04.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Orange Paper/05.png",
+                                    "name": "05.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Orange Paper/06.png",
+                                    "name": "06.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Orange Paper/07.png",
+                                    "name": "07.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Orange Paper/08.png",
+                                    "name": "08.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Orange Paper/09.png",
+                                    "name": "09.png"
                                 },
                                 {
                                     "path": "sprites/Treasure Hunters/Wood and Paper UI/Orange Paper/10.png",
@@ -5494,52 +5701,52 @@
                                 {
                                     "path": "sprites/Treasure Hunters/Wood and Paper UI/Orange Paper/16.png",
                                     "name": "16.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Orange Paper/2.png",
-                                    "name": "2.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Orange Paper/3.png",
-                                    "name": "3.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Orange Paper/4.png",
-                                    "name": "4.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Orange Paper/5.png",
-                                    "name": "5.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Orange Paper/6.png",
-                                    "name": "6.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Orange Paper/7.png",
-                                    "name": "7.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Orange Paper/8.png",
-                                    "name": "8.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Orange Paper/9.png",
-                                    "name": "9.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Orange Paper/Orange Paper (guide).png",
-                                    "name": "Orange Paper (guide).png"
                                 }
                             ]
+                        },
+                        {
+                            "path": "sprites/Treasure Hunters/Wood and Paper UI/Orange Paper (guide).png",
+                            "name": "Orange Paper (guide).png"
                         },
                         {
                             "path": "sprites/Treasure Hunters/Wood and Paper UI/Prefabs",
                             "name": "Prefabs",
                             "children": [
                                 {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Prefabs/1.png",
-                                    "name": "1.png"
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Prefabs/01.png",
+                                    "name": "01.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Prefabs/02.png",
+                                    "name": "02.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Prefabs/03.png",
+                                    "name": "03.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Prefabs/04.png",
+                                    "name": "04.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Prefabs/05.png",
+                                    "name": "05.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Prefabs/06.png",
+                                    "name": "06.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Prefabs/07.png",
+                                    "name": "07.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Prefabs/08.png",
+                                    "name": "08.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Prefabs/09.png",
+                                    "name": "09.png"
                                 },
                                 {
                                     "path": "sprites/Treasure Hunters/Wood and Paper UI/Prefabs/10.png",
@@ -5552,38 +5759,6 @@
                                 {
                                     "path": "sprites/Treasure Hunters/Wood and Paper UI/Prefabs/12.png",
                                     "name": "12.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Prefabs/2.png",
-                                    "name": "2.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Prefabs/3.png",
-                                    "name": "3.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Prefabs/4.png",
-                                    "name": "4.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Prefabs/5.png",
-                                    "name": "5.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Prefabs/6.png",
-                                    "name": "6.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Prefabs/7.png",
-                                    "name": "7.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Prefabs/8.png",
-                                    "name": "8.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Prefabs/9.png",
-                                    "name": "9.png"
                                 }
                             ]
                         },
@@ -5592,44 +5767,44 @@
                             "name": "Sliders",
                             "children": [
                                 {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Sliders/1.png",
-                                    "name": "1.png"
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Sliders/01.png",
+                                    "name": "01.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Sliders/02.png",
+                                    "name": "02.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Sliders/03.png",
+                                    "name": "03.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Sliders/04.png",
+                                    "name": "04.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Sliders/05.png",
+                                    "name": "05.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Sliders/06.png",
+                                    "name": "06.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Sliders/07.png",
+                                    "name": "07.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Sliders/08.png",
+                                    "name": "08.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Sliders/09.png",
+                                    "name": "09.png"
                                 },
                                 {
                                     "path": "sprites/Treasure Hunters/Wood and Paper UI/Sliders/10.png",
                                     "name": "10.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Sliders/2.png",
-                                    "name": "2.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Sliders/3.png",
-                                    "name": "3.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Sliders/4.png",
-                                    "name": "4.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Sliders/5.png",
-                                    "name": "5.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Sliders/6.png",
-                                    "name": "6.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Sliders/7.png",
-                                    "name": "7.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Sliders/8.png",
-                                    "name": "8.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Sliders/9.png",
-                                    "name": "9.png"
                                 }
                             ]
                         },
@@ -5638,8 +5813,40 @@
                             "name": "Small Banner",
                             "children": [
                                 {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Small Banner/1.png",
-                                    "name": "1.png"
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Small Banner/01.png",
+                                    "name": "01.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Small Banner/02.png",
+                                    "name": "02.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Small Banner/03.png",
+                                    "name": "03.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Small Banner/04.png",
+                                    "name": "04.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Small Banner/05.png",
+                                    "name": "05.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Small Banner/06.png",
+                                    "name": "06.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Small Banner/07.png",
+                                    "name": "07.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Small Banner/08.png",
+                                    "name": "08.png"
+                                },
+                                {
+                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Small Banner/09.png",
+                                    "name": "09.png"
                                 },
                                 {
                                     "path": "sprites/Treasure Hunters/Wood and Paper UI/Small Banner/10.png",
@@ -5656,44 +5863,12 @@
                                 {
                                     "path": "sprites/Treasure Hunters/Wood and Paper UI/Small Banner/13.png",
                                     "name": "13.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Small Banner/2.png",
-                                    "name": "2.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Small Banner/3.png",
-                                    "name": "3.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Small Banner/4.png",
-                                    "name": "4.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Small Banner/5.png",
-                                    "name": "5.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Small Banner/6.png",
-                                    "name": "6.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Small Banner/7.png",
-                                    "name": "7.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Small Banner/8.png",
-                                    "name": "8.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Small Banner/9.png",
-                                    "name": "9.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Small Banner/Small Banner (guide).png",
-                                    "name": "Small Banner (guide).png"
                                 }
                             ]
+                        },
+                        {
+                            "path": "sprites/Treasure Hunters/Wood and Paper UI/Small Banner (guide).png",
+                            "name": "Small Banner (guide).png"
                         },
                         {
                             "path": "sprites/Treasure Hunters/Wood and Paper UI/Small Text",
@@ -6110,12 +6285,12 @@
                                 {
                                     "path": "sprites/Treasure Hunters/Wood and Paper UI/Yellow Board/9.png",
                                     "name": "9.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Yellow Board/Yellow Board (guide).png",
-                                    "name": "Yellow Board (guide).png"
                                 }
                             ]
+                        },
+                        {
+                            "path": "sprites/Treasure Hunters/Wood and Paper UI/Yellow Board (guide).png",
+                            "name": "Yellow Board (guide).png"
                         },
                         {
                             "path": "sprites/Treasure Hunters/Wood and Paper UI/Yellow Button",
@@ -6184,12 +6359,12 @@
                                 {
                                     "path": "sprites/Treasure Hunters/Wood and Paper UI/Yellow Button/9.png",
                                     "name": "9.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Yellow Button/Yellow Button (guide).png",
-                                    "name": "Yellow Button (guide).png"
                                 }
                             ]
+                        },
+                        {
+                            "path": "sprites/Treasure Hunters/Wood and Paper UI/Yellow Button (guide).png",
+                            "name": "Yellow Button (guide).png"
                         },
                         {
                             "path": "sprites/Treasure Hunters/Wood and Paper UI/Yellow Paper",
@@ -6258,12 +6433,12 @@
                                 {
                                     "path": "sprites/Treasure Hunters/Wood and Paper UI/Yellow Paper/9.png",
                                     "name": "9.png"
-                                },
-                                {
-                                    "path": "sprites/Treasure Hunters/Wood and Paper UI/Yellow Paper/Yellow Paper (guide).png",
-                                    "name": "Yellow Paper (guide).png"
                                 }
                             ]
+                        },
+                        {
+                            "path": "sprites/Treasure Hunters/Wood and Paper UI/Yellow Paper (guide).png",
+                            "name": "Yellow Paper (guide).png"
                         }
                     ]
                 }

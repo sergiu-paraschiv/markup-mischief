@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Tree, Modal } from 'antd';
 import spriteAtlasData from '../sprite-atlas.json';
-import { Sprite, makeSpriteMap, processAtlas, getNode } from '../engine/spriteUtils';
+import { Sprite, makeSpriteMap, processAtlas, getNodePaths } from '../engine/spriteUtils';
 import useAnimation from '../engine/useAnimation';
 
 const treeData = processAtlas(spriteAtlasData.children);
@@ -40,7 +40,9 @@ export default function SpriteAtlas({ tileSize, displayTileSize, selectedSprite,
                         onSelect({
                             path: newSelectedKey,
                             x: 0,
-                            y: 0
+                            y: 0,
+                            w: 1,
+                            h: 1
                         });
                     }
                     else {
@@ -80,7 +82,10 @@ function SpriteSectionPicker({ tileSize, displayTileSize, selectedSprite, onSele
             <SpriteViewer
                 tileSize={tileSize}
                 displayTileSize={displayTileSize}
-                asThumbnail={true}
+                asThumbnail={{
+                    w: selectedSprite.w,
+                    h: selectedSprite.h
+                }}
                 onSelect={() => setShowPicker(true)}
                 selectedSprite={selectedSprite}
             />
@@ -106,10 +111,14 @@ function SpriteSectionPicker({ tileSize, displayTileSize, selectedSprite, onSele
     );
 }
 
-function useImageSize(src: string) {
+function useImageSize(src?: string) {
     const [ size, setSize ] = React.useState<{ width: number, height: number}>({ width: 0, height: 0});
 
     useEffect(() => {
+        if (!src) {
+            return;
+        }
+
         const img = document.createElement('img');
         img.onload = () => {
             setSize({ width: img.width, height: img.height });
@@ -121,49 +130,29 @@ function useImageSize(src: string) {
     return size;
 }
 
-function getNodePaths(path?: string) {
-    if (!path) {
-        return [];
-    }
-
-    const paths: string[] = [];
-    if (path.startsWith('ANIMATION:')) {
-        path = path.replace('ANIMATION:', '');
-        const animationNode = getNode(path, spriteAtlasData.children);
-        if (animationNode && animationNode.children && animationNode.children.length > 0) {
-            for (const child of animationNode.children) {
-                paths.push(child.path);
-            }
-        }
-    }
-    else {
-        paths.push(path);
-    }
-
-    return paths;
-}
-
 function SpriteViewer({ tileSize, displayTileSize, selectedSprite, onSelect, asThumbnail, style }: {
     tileSize: number
     displayTileSize: number
-    asThumbnail?: boolean
+    asThumbnail?: {
+        w: number
+        h: number
+    }
     selectedSprite: Sprite
     onSelect: (sprite: Sprite) => void
     style?: React.CSSProperties
 }) {
-    const paths = useMemo(() => getNodePaths(selectedSprite.path), [(selectedSprite.path]);
-    const currentPath = useAnimation(paths);
-    const src = `./${currentPath}`;
-    const atlasSize = useImageSize(src);
+    const paths = useMemo(() => getNodePaths(selectedSprite.path, spriteAtlasData.children), [selectedSprite.path]);
+    const path = useAnimation(paths);
+    const atlasSize = useImageSize(path ? `./${path}` : undefined);
     let viewSize = {
         width: Math.ceil(atlasSize.width / tileSize),
         height: Math.ceil(atlasSize.height / tileSize)
     };
 
-    if (asThumbnail) {
+    if (asThumbnail !== undefined) {
         viewSize = {
-            width: 1,
-            height: 1
+            width: asThumbnail.w,
+            height: asThumbnail.h
         };
     }
 
@@ -187,7 +176,7 @@ function SpriteViewer({ tileSize, displayTileSize, selectedSprite, onSelect, asT
                     height: '50%',
                     scale: (displayTileSize / tileSize).toString(),
                     transformOrigin: 'top left',
-                    backgroundImage: `url('${src}')`,
+                    backgroundImage: path ? `url('./${path}')` : undefined,
                     backgroundRepeat: 'no-repeat',
                     backgroundPosition: !asThumbnail ? '0 0' : `${selectedSprite.x * tileSize}px ${selectedSprite.y * tileSize}px`,
                 }}
@@ -207,7 +196,9 @@ function SpriteViewer({ tileSize, displayTileSize, selectedSprite, onSelect, asT
                                 onClick={() => onSelect({
                                     path: cell.path,
                                     x: -cell.x,
-                                    y: -cell.y
+                                    y: -cell.y,
+                                    w: 1,
+                                    h: 1
                                 })}
                                 style={{
                                     position: 'absolute',

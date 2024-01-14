@@ -12,12 +12,16 @@ export default function useAnimation(framePaths: string[]) {
                 }
                 return prevValue + 1;
             });
-        }, 100);
+        }, 1000 / 10);
 
         return () => {
             clearInterval(interval);
         };
     }, [ framePaths ]);
+
+    if (framePaths.length === 0) {
+        return undefined;
+    }
 
     return framePaths[activeFrame];
 }
