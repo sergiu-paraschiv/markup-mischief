@@ -2,7 +2,7 @@ import React from 'react';
 import useGameEngine from '../engine/useGameEngine';
 import { Layout } from '../engine/game/useGameBoard';
 import { HeroAction, HeroPosition } from '../engine/game/useHero';
-import ResponsiveContainer from './ResponsiveContainer';
+import ResponsiveContainer from '../utils/ResponsiveContainer';
 import TileMap from './TileMap';
 import Animation from './Animation';
 

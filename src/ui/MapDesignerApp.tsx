@@ -1,7 +1,29 @@
 import React, { useState } from 'react';
-import { Layout, Flex, InputNumber, Button, Switch, List, Typography, Row, Col } from 'antd';
-import { RedoOutlined, UndoOutlined } from '@ant-design/icons';
-const { Content, Sider }  = Layout;
+import {
+    Layout,
+    Flex,
+    InputNumber,
+    Button,
+    Switch,
+    List,
+    Card,
+    Row,
+    Col,
+    Input,
+    Tag
+} from 'antd';
+import {
+    RedoOutlined,
+    UndoOutlined,
+    PlusOutlined,
+    EyeOutlined,
+    EyeInvisibleOutlined,
+    DeleteOutlined,
+    ArrowUpOutlined,
+    ArrowDownOutlined,
+    InfoCircleOutlined
+} from '@ant-design/icons';
+const { Content, Sider } = Layout;
 import SpriteAtlas from '../mapDesigner/SpriteAtlas';
 import { Sprite } from '../engine/spriteUtils';
 import Canvas from '../mapDesigner/Canvas';
@@ -10,13 +32,12 @@ import useLayers from '../mapDesigner/useLayers';
 
 
 export default function MapDesignerApp({ tileSize, displayTileSize }: {
-    tileSize: number
-    displayTileSize: number
+    tileSize: number;
+    displayTileSize: number;
 }) {
     const [ sprite, setSprite ] = useState<Sprite | undefined>(undefined);
-    const [ activeLayer, setActiveLayer ] = useState<number>(0);
     const canvas = useCanvas();
-    const { layers, toggleLayer, hiddenLayers } = useLayers(canvas.numLayers);
+    const { layers, toggleLayer, hiddenLayers, activeLayer, setActiveLayer } = useLayers(canvas.layers);
 
     return (
         <Flex
@@ -44,13 +65,13 @@ export default function MapDesignerApp({ tileSize, displayTileSize }: {
                         tileSize={tileSize}
                         displayTileSize={displayTileSize}
                         onTileClick={tile => {
-                            if (sprite) {
-                                canvas.paintTile(activeLayer, tile, sprite)
+                            if (sprite && activeLayer) {
+                                canvas.paintTile(activeLayer, tile, sprite);
                             }
                         }}
                     />
                 </Content>
-                
+
                 <Sider
                     width="25%"
                     style={{
@@ -70,116 +91,183 @@ export default function MapDesignerApp({ tileSize, displayTileSize }: {
                         </List.Item>
                         <List.Item>
                             <strong>Canvas size</strong>
-                            <>
-                                <Row align="middle" gutter={16}>
-                                    <Col>
+                            <Row align="middle" gutter={16}>
+                                <Col>
                                     <InputNumber
-                                            min={1}
-                                            max={100}
-                                            value={canvas.width}
-                                            onChange={newWidth => newWidth !== null ? canvas.setWidth(newWidth) : undefined}
-                                        />
-                                    </Col>
-                                    <Col>
-                                        x
-                                    </Col>
-                                    <Col>
-                                        <InputNumber
-                                            min={1}
-                                            max={100}
-                                            value={canvas.height}
-                                            onChange={newHeight => newHeight !== null ? canvas.setHeight(newHeight) : undefined}
-                                        />
-                                    </Col>
-                                    <Col>
-                                        cells
-                                    </Col>
-                                </Row>
-                            </>
-                        </List.Item>
-                    </List>
- 
-                    <div>
-                        LAYERS: <InputNumber
-                            min={1}
-                            max={100}
-                            value={canvas.numLayers}
-                            onChange={newNumLayers => newNumLayers !== null ? canvas.setNumLayers(newNumLayers) : undefined}
-                        />
-
-                        <div>
-                            {layers.map(layer => (
-                                <div key={layer.index}>
-                                    <Button
-                                        onClick={() => setActiveLayer(layer.index)}
-                                        type={activeLayer === layer.index ? 'primary' : 'default'}
-                                    >
-                                        Layer #{layer.index}
-                                    </Button>
-
-                                    <Switch
-                                        checkedChildren="Visible"
-                                        unCheckedChildren="Hidden"
-                                        checked={layer.isVisible}
-                                        onChange={() => toggleLayer(layer.index)}
+                                        min={1}
+                                        max={100}
+                                        value={canvas.width}
+                                        onChange={newWidth => newWidth !== null ? canvas.setWidth(newWidth) : undefined}
                                     />
-                                </div>
-                            ))}
-                        </div>
-                    </div>
+                                </Col>
+                                <Col>
+                                    x
+                                </Col>
+                                <Col>
+                                    <InputNumber
+                                        min={1}
+                                        max={100}
+                                        value={canvas.height}
+                                        onChange={newHeight => newHeight !== null ? canvas.setHeight(newHeight) : undefined}
+                                    />
+                                </Col>
+                                <Col>
+                                    cells
+                                </Col>
+                            </Row>
+                        </List.Item>
 
-                    <SpriteAtlas
-                        tileSize={tileSize}
-                        displayTileSize={displayTileSize}
-                        selectedSprite={sprite}
-                        onSelect={setSprite}
-                    />
+                        <List.Item>
+                            <Card title="Layers" size="small" extra={(
+                                <Button
+                                    size="small"
+                                    type="default"
+                                    onClick={canvas.addLayer}
+                                >
+                                    <PlusOutlined /> Add
+                                </Button>
+                            )}>
+                                <List size="small">
+                                    {layers.map(layer => (
+                                        <List.Item
+                                            key={layer.index}
+                                            style={{
+                                                padding: '2px 6px',
+                                                backgroundColor: activeLayer === layer.key ? '#fbec11' : 'transparent',
+                                                cursor: 'pointer'
+                                            }}
+                                            onClick={() => setActiveLayer(layer.key)}
+                                        >
+                                            <Flex
+                                                align="center"
+                                                justify="space-between"
+                                                gap="small"
+                                                style={{
+                                                    width: '100%'
+                                                }}
+                                            >
+                                                <Switch
+                                                    checkedChildren={(<EyeOutlined />)}
+                                                    unCheckedChildren={(<EyeInvisibleOutlined />)}
+                                                    checked={layer.isVisible}
+                                                    onChange={() => toggleLayer(layer.key)}
+                                                    size="small"
+                                                />
 
-                    {sprite ? (
-                        <div>
-                            W: <InputNumber
-                                min={1}
-                                max={6}
-                                value={sprite.w}
-                                onChange={newW => newW !== null ? setSprite({
-                                    ...sprite,
-                                    w: newW
-                                }) : undefined}
-                            />
-                            H: <InputNumber
-                                min={1}
-                                max={6}
-                                value={sprite.h}
-                                onChange={newH => newH !== null ? setSprite({
-                                    ...sprite,
-                                    h: newH
-                                }) : undefined}
-                            />
-                        </div>
-                    ) : null}
+                                                <Input
+                                                    value={layer.name}
+                                                    onChange={event => canvas.setLayerName(layer.key, event.currentTarget.value)}
+                                                    minLength={1}
+                                                    size="small"
+                                                    style={{
+                                                        width: '60%'
+                                                    }}
+                                                />
 
-                    <div>
-                        <textarea
-                            readOnly={true}
-                            value={JSON.stringify(canvas)}
-                            onPaste={event => {
-                                event.preventDefault();
+                                                <Button.Group>
+                                                    <Button
+                                                        type="dashed"
+                                                        size="small"
+                                                        onClick={() => canvas.moveLayerUp(layer.key)}
+                                                        disabled={layer.index === 0}
+                                                    >
+                                                        <ArrowUpOutlined />
+                                                    </Button>
+                                                    <Button
+                                                        type="dashed"
+                                                        size="small"
+                                                        onClick={() => canvas.moveLayerDown(layer.key)}
+                                                        disabled={layer.index === layers.length - 1}
+                                                    >
+                                                        <ArrowDownOutlined />
+                                                    </Button>
+                                                    <Button
+                                                        type="dashed"
+                                                        size="small"
+                                                        onClick={() => canvas.removeLayer(layer.key)}
+                                                    >
+                                                        <DeleteOutlined />
+                                                    </Button>
+                                                </Button.Group>
+                                            </Flex>
+                                        </List.Item>
+                                    ))}
+                                </List>
+                            </Card>
+                        </List.Item>
 
-                                navigator.clipboard
-                                    .readText()
-                                    .then(clipText => {
+                        <List.Item>
+                            <Flex vertical={true} gap="small">
+                                <SpriteAtlas
+                                    tileSize={tileSize}
+                                    displayTileSize={displayTileSize}
+                                    selectedSprite={sprite}
+                                    onSelect={setSprite}
+                                />
+
+                                {sprite ? (
+                                    <Row align="middle" gutter={16}>
+                                        <Col>
+                                            <InputNumber
+                                                min={1}
+                                                max={6}
+                                                value={sprite.w}
+                                                onChange={newW => newW !== null ? setSprite({
+                                                    ...sprite,
+                                                    w: newW
+                                                }) : undefined}
+                                            />
+                                        </Col>
+                                        <Col>
+                                            x
+                                        </Col>
+                                        <Col>
+                                            <InputNumber
+                                                min={1}
+                                                max={6}
+                                                value={sprite.h}
+                                                onChange={newH => newH !== null ? setSprite({
+                                                    ...sprite,
+                                                    h: newH
+                                                }) : undefined}
+                                            />
+                                        </Col>
+                                        <Col>
+                                            cells
+                                        </Col>
+                                    </Row>
+                                ) : null}
+                            </Flex>
+                        </List.Item>
+
+                        <List.Item>
+                            <Flex vertical={true} gap="small">
+                                <Input.TextArea
+                                    readOnly={true}
+                                    value={JSON.stringify(canvas)}
+                                    onPaste={event => {
+                                        event.preventDefault();
+
+                                        const clipText = event.clipboardData.getData('Text');
                                         const newState = JSON.parse(clipText);
                                         canvas.load(newState);
-                                    });
-                            }}
-                        ></textarea>
-                        <Button
-                            onClick={() => {
-                                navigator.clipboard.writeText(JSON.stringify(canvas));
-                            }}
-                            type="primary"
-                        >Copy</Button>
-                    </div>
+                                    }}
+                                    rows={2}
+                                />
+
+                                <Tag><InfoCircleOutlined /> Paste data to load</Tag>
+                                
+                                <Button
+                                    onClick={() => {
+                                        navigator.clipboard.writeText(JSON.stringify(canvas));
+                                    }}
+                                    type="default"
+                                >
+                                    Copy data to clipboard
+                                </Button>
+                            </Flex>
+                        </List.Item>
+                    </List>
                 </Sider>
             </Layout>
         </Flex>

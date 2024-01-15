@@ -12,6 +12,7 @@ require.config({
             'React': 'react'
         }
     },
+    urlArgs: 'v=' + new Date().getTime()
 });
 
 require([ 'main' ]);

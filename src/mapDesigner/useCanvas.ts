@@ -1,50 +1,65 @@
+import { useEffect } from 'react';
 import { Sprite, makeSpriteMap } from '../engine/spriteUtils';
 import useHistoryState from './useHistoryState';
 
 
-function makeLayers(numLayers: number, width: number, height: number): Sprite[][][] {
-    const layers: Sprite[][][] = [];
+type LayersList = {
+    key: string
+    name: string
+    rows: Sprite[][]
+}[]
+
+function makeLayers(numLayers: number, width: number, height: number): LayersList {
+    const layers: LayersList = [];
+
     for (let i = 0; i < numLayers; i += 1) {
-        layers[i] = makeSpriteMap(undefined, width, height)
+        layers[i] = {
+            key: i.toString(),
+            name: `Layer #${i + 1}`,
+            rows: makeSpriteMap(undefined, width, height)
+        };
     }
 
     return layers;
 }
 
 interface State {
-    numLayers: number
+    totalLayers: number
     width: number
     height: number
-    layers: Sprite[][][]
+    layers: LayersList
 }
 
 export default function useCanvas() {
     const history = useHistoryState<State>({
-        numLayers: 2,
+        totalLayers: 1,
         width: 15,
         height: 7,
-        layers: makeLayers(2, 15, 7)
+        layers: makeLayers(1, 15, 7)
     });
 
-    const paintTile = (activeLayer: number, { x, y }: { x: number, y: number }, sprite: Sprite) => {
+    const paintTile = (activeLayerKey: string, { x, y }: { x: number, y: number }, sprite: Sprite) => {
         const newLayers = [
-            ...history.state.layers.map((layer, layerIndex) => {
-                if (layerIndex === activeLayer) {
-                    return [
-                        ...layer.map((row, rowIndex) => {
-                            if (rowIndex === y) {
-                                return row.map((cell, cellIndex) => {
-                                    if (cellIndex === x) {
-                                        return sprite;
-                                    }
-            
-                                    return cell;
-                                })
-                            }
-            
-                            return row;
-                        })
-                    ];
+            ...history.state.layers.map(layer => {
+                if (layer.key === activeLayerKey) {
+                    return {
+                        ...layer,
+                        rows: [
+                            ...layer.rows.map((row, rowIndex) => {
+                                if (rowIndex === y) {
+                                    return row.map((cell, cellIndex) => {
+                                        if (cellIndex === x) {
+                                            return sprite;
+                                        }
+                
+                                        return cell;
+                                    })
+                                }
+                
+                                return row;
+                            })
+                        ]
+                    };
                 }
 
                 return layer;
@@ -61,8 +76,9 @@ export default function useCanvas() {
         for (let z = 0; z < numLayers; z += 1) {
             for (let j = 0; j < height; j += 1) {
                 for (let i = 0; i < width; i += 1) {
-                    if (history.state.layers.length > z && history.state.layers[z].length > j && history.state.layers[z][j].length > i) {
-                        newLayers[z][j][i] = history.state.layers[z][j][i];
+                    if (history.state.layers.length > z && history.state.layers[z].rows.length > j && history.state.layers[z].rows[j].length > i) {
+                        newLayers[z].rows[j][i] = history.state.layers[z].rows[j][i];
+                        newLayers[z].name = history.state.layers[z].name;
                     }
                 }
             }
@@ -71,11 +87,30 @@ export default function useCanvas() {
         return newLayers;
     }
 
-    const setNumLayers = (numLayers: number) => {
+    const addLayer = () => {
+        const layers = resize(history.state.layers.length + 1, history.state.width, history.state.height);
+        const totalLayers = history.state.totalLayers + 1;
+        layers[layers.length - 1].key = totalLayers.toString();
+        layers[layers.length - 1].name = `Layer #${totalLayers}`;
+
         history.set({
             ...history.state,
-            numLayers,
-            layers: resize(numLayers, history.state.width, history.state.height)
+            totalLayers,
+            layers
+        });
+    }
+
+    const removeLayer = (layerKey: string) => {
+        const layers = [...history.state.layers];
+        const layerIndex = layers.findIndex(layer => layer.key === layerKey);
+        if (layerIndex === -1) {
+            return;
+        }
+
+        layers.splice(layerIndex, 1);
+        history.set({
+            ...history.state,
+            layers
         });
     }
 
@@ -83,7 +118,7 @@ export default function useCanvas() {
         history.set({
             ...history.state,
             width,
-            layers: resize(history.state.numLayers, width, history.state.height)
+            layers: resize(history.state.layers.length, width, history.state.height)
         });
     }
 
@@ -91,7 +126,55 @@ export default function useCanvas() {
         history.set({
             ...history.state,
             height,
-            layers: resize(history.state.numLayers, history.state.width, height)
+            layers: resize(history.state.layers.length, history.state.width, height)
+        });
+    }
+
+    const setLayerName = (layerKey: string, name: string) => {
+        history.set({
+            ...history.state,
+            layers: history.state.layers.map(layer => {
+                if (layer.key === layerKey) {
+                    return {
+                        ...layer,
+                        name
+                    };
+                }
+
+                return layer;
+            })
+        });
+    }
+
+    const moveLayerUp = (layerKey: string) => {
+        const layers = [...history.state.layers];
+        const layerIndex = layers.findIndex(layer => layer.key === layerKey);
+        if (layerIndex === -1) {
+            return;
+        }
+
+        const from = layers.splice(layerIndex, 1)[0];
+        layers.splice(layerIndex - 1, 0, from);
+        
+        history.set({
+            ...history.state,
+            layers
+        });
+    }
+
+    const moveLayerDown = (layerKey: string) => {
+        const layers = [...history.state.layers];
+        const layerIndex = layers.findIndex(layer => layer.key === layerKey);
+        if (layerIndex === -1) {
+            return;
+        }
+
+        const from = layers.splice(layerIndex, 1)[0];
+        layers.splice(layerIndex + 1, 0, from);
+        
+        history.set({
+            ...history.state,
+            layers
         });
     }
 
@@ -99,9 +182,32 @@ export default function useCanvas() {
         history.set(newState);
     }
 
+    const SAVED_CANVAS_VERSION = 1;
+
+    useEffect(() => {
+        const savedCanvas = window.localStorage.getItem('SAVED_CANVAS');
+        if (savedCanvas) {
+            const data = JSON.parse(savedCanvas);
+            if (data.version === SAVED_CANVAS_VERSION) {
+                load(data.state);
+            }
+        }
+    }, []);
+
+    useEffect(() => {
+        window.localStorage.setItem('SAVED_CANVAS', JSON.stringify({
+            version: SAVED_CANVAS_VERSION,
+            state: history.state
+        }));
+    }, [ history.state ]);
+
     return {
         ...history.state,
-        setNumLayers,
+        addLayer,
+        removeLayer,
+        setLayerName,
+        moveLayerUp,
+        moveLayerDown,
         setWidth,
         setHeight,
         paintTile,

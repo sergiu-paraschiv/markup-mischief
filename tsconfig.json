@@ -9,7 +9,8 @@
         "incremental": true,
         "strict": true,
         "sourceMap": true,
-        "resolveJsonModule": true
+        "resolveJsonModule": true,
+        "baseUrl": "./src"
     },
     "files": [
         "src/main.tsx"

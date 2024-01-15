@@ -107,10 +107,13 @@ export function getNodePaths(path: string | undefined, nodes: SpriteAtlasDataNod
 export function processAtlas(nodes: SpriteAtlasDataNode[]): TreeDataNode[] {
     return nodes.map(node => {
         const animation = isAnimation(node);
+        const key = (animation ? 'ANIMATION:' : '') + node.path;
         return {
-            key: (animation ? 'ANIMATION:' : '') + node.path,
+            key,
+            value: key,
             title: (animation ? 'ANIMATION: ' : '') + node.name,
-            children: node.children ? processAtlas(node.children) : undefined
+            children: node.children ? processAtlas(node.children) : undefined,
+            selectable: animation || node.children === undefined
         };
     })
 }

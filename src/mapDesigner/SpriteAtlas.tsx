@@ -1,8 +1,10 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Tree, Modal } from 'antd';
+import { TreeSelect, Modal, TreeDataNode, Card } from 'antd';
 import spriteAtlasData from '../sprite-atlas.json';
 import { Sprite, makeSpriteMap, processAtlas, getNodePaths } from '../engine/spriteUtils';
 import useAnimation from '../engine/useAnimation';
+import ResponsiveContainer from '../utils/ResponsiveContainer';
+
 
 const treeData = processAtlas(spriteAtlasData.children);
 
@@ -19,26 +21,19 @@ export default function SpriteAtlas({ tileSize, displayTileSize, selectedSprite,
     };
 
     return (
-        <div>
-            <Tree
-                onExpand={onExpand}
-                expandedKeys={expandedKeys}
+        <>
+            <TreeSelect
+                onTreeExpand={onExpand}
+                treeExpandedKeys={expandedKeys}
                 treeData={treeData}
-                selectable={true}
-                selectedKeys={selectedSprite && selectedSprite.path ? [selectedSprite.path] : []}
-                onSelect={newSelectedKeys => {
-                    if (newSelectedKeys.length === 0) {
-                        onSelect(undefined);
-                        return;
-                    }
-    
-                    const newSelectedKey = newSelectedKeys[0] as string;
+                value={selectedSprite?.path}
+                onSelect={path => {
                     if (
-                        newSelectedKey.endsWith('.png')
-                        || newSelectedKey.startsWith('ANIMATION:')
+                        path.endsWith('.png')
+                        || path.startsWith('ANIMATION:')
                     ) {
                         onSelect({
-                            path: newSelectedKey,
+                            path,
                             x: 0,
                             y: 0,
                             w: 1,
@@ -46,26 +41,53 @@ export default function SpriteAtlas({ tileSize, displayTileSize, selectedSprite,
                         });
                     }
                     else {
-                        if (expandedKeys.indexOf(newSelectedKey) === -1) {
-                            setExpandedKeys([...expandedKeys, newSelectedKey]);
+                        if (expandedKeys.indexOf(path) === -1) {
+                            setExpandedKeys([...expandedKeys, path]);
                         }
                         else {
-                            setExpandedKeys([...expandedKeys.filter(item => item !== newSelectedKey)]);
+                            setExpandedKeys([...expandedKeys.filter(item => item !== path)]);
                         }
                         onSelect(undefined);
                     }
                 }}
+                onSearch={search => {
+                    let keysToExpand: React.Key[] = [];
+                    const mapChildren = (nodes: TreeDataNode[], parentKeys: React.Key[]) => {
+                        for (const node of nodes) {
+                            if ((node.title?.toString() || '').toLowerCase().indexOf(search.toLowerCase()) > -1) {
+                                keysToExpand = [ ...keysToExpand, ...parentKeys];
+                            }
+
+                            if (node.children) {
+                                mapChildren(node.children, [ ...parentKeys, node.key ]);
+                            }
+                        }
+                    };
+
+                    mapChildren(treeData, []);
+
+                    setExpandedKeys(keysToExpand);
+                }}
+                treeLine={true}
+                treeExpandAction="click"
+                showSearch={true}
+                placeholder="Sprite"
+                style={{
+                    width: '100%'
+                }}
             />
 
             {selectedSprite ? (
-                <SpriteSectionPicker
-                    tileSize={tileSize}
-                    displayTileSize={displayTileSize}
-                    selectedSprite={selectedSprite}
-                    onSelect={onSelect}
-                />
+                <Card size="small">
+                    <SpriteSectionPicker
+                        tileSize={tileSize}
+                        displayTileSize={displayTileSize}
+                        selectedSprite={selectedSprite}
+                        onSelect={onSelect}
+                    />
+                </Card>
             ) : null}
-        </div>
+        </>
     );
 }
 
@@ -76,6 +98,7 @@ function SpriteSectionPicker({ tileSize, displayTileSize, selectedSprite, onSele
     onSelect: (sprite: Sprite) => void
 }) {
     const [ showPicker, setShowPicker ] = React.useState(false);
+    const atlasSize = useImageSize(selectedSprite.path ? `./${selectedSprite.path.replace('ANIMATION:', '')}` : undefined);
 
     return (
         <div>
@@ -95,17 +118,39 @@ function SpriteSectionPicker({ tileSize, displayTileSize, selectedSprite, onSele
                 open={showPicker}
                 onCancel={() => setShowPicker(false)}
                 width="80%"
+                style={{
+                    height: '80%'
+                }}
                 footer={null}
             >
-                <SpriteViewer
-                    tileSize={tileSize}
-                    displayTileSize={displayTileSize}
-                    onSelect={sprite => {
-                        onSelect(sprite);
-                        setShowPicker(false);
+                <ResponsiveContainer
+                    style={{
+                        width: '100%',
+                        height: '100%'
                     }}
-                    selectedSprite={selectedSprite}
-                />
+                >
+                    {(width, height) => {
+                        const tiles = {
+                            w: atlasSize.width / tileSize,
+                            h: atlasSize.height / tileSize
+                        };
+
+                        const realDisplayTileSize = Math.min(displayTileSize, Math.min(width / tiles.w, height / tiles.h));
+
+                        return (
+                            <SpriteViewer
+                                tileSize={tileSize}
+                                displayTileSize={realDisplayTileSize}
+                                onSelect={sprite => {
+                                    onSelect(sprite);
+                                    setShowPicker(false);
+                                }}
+                                selectedSprite={selectedSprite}
+                            />
+                        );
+                    }}
+                </ResponsiveContainer>
+                
             </Modal>
         </div>
     );
@@ -206,7 +251,7 @@ function SpriteViewer({ tileSize, displayTileSize, selectedSprite, onSelect, asT
                                     height: displayTileSize + 'px',
                                     top: rowIndex * displayTileSize + 'px',
                                     left: cellIndex * displayTileSize + 'px',
-                                    outline: isSelected ? '3px solid red' : '1px solid black',
+                                    outline: isSelected && !asThumbnail ? '3px solid red' : '1px solid black',
                                     zIndex: isSelected ? '2': '1',
                                     cursor: 'pointer'
                                 }}

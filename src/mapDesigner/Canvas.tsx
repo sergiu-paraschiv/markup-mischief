@@ -7,7 +7,7 @@ import useCanvas from './useCanvas';
 
 export default function Canvas({ canvas, hiddenLayers, tileSize, displayTileSize, onTileClick }: {
     canvas: ReturnType<typeof useCanvas>
-    hiddenLayers: number[]
+    hiddenLayers: string[]
     tileSize: number
     displayTileSize: number
     onTileClick: (tile: { x: number, y: number }) => void
@@ -21,7 +21,7 @@ export default function Canvas({ canvas, hiddenLayers, tileSize, displayTileSize
             }}
         >
             {layers.map((layer, layerIndex) => {
-                if (hiddenLayers.indexOf(layerIndex) !== -1) {
+                if (hiddenLayers.indexOf(layer.key) !== -1) {
                     return null;
                 }
 
@@ -34,7 +34,7 @@ export default function Canvas({ canvas, hiddenLayers, tileSize, displayTileSize
                             left: '0'
                         }}
                     >
-                        {layer.map((row, rowIndex) => (
+                        {layer.rows.map((row, rowIndex) => (
                             <div
                                 key={rowIndex}
                                 style={{

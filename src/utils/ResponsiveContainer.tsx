@@ -16,7 +16,11 @@ export default function ResponsiveContainer({ children, style }: {
 
     useLayoutEffect(() => {
         handleWindowResize();
-    }, []);
+
+        setTimeout(() => {
+            handleWindowResize();
+        }, 100);
+    }, [ ]);
 
     useEffect(() => {
         window.addEventListener('resize', handleWindowResize);
