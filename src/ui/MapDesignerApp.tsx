@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Layout, Flex, InputNumber, Button, Switch } from 'antd';
+import { Layout, Flex, InputNumber, Button, Switch, List, Typography, Row, Col } from 'antd';
+import { RedoOutlined, UndoOutlined } from '@ant-design/icons';
 const { Content, Sider }  = Layout;
 import SpriteAtlas from '../mapDesigner/SpriteAtlas';
 import { Sprite } from '../engine/spriteUtils';
@@ -22,12 +23,16 @@ export default function MapDesignerApp({ tileSize, displayTileSize }: {
             gap="middle"
             wrap="wrap"
             style={{
-                height: '100%'
+                height: '100%',
+                background: '#f5f5f5'
             }}
         >
-            <Layout style={{
-                height: '100%'
-            }}>
+            <Layout
+                style={{
+                    height: '100%',
+                    padding: '16px'
+                }}
+            >
                 <Content
                     style={{
                         height: '100%'
@@ -49,28 +54,50 @@ export default function MapDesignerApp({ tileSize, displayTileSize }: {
                 <Sider
                     width="25%"
                     style={{
-                        background: 'white'
+                        background: '#f5f5f5'
                     }}
                 >
-                    <div>
-                        <Button onClick={canvas.undo} disabled={!canvas.canUndo}>Undo</Button>
-                        <Button onClick={canvas.redo} disabled={!canvas.canRedo}>Redo</Button>
-                    </div>
-
-                    <div>
-                        W: <InputNumber
-                            min={1}
-                            max={100}
-                            value={canvas.width}
-                            onChange={newWidth => newWidth !== null ? canvas.setWidth(newWidth) : undefined}
-                        />
-                        H: <InputNumber
-                            min={1}
-                            max={100}
-                            value={canvas.height}
-                            onChange={newHeight => newHeight !== null ? canvas.setHeight(newHeight) : undefined}
-                        />
-                    </div>
+                    <List bordered itemLayout="vertical">
+                        <List.Item>
+                            <Button.Group>
+                                <Button onClick={canvas.undo} disabled={!canvas.canUndo} type="dashed">
+                                    <UndoOutlined /> Undo
+                                </Button>
+                                <Button onClick={canvas.redo} disabled={!canvas.canRedo} type="dashed">
+                                    <RedoOutlined /> Redo
+                                </Button>
+                            </Button.Group>
+                        </List.Item>
+                        <List.Item>
+                            <strong>Canvas size</strong>
+                            <>
+                                <Row align="middle" gutter={16}>
+                                    <Col>
+                                    <InputNumber
+                                            min={1}
+                                            max={100}
+                                            value={canvas.width}
+                                            onChange={newWidth => newWidth !== null ? canvas.setWidth(newWidth) : undefined}
+                                        />
+                                    </Col>
+                                    <Col>
+                                        x
+                                    </Col>
+                                    <Col>
+                                        <InputNumber
+                                            min={1}
+                                            max={100}
+                                            value={canvas.height}
+                                            onChange={newHeight => newHeight !== null ? canvas.setHeight(newHeight) : undefined}
+                                        />
+                                    </Col>
+                                    <Col>
+                                        cells
+                                    </Col>
+                                </Row>
+                            </>
+                        </List.Item>
+                    </List>
  
                     <div>
                         LAYERS: <InputNumber
@@ -136,15 +163,22 @@ export default function MapDesignerApp({ tileSize, displayTileSize }: {
                             readOnly={true}
                             value={JSON.stringify(canvas)}
                             onPaste={event => {
-                                try {
-                                    const newState = JSON.parse(event.clipboardData.getData('Text'));
-                                    canvas.load(newState);
-                                }
-                                catch (e) {
-                                    console.error(e);
-                                }
+                                event.preventDefault();
+
+                                navigator.clipboard
+                                    .readText()
+                                    .then(clipText => {
+                                        const newState = JSON.parse(clipText);
+                                        canvas.load(newState);
+                                    });
                             }}
                         ></textarea>
+                        <Button
+                            onClick={() => {
+                                navigator.clipboard.writeText(JSON.stringify(canvas));
+                            }}
+                            type="primary"
+                        >Copy</Button>
                     </div>
                 </Sider>
             </Layout>
