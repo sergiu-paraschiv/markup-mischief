@@ -10,7 +10,8 @@ import {
     Row,
     Col,
     Input,
-    Tag
+    Tag,
+    Segmented
 } from 'antd';
 import {
     RedoOutlined,
@@ -21,7 +22,10 @@ import {
     DeleteOutlined,
     ArrowUpOutlined,
     ArrowDownOutlined,
-    InfoCircleOutlined
+    InfoCircleOutlined,
+    SelectOutlined,
+    FormatPainterOutlined,
+    ClearOutlined
 } from '@ant-design/icons';
 const { Content, Sider } = Layout;
 import SpriteAtlas from '../mapDesigner/SpriteAtlas';
@@ -31,10 +35,13 @@ import useCanvas from '../mapDesigner/useCanvas';
 import useLayers from '../mapDesigner/useLayers';
 
 
+type Tool = 'select' | 'paint' | 'erase'
+
 export default function MapDesignerApp({ tileSize, displayTileSize }: {
     tileSize: number;
     displayTileSize: number;
 }) {
+    const [ selectedTool, setSelectedTool ] = useState<Tool>('paint');
     const [ sprite, setSprite ] = useState<Sprite | undefined>(undefined);
     const canvas = useCanvas();
     const { layers, toggleLayer, hiddenLayers, activeLayer, setActiveLayer } = useLayers(canvas.layers);
@@ -65,8 +72,21 @@ export default function MapDesignerApp({ tileSize, displayTileSize }: {
                         tileSize={tileSize}
                         displayTileSize={displayTileSize}
                         onTileClick={tile => {
-                            if (sprite && activeLayer) {
+                            if (!activeLayer) {
+                                return;
+                            }
+
+                            if (selectedTool === 'select') {
+                                const selectedSprite = canvas.get(activeLayer, tile);
+                                if (selectedSprite) {
+                                    setSprite(selectedSprite);
+                                }
+                            }
+                            else if (selectedTool === 'paint' && sprite) {
                                 canvas.paintTile(activeLayer, tile, sprite);
+                            }
+                            else if (selectedTool === 'erase') {
+                                canvas.eraseTile(activeLayer, tile);
                             }
                         }}
                     />
@@ -89,6 +109,19 @@ export default function MapDesignerApp({ tileSize, displayTileSize }: {
                                 </Button>
                             </Button.Group>
                         </List.Item>
+
+                        <List.Item>
+                            <Segmented
+                                value={selectedTool}
+                                onChange={newTool => setSelectedTool(newTool.toString() as Tool)}
+                                options={[
+                                    { label: 'Select', value: 'select', icon: <SelectOutlined /> },
+                                    { label: 'Paint', value: 'paint', icon: <FormatPainterOutlined /> },
+                                    { label: 'Erase', value: 'erase', icon: <ClearOutlined /> }
+                                ]}
+                            />
+                        </List.Item>
+
                         <List.Item>
                             <strong>Canvas size</strong>
                             <Row align="middle" gutter={16}>
