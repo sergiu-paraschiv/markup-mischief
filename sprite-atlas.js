@@ -2,7 +2,7 @@ const dirTree = require('directory-tree');
 const fs = require('fs');
 
 const tree = dirTree('./sprites', {
-  extensions: /\.(png)$/,
+  extensions: /\.(png|gif)$/,
   normalizePath: true
 });
 

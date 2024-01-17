@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Sprite, makeSpriteMap, getNode } from '../engine/spriteUtils';
+import { Sprite, SpriteOffset, makeSpriteMap } from '../engine/spriteUtils';
 import useHistoryState from './useHistoryState';
 
 
@@ -50,6 +50,42 @@ export default function useCanvas() {
                                     return row.map((cell, cellIndex) => {
                                         if (cellIndex === x) {
                                             return sprite;
+                                        }
+
+                                        return cell;
+                                    });
+                                }
+
+                                return row;
+                            })
+                        ]
+                    };
+                }
+
+                return layer;
+            })
+        ];
+        history.set({
+            ...history.state,
+            layers: newLayers
+        });
+    };
+
+    const setTileOffset = (activeLayerKey: string, { x, y }: { x: number, y: number; }, offset: SpriteOffset) => {
+        const newLayers = [
+            ...history.state.layers.map(layer => {
+                if (layer.key === activeLayerKey) {
+                    return {
+                        ...layer,
+                        rows: [
+                            ...layer.rows.map((row, rowIndex) => {
+                                if (rowIndex === y) {
+                                    return row.map((cell, cellIndex) => {
+                                        if (cellIndex === x) {
+                                            return {
+                                                ...cell,
+                                                offset
+                                            };
                                         }
 
                                         return cell;
@@ -242,7 +278,7 @@ export default function useCanvas() {
     const get = (activeLayerKey: string, { x, y }: { x: number, y: number; }): Sprite | undefined => {
         for (const layer of history.state.layers) {
             if (layer.key !== activeLayerKey) {
-                return;
+                continue;
             }
 
             return layer.rows[y][x];
@@ -260,6 +296,7 @@ export default function useCanvas() {
         setHeight,
         paintTile,
         eraseTile,
+        setTileOffset,
         undo: history.undo,
         redo: history.redo,
         canUndo: history.canUndo,

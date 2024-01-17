@@ -20,7 +20,7 @@ export default function ResponsiveContainer({ children, style }: {
         setTimeout(() => {
             handleWindowResize();
         }, 100);
-    }, [ ]);
+    }, []);
 
     useEffect(() => {
         window.addEventListener('resize', handleWindowResize);

@@ -1,12 +1,18 @@
 import type { TreeDataNode } from 'antd';
 
 
+export interface SpriteOffset {
+    v: number
+    h: number
+}
+
 export interface Sprite {
     path?: string
     x: number
     y: number
     w: number
     h: number
+    offset?: SpriteOffset
 }
 
 interface SpriteAtlasDataNode {
@@ -51,7 +57,7 @@ export function isAnimation(node: SpriteAtlasDataNode): boolean {
         return false;
     }
 
-    const childrenThatAreNotImages = node.children.find(child => !child.name.endsWith('.png'));
+    const childrenThatAreNotImages = node.children.find(child => !child.name.endsWith('.png') && !child.name.endsWith('.gif'));
     if (childrenThatAreNotImages) {
         return false;
     }

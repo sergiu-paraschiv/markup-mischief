@@ -1,5 +1,14 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { TreeSelect, Modal, TreeDataNode, Card } from 'antd';
+import {
+    TreeSelect,
+    Modal,
+    TreeDataNode,
+    Card,
+    Flex,
+    Row,
+    Col,
+    InputNumber
+} from 'antd';
 import spriteAtlasData from '../sprite-atlas.json';
 import { Sprite, makeSpriteMap, processAtlas, getNodePaths } from '../engine/spriteUtils';
 import useAnimation from '../engine/useAnimation';
@@ -21,7 +30,7 @@ export default function SpriteAtlas({ tileSize, displayTileSize, selectedSprite,
     };
 
     return (
-        <>
+        <Flex vertical={true} gap="small">
             <TreeSelect
                 onTreeExpand={onExpand}
                 treeExpandedKeys={expandedKeys}
@@ -30,6 +39,7 @@ export default function SpriteAtlas({ tileSize, displayTileSize, selectedSprite,
                 onSelect={path => {
                     if (
                         path.endsWith('.png')
+                        || path.endsWith('.gif')
                         || path.startsWith('ANIMATION:')
                     ) {
                         onSelect({
@@ -78,16 +88,49 @@ export default function SpriteAtlas({ tileSize, displayTileSize, selectedSprite,
             />
 
             {selectedSprite ? (
-                <Card size="small">
-                    <SpriteSectionPicker
-                        tileSize={tileSize}
-                        displayTileSize={displayTileSize}
-                        selectedSprite={selectedSprite}
-                        onSelect={onSelect}
-                    />
-                </Card>
+                <>
+                    <Row align="middle" gutter={16}>
+                        <Col>
+                            <InputNumber
+                                min={1}
+                                max={6}
+                                value={selectedSprite.w}
+                                onChange={newW => newW !== null ? onSelect({
+                                    ...selectedSprite,
+                                    w: newW
+                                }) : undefined}
+                            />
+                        </Col>
+                        <Col>
+                            x
+                        </Col>
+                        <Col>
+                            <InputNumber
+                                min={1}
+                                max={6}
+                                value={selectedSprite.h}
+                                onChange={newH => newH !== null ? onSelect({
+                                    ...selectedSprite,
+                                    h: newH
+                                }) : undefined}
+                            />
+                        </Col>
+                        <Col>
+                            cells
+                        </Col>
+                    </Row>
+
+                    <Card size="small">
+                        <SpriteSectionPicker
+                            tileSize={tileSize}
+                            displayTileSize={displayTileSize}
+                            selectedSprite={selectedSprite}
+                            onSelect={onSelect}
+                        />
+                    </Card>
+                </>
             ) : null}
-        </>
+        </Flex>
     );
 }
 
@@ -98,7 +141,7 @@ function SpriteSectionPicker({ tileSize, displayTileSize, selectedSprite, onSele
     onSelect: (sprite: Sprite) => void
 }) {
     const [ showPicker, setShowPicker ] = React.useState(false);
-    const atlasSize = useImageSize(selectedSprite.path ? `./${selectedSprite.path.replace('ANIMATION:', '')}` : undefined);
+    const atlasSize = useImageSize(selectedSprite.path ? `${window.MarkupMischief.spritesRelativePath}${selectedSprite.path.replace('ANIMATION:', '')}` : undefined);
 
     return (
         <div>
@@ -188,7 +231,7 @@ function SpriteViewer({ tileSize, displayTileSize, selectedSprite, onSelect, asT
 }) {
     const paths = useMemo(() => getNodePaths(selectedSprite.path, spriteAtlasData.children), [selectedSprite.path]);
     const path = useAnimation(paths);
-    const atlasSize = useImageSize(path ? `./${path}` : undefined);
+    const atlasSize = useImageSize(path ? `${window.MarkupMischief.spritesRelativePath}${path}` : undefined);
     let viewSize = {
         width: Math.ceil(atlasSize.width / tileSize),
         height: Math.ceil(atlasSize.height / tileSize)
@@ -217,11 +260,11 @@ function SpriteViewer({ tileSize, displayTileSize, selectedSprite, onSelect, asT
                     position: 'absolute',
                     top: '0',
                     left: '0',
-                    width: '50%',
-                    height: '50%',
+                    width: viewSize.width * tileSize + 'px',
+                    height: viewSize.height * tileSize + 'px',
                     scale: (displayTileSize / tileSize).toString(),
                     transformOrigin: 'top left',
-                    backgroundImage: path ? `url('./${path}')` : undefined,
+                    backgroundImage: path ? `url('${window.MarkupMischief.spritesRelativePath}${path}')` : undefined,
                     backgroundRepeat: 'no-repeat',
                     backgroundPosition: !asThumbnail ? '0 0' : `${selectedSprite.x * tileSize}px ${selectedSprite.y * tileSize}px`,
                 }}

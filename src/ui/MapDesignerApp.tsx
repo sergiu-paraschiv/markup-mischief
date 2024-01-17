@@ -11,7 +11,9 @@ import {
     Col,
     Input,
     Tag,
-    Segmented
+    Segmented,
+    Collapse,
+    Slider
 } from 'antd';
 import {
     RedoOutlined,
@@ -25,7 +27,9 @@ import {
     InfoCircleOutlined,
     SelectOutlined,
     FormatPainterOutlined,
-    ClearOutlined
+    ClearOutlined,
+    BorderHorizontalOutlined,
+    BorderVerticleOutlined
 } from '@ant-design/icons';
 const { Content, Sider } = Layout;
 import SpriteAtlas from '../mapDesigner/SpriteAtlas';
@@ -41,10 +45,17 @@ export default function MapDesignerApp({ tileSize, displayTileSize }: {
     tileSize: number;
     displayTileSize: number;
 }) {
+    const canvas = useCanvas();
+    const [ showGrid, setShowGrid ] = useState(true);
+    const [ showSpriteOutlines, setShowSpriteOutlines ] = useState(false);
     const [ selectedTool, setSelectedTool ] = useState<Tool>('paint');
     const [ sprite, setSprite ] = useState<Sprite | undefined>(undefined);
-    const canvas = useCanvas();
     const { layers, toggleLayer, hiddenLayers, activeLayer, setActiveLayer } = useLayers(canvas.layers);
+    const [ selectedTile, setSelectedTile ] = React.useState<{ x: number, y: number, layer: string } | undefined>(undefined);
+    let selectedTileSprite: Sprite | undefined;
+    if (selectedTile) {
+        selectedTileSprite = canvas.get(selectedTile.layer, { x: selectedTile.x, y: selectedTile.y });
+    }
 
     return (
         <Flex
@@ -69,6 +80,9 @@ export default function MapDesignerApp({ tileSize, displayTileSize }: {
                     <Canvas
                         canvas={canvas}
                         hiddenLayers={hiddenLayers}
+                        showGrid={showGrid}
+                        showSpriteOutlines={showSpriteOutlines}
+                        activeLayer={activeLayer}
                         tileSize={tileSize}
                         displayTileSize={displayTileSize}
                         onTileClick={tile => {
@@ -78,6 +92,11 @@ export default function MapDesignerApp({ tileSize, displayTileSize }: {
 
                             if (selectedTool === 'select') {
                                 const selectedSprite = canvas.get(activeLayer, tile);
+                                setSelectedTile({
+                                    ...tile,
+                                    layer: activeLayer
+                                });
+
                                 if (selectedSprite) {
                                     setSprite(selectedSprite);
                                 }
@@ -230,46 +249,66 @@ export default function MapDesignerApp({ tileSize, displayTileSize }: {
                         </List.Item>
 
                         <List.Item>
-                            <Flex vertical={true} gap="small">
-                                <SpriteAtlas
-                                    tileSize={tileSize}
-                                    displayTileSize={displayTileSize}
-                                    selectedSprite={sprite}
-                                    onSelect={setSprite}
+                            <SpriteAtlas
+                                tileSize={tileSize}
+                                displayTileSize={displayTileSize}
+                                selectedSprite={sprite}
+                                onSelect={setSprite}
+                            />
+                        </List.Item>
+
+                        {selectedTile && selectedTileSprite ? (
+                            <List.Item>
+                                <Collapse
+                                    defaultActiveKey={['offset']}
+                                    items={[
+                                        {
+                                            key: 'offset',
+                                            label: 'Offset',
+                                            children: (
+                                                <Row align="middle" gutter={16}>
+                                                    <Col><BorderHorizontalOutlined /></Col>
+                                                    <Col flex="auto">
+                                                        <Slider
+                                                            value={selectedTileSprite.offset?.h || 0}
+                                                            onChange={newOffset => canvas.setTileOffset(selectedTile.layer, selectedTile, {
+                                                                v: 0,
+                                                                ...selectedTileSprite?.offset,
+                                                                h: newOffset
+                                                            })}
+                                                            marks={{
+                                                                [-tileSize.toString()]: -tileSize,
+                                                                '0': 0,
+                                                                [tileSize.toString()]: tileSize
+                                                            }}
+                                                            min={-tileSize}
+                                                            max={tileSize}
+                                                            step={1}
+                                                        />
+                                                    </Col>
+                                                </Row>
+                                            )
+                                        }
+                                    ]}
+                                />
+                            </List.Item>
+                        ) : null}
+
+                        <List.Item>
+                            <Flex gap="small">
+                                <Switch
+                                    checked={showGrid}
+                                    onChange={() => setShowGrid(!showGrid)}
+                                    checkedChildren="Show grid"
+                                    unCheckedChildren="Hide grid"
                                 />
 
-                                {sprite ? (
-                                    <Row align="middle" gutter={16}>
-                                        <Col>
-                                            <InputNumber
-                                                min={1}
-                                                max={6}
-                                                value={sprite.w}
-                                                onChange={newW => newW !== null ? setSprite({
-                                                    ...sprite,
-                                                    w: newW
-                                                }) : undefined}
-                                            />
-                                        </Col>
-                                        <Col>
-                                            x
-                                        </Col>
-                                        <Col>
-                                            <InputNumber
-                                                min={1}
-                                                max={6}
-                                                value={sprite.h}
-                                                onChange={newH => newH !== null ? setSprite({
-                                                    ...sprite,
-                                                    h: newH
-                                                }) : undefined}
-                                            />
-                                        </Col>
-                                        <Col>
-                                            cells
-                                        </Col>
-                                    </Row>
-                                ) : null}
+                                <Switch
+                                    checked={showSpriteOutlines}
+                                    onChange={() => setShowSpriteOutlines(!showSpriteOutlines)}
+                                    checkedChildren="Show outlines"
+                                    unCheckedChildren="Hide outlines"
+                                />
                             </Flex>
                         </List.Item>
 

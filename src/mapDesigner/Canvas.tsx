@@ -5,9 +5,21 @@ import { Sprite, getNodePaths } from '../engine/spriteUtils';
 import useCanvas from './useCanvas';
 
 
-export default function Canvas({ canvas, hiddenLayers, tileSize, displayTileSize, onTileClick }: {
+export default function Canvas({
+    canvas,
+    hiddenLayers,
+    activeLayer,
+    showGrid,
+    showSpriteOutlines,
+    tileSize,
+    displayTileSize,
+    onTileClick
+}: {
     canvas: ReturnType<typeof useCanvas>
     hiddenLayers: string[]
+    activeLayer?: string
+    showGrid: boolean
+    showSpriteOutlines: boolean
     tileSize: number
     displayTileSize: number
     onTileClick: (tile: { x: number, y: number }) => void
@@ -54,13 +66,14 @@ export default function Canvas({ canvas, hiddenLayers, tileSize, displayTileSize
                                                 height: displayTileSize + 'px',
                                                 top: rowIndex * displayTileSize + 'px',
                                                 left: cellIndex * displayTileSize + 'px',
-                                                outline: '1px solid black'
+                                                outline: showGrid ? '1px solid black' : 'none'
                                             }}
                                         >
                                             <CellGraphics
                                                 tileSize={tileSize} 
                                                 displayTileSize={displayTileSize}
                                                 cell={cell}
+                                                showOutline={showSpriteOutlines && layer.key === activeLayer}
                                             />
                                         </div>
                                     );
@@ -74,10 +87,11 @@ export default function Canvas({ canvas, hiddenLayers, tileSize, displayTileSize
     );
 }
 
-function CellGraphics({ tileSize, displayTileSize, cell }: {
+function CellGraphics({ tileSize, displayTileSize, cell, showOutline }: {
     tileSize: number
     displayTileSize: number
     cell: Sprite
+    showOutline: boolean
 }) {
     const paths = useMemo(() => getNodePaths(cell.path, spriteAtlasData.children), [cell.path]);
     const path = useAnimation(paths);
@@ -86,12 +100,15 @@ function CellGraphics({ tileSize, displayTileSize, cell }: {
         <div
             style={{
                 width: (tileSize * cell.w) + 'px',
-                height: ( tileSize * cell.h) + 'px',
+                height: (tileSize * cell.h) + 'px',
+                marginTop: cell.offset ? cell.offset.v : 0 + 'px',
+                marginLeft: cell.offset ? cell.offset.h : 0 + 'px',
                 scale: (displayTileSize / tileSize).toString(),
                 transformOrigin: 'top left',
-                backgroundImage: path ? `url('./${path}')` : undefined,
+                backgroundImage: path ? `url('${window.MarkupMischief.spritesRelativePath}${path}')` : undefined,
                 backgroundRepeat: 'no-repeat',
-                backgroundPosition: `${cell.x * tileSize}px ${cell.y * tileSize}px`
+                backgroundPosition: `${cell.x * tileSize}px ${cell.y * tileSize}px`,
+                outline: path && showOutline ? '1px solid red' : 'none'
             }}
         ></div>
     );

@@ -1,4 +1,4 @@
-node_modules
-main.js
-main.js.map
-main.tsbuildinfo
+/node_modules
+/main.js
+/main.js.map
+/main.tsbuildinfo

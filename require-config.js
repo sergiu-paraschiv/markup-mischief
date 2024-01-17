@@ -1,3 +1,7 @@
+window.MarkupMischief = {
+    spritesRelativePath: './build/'
+};
+
 require.config({
     paths: {
         'react': './node_modules/react/umd/react.development',
