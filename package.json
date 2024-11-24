@@ -1,28 +1,42 @@
 {
   "name": "markup-mischief",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.0.0",
   "scripts": {
-    "build": "tsc",
-    "build-sprite-atlas": "node sprite-atlas.js",
-    "dev": "concurrently 'npm:dev:*'",
-    "dev:build": "tsc -w",
-    "dev:serve": "http-server ."
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test"
   },
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "@types/react": "^18.2.47",
-    "@types/react-dom": "^18.2.18",
-    "concurrently": "^8.2.2",
-    "directory-tree": "^3.5.1",
-    "http-server": "^14.1.1",
-    "typescript": "^5.3.3"
-  },
+  "private": true,
   "dependencies": {
-    "@ant-design/icons": "^5.2.6",
-    "antd": "^5.13.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "@angular/animations": "^18.2.0",
+    "@angular/common": "^18.2.0",
+    "@angular/compiler": "^18.2.0",
+    "@angular/core": "^18.2.0",
+    "@angular/forms": "^18.2.0",
+    "@angular/platform-browser": "^18.2.0",
+    "@angular/platform-browser-dynamic": "^18.2.0",
+    "@angular/router": "^18.2.0",
+    "binary-parser": "^2.2.1",
+    "pako": "^2.1.0",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0",
+    "zone.js": "~0.14.10"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "^18.2.9",
+    "@angular/cli": "^18.2.9",
+    "@angular/compiler-cli": "^18.2.0",
+    "@types/binary-parser": "^1.5.5",
+    "@types/jasmine": "~5.1.0",
+    "@types/pako": "^2.0.3",
+    "jasmine-core": "~5.2.0",
+    "karma": "~6.4.0",
+    "karma-chrome-launcher": "~3.2.0",
+    "karma-coverage": "~2.2.0",
+    "karma-jasmine": "~5.1.0",
+    "karma-jasmine-html-reporter": "~2.1.0",
+    "typescript": "~5.5.2"
   }
 }
