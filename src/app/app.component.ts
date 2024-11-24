@@ -11,20 +11,15 @@ import StartScene from '../game/scenes/StartScene';
   styleUrl: './app.component.css',
 })
 export class AppComponent implements AfterViewInit {
-  @ViewChild('game') canvas: ElementRef<HTMLCanvasElement> | undefined;
+  @ViewChild('game') gameElement: ElementRef<HTMLElement> | undefined;
 
   ngAfterViewInit(): void {
-    const canvasElement = this.canvas?.nativeElement;
-    if (!canvasElement) {
-      throw new Error('Canvas not found!');
+    const gameElement = this.gameElement?.nativeElement;
+    if (!gameElement) {
+      throw new Error('Game element not found!');
     }
 
-    const context = canvasElement.getContext('2d');
-    if (!context) {
-      throw new Error('CanvasRenderingContext2D could not be obtained!');
-    }
-
-    const engine = new Engine(new CanvasRenderer(context, canvasElement), [
+    const engine = new Engine(new CanvasRenderer(gameElement, 256, 192), [
       new Keyboard(),
       new Mouse(),
     ]);

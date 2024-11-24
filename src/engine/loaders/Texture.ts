@@ -20,6 +20,8 @@ function loadImageBitmap(
 
 export default class Texture {
   data: CanvasImageSource = new Image();
+  width = 0;
+  height = 0;
 
   static empty() {
     return new Texture();
@@ -30,6 +32,8 @@ export default class Texture {
 
     loadImageBitmap(src, (data) => {
       texture.data = data;
+      texture.width = data.width;
+      texture.height = data.height;
     });
 
     return texture;
@@ -38,6 +42,17 @@ export default class Texture {
   static fromImageBitmap(imageBitmap: ImageBitmap): Texture {
     const texture = new Texture();
     texture.data = imageBitmap;
+    texture.width = imageBitmap.width;
+    texture.height = imageBitmap.height;
     return texture;
+  }
+
+  toOffscreenCanvas(): OffscreenCanvas {
+    const canvas = new OffscreenCanvas(this.width, this.height);
+    const context = canvas.getContext('2d');
+
+    context?.drawImage(this.data, 0, 0);
+
+    return canvas;
   }
 }

@@ -4,6 +4,9 @@ import { TickEvent } from '@engine/events';
 import IRenderer from './IRenderer';
 
 export default class CanvasRenderer implements IRenderer {
+  private canvas: HTMLCanvasElement;
+  private context: CanvasRenderingContext2D;
+
   private rootElement?: Element;
   private maxFps: number;
   private fpsInterval: number;
@@ -13,8 +16,9 @@ export default class CanvasRenderer implements IRenderer {
   private currentFps: number;
 
   constructor(
-    private context: CanvasRenderingContext2D,
-    private canvas: HTMLCanvasElement
+    container: HTMLElement,
+    width: number,
+    height: number
   ) {
     this.maxFps = 10;
     this.fpsInterval = this.computeFpsInterval();
@@ -22,6 +26,24 @@ export default class CanvasRenderer implements IRenderer {
     this.startTime = 0;
     this.previousTime = 0;
     this.currentFps = 0;
+
+    this.canvas = document.createElement('canvas');
+    this.canvas.width = width;
+    this.canvas.height = height;
+    this.canvas.style.display = 'block';
+    this.canvas.style.width = (width * 4) + 'px';
+    this.canvas.style.height = (height * 4) + 'px';
+    this.canvas.style.imageRendering = 'pixelated';
+
+    const context = this.canvas.getContext('2d');
+    if (!context) {
+      throw new Error('CanvasRenderingContext2D could not be obtained!');
+    }
+
+    this.context = context;
+    this.context.imageSmoothingEnabled = false;
+
+    container.appendChild(this.canvas);
   }
 
   setRootElement(element: Element): void {
@@ -81,7 +103,7 @@ export default class CanvasRenderer implements IRenderer {
       );
     }
 
-    this.context.fillText(this.currentFps.toString(10), 0, this.canvas.height);
+    this.context.fillText(this.currentFps.toFixed(0), 0, this.canvas.height);
   }
 
   private computeFpsInterval() {

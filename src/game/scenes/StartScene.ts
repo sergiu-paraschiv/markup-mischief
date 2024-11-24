@@ -23,8 +23,8 @@ export default class StartScene extends Scene {
       new Captain(new Vector(0, 32))
     );
 
-    for (let i = 0; i < 30; i++) {
-      for (let j = 0; j < 30; j++) {
+    for (let i = 0; i < 100; i++) {
+      for (let j = 0; j < 100; j++) {
         this.addChild(
           new Captain(new Vector(i, j + 32))
         );
