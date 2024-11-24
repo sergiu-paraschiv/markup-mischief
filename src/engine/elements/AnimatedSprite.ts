@@ -1,10 +1,9 @@
-import Vector from '../core/Vector';
-import Element from '../core/Element';
-import TickEvent from '../events/TickEvent';
-import Texture from '../loaders/Texture';
+import { Vector, Element } from '@engine/core';
+import { TickEvent } from '@engine/events';
+import { Texture } from '@engine/loaders';
 import Sprite from './Sprite';
 
-export type Frame = {
+export type AnimationFrame = {
   texture: Texture;
   duration: number;
 };
@@ -24,28 +23,24 @@ export enum AnimationRepeat {
 }
 
 export type Animation = {
-  frames: Frame[];
+  frames: AnimationFrame[];
   direction: AnimationDirection;
   repeat: AnimationRepeat;
   repeatTimes: number;
 };
 
 export default class AnimatedSprite extends Element {
-  private _frames: Frame[] = [];
+  private _frames: AnimationFrame[] = [];
   private frameIndex: number;
-  private elapsedTimeAccumulator: number;
   private animationRepeatIndex: number;
   private stopped = false;
+  private previousTime: number;
 
-  constructor(
-    private animation: Animation,
-    position?: Vector,
-    children: Element[] = []
-  ) {
+  constructor(private animation: Animation, position?: Vector, children: Element[] = []) {
     super([new Sprite(undefined, position), ...children]);
 
     this.frameIndex = 0;
-    this.elapsedTimeAccumulator = 0;
+    this.previousTime = 0;
 
     this._frames = animation.frames;
     if (animation.direction === AnimationDirection.Reverse) {
@@ -61,44 +56,34 @@ export default class AnimatedSprite extends Element {
   }
 
   private onTick(event: TickEvent) {
-    this.elapsedTimeAccumulator += event.elapsedTime;
     if (this.stopped) {
       return;
     }
 
+    if (this.previousTime === 0) {
+      this.previousTime = event.currentTime;
+    }
+
+    let deltaTime = event.currentTime - this.previousTime;
     let currentFrame = this._frames[this.frameIndex];
-    if (!currentFrame) {
-      this.frameIndex = 0;
-      this.updateSprite();
-      return;
-    }
+    let advancedFrames = 0;
 
-    while (this.elapsedTimeAccumulator > currentFrame.duration) {
-      this.frameIndex += 1;
-      this.elapsedTimeAccumulator -= currentFrame.duration;
-
-      if (this.frameIndex >= this._frames.length) {
-        if (this.animation.repeat === AnimationRepeat.Default) {
-          this.frameIndex = 0;
-        } else if (this.animation.repeat === AnimationRepeat.Fixed) {
-          this.frameIndex = 0;
-          this.animationRepeatIndex -= 1;
-          if (this.animationRepeatIndex === 0) {
-            this.stop();
-            return;
-          }
-        }
-        // TODO: handle AnimationRepeat.Once and AnimationReapeat.Twice
-        else {
-          this.stop();
-          return;
-        }
-      }
-
+    while (deltaTime >= currentFrame.duration) {
+      deltaTime -= currentFrame.duration;
+      this.advanceFrame();
       currentFrame = this._frames[this.frameIndex];
+
+      advancedFrames += 1;
+
+      if (advancedFrames > 10) {
+        deltaTime = 0;
+      }
     }
 
-    this.updateSprite();
+    if (advancedFrames > 0) {
+      this.previousTime = event.currentTime;
+      this.updateSprite();
+    }
   }
 
   play() {
@@ -114,12 +99,33 @@ export default class AnimatedSprite extends Element {
 
   stop() {
     this.stopped = true;
+    this.previousTime = 0;
+  }
+
+  private advanceFrame() {
+    this.frameIndex += 1;
+    if (this.frameIndex >= this._frames.length) {
+      if (this.animation.repeat === AnimationRepeat.Default) {
+        this.frameIndex = 0;
+      } else if (this.animation.repeat === AnimationRepeat.Fixed) {
+        this.frameIndex = 0;
+        this.animationRepeatIndex -= 1;
+        if (this.animationRepeatIndex === 0) {
+          this.stop();
+          return;
+        }
+      }
+      // TODO: handle AnimationRepeat.Once and AnimationReapeat.Twice
+      else {
+        this.stop();
+        return;
+      }
+    }
   }
 
   private updateSprite() {
     if (this._frames.length > this.frameIndex) {
-      (this.children[0] as Sprite).texture =
-        this._frames[this.frameIndex].texture;
+      (this.children[0] as Sprite).texture = this._frames[this.frameIndex].texture;
     }
   }
 }

@@ -10,4 +10,8 @@ export default class Vector {
   add(otherVector: Vector): Vector {
     return new Vector(this.x + otherVector.x, this.y + otherVector.y);
   }
+
+  clone(): Vector {
+    return new Vector(this.x, this.y);
+  }
 }

@@ -1,6 +1,6 @@
-import { Scene } from '@engine/core';
+import { Element } from '@engine/core';
 
 export default interface IRenderer {
-    loadScene(scene: Scene): void;
+    setRootElement(element: Element): void;
     start(fps: number): void;
 }

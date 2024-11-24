@@ -1,6 +1,4 @@
-import Vector from '../core/Vector';
-import Element from '../core/Element';
-import Query from '../core/Query';
+import { Vector, Element, Query } from '@engine/core';
 
 export default class PositionedElement extends Element {
   private _position: Vector;

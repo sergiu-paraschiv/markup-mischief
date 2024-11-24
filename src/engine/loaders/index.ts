@@ -1,4 +1,4 @@
 import Texture from './Texture';
-import Aseprite from './Aseprite';
+import Aseprite from './aseprite/Aseprite';
 
 export { Texture, Aseprite };

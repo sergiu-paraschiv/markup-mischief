@@ -1,5 +1,6 @@
 import { Component, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { Engine } from '@engine';
+import { Keyboard, Mouse } from '@engine/input';
 import { CanvasRenderer } from '@renderer';
 import StartScene from '../game/scenes/StartScene';
 
@@ -23,9 +24,12 @@ export class AppComponent implements AfterViewInit {
       throw new Error('CanvasRenderingContext2D could not be obtained!');
     }
 
-    const engine = new Engine(new CanvasRenderer(context, canvasElement));
+    const engine = new Engine(new CanvasRenderer(context, canvasElement), [
+      new Keyboard(),
+      new Mouse(),
+    ]);
 
     engine.loadScene(new StartScene());
-    engine.start(10);
+    engine.start(144);
   }
 }

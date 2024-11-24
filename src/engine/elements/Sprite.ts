@@ -1,6 +1,5 @@
-import Vector from '../core/Vector';
-import Element from '../core/Element';
-import Texture from '../loaders/Texture';
+import { Vector, Element } from '@engine/core';
+import { Texture } from '@engine/loaders';
 import PositionedElement from './PositionedElement';
 
 export default class Sprite extends PositionedElement {

@@ -1,15 +1,13 @@
 import Event from './Event';
+import EventEmitter from './EventEmitter';
 
-type EventType<E extends Event> = new (...args: any[]) => E;
-type EventHandler<E extends Event> = (event: E) => boolean | void;
-
-export default class Element {
+export default class Element extends EventEmitter {
   private _parent?: Element;
   private _children: Element[] = [];
-  private _eventHandlers: Map<EventType<any>, Set<EventHandler<any>>> =
-    new Map();
 
   constructor(children?: Element[]) {
+    super();
+
     if (children) {
       this._children = children;
       children.forEach((child) => (child.parent = this));
@@ -26,9 +24,7 @@ export default class Element {
 
   set parent(newParent: Element) {
     if (this._parent !== undefined) {
-      throw new Error(
-        'Cannot set parent while one already set! First remove this child from existing parent.'
-      );
+      throw new Error('Cannot set parent while one already set! First remove this child from existing parent.');
     }
     this._parent = newParent;
   }
@@ -43,9 +39,7 @@ export default class Element {
   }
 
   removeChild(child: Element): void {
-    this._children = this._children.filter(
-      (searchedChild) => searchedChild !== child
-    );
+    this._children = this._children.filter((searchedChild) => searchedChild !== child);
     child.clearParent();
   }
 
@@ -62,35 +56,10 @@ export default class Element {
     this._parent.removeChild(this);
   }
 
-  on<T extends Event>(eventType: EventType<T>, handler: EventHandler<T>): void {
-    const handlers = this._eventHandlers.get(eventType) || new Set();
-    if (handlers.has(handler)) {
+  override dispatchEvent(event: Event): void {
+    super.dispatchEvent(event);
+    if (event.propagationStopped) {
       return;
-    }
-
-    handlers.add(handler);
-    this._eventHandlers.set(eventType, handlers);
-  }
-
-  off<T extends Event>(
-    eventType: EventType<T>,
-    handler: EventHandler<T>
-  ): void {
-    const handlers = this._eventHandlers.get(eventType) || new Set();
-    handlers.delete(handler);
-    this._eventHandlers.set(eventType, handlers);
-  }
-
-  dispatchEvent(event: Event): void {
-    for (const [eventType, handlers] of this._eventHandlers) {
-      if (event instanceof eventType) {
-        for (const handler of handlers) {
-          handler(event);
-          if (event.propagationStopped) {
-            return;
-          }
-        }
-      }
     }
 
     for (const child of this._children) {

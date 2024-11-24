@@ -1,6 +1,7 @@
 import PositionedElement from './PositionedElement';
 import Sprite from './Sprite';
 import AnimatedSprite, {
+  AnimationFrame,
   Animation,
   AnimationDirection,
   AnimationRepeat,
@@ -13,4 +14,4 @@ export {
   AnimationDirection,
   AnimationRepeat,
 };
-export type { Animation };
+export type { AnimationFrame, Animation };

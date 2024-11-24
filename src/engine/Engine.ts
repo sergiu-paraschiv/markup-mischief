@@ -1,14 +1,16 @@
 import { IRenderer } from '@renderer';
 import { Scene } from './core';
+import { InputDevice } from './input';
 
 export default class Engine {
-  constructor(private renderer: IRenderer) {}
+  constructor(private renderer: IRenderer, private inputDevices: InputDevice[]) {}
 
   loadScene(scene: Scene) {
-    this.renderer.loadScene(scene);
+    this.renderer.setRootElement(scene);
+    this.inputDevices.forEach(inputDevice => inputDevice.setRootElement(scene))
   }
 
-  start(fps: number): void {
-    this.renderer.start(fps);
+  start(maxRenderFps: number): void {
+    this.renderer.start(maxRenderFps);
   }
 }

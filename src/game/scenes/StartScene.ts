@@ -1,6 +1,7 @@
 import { Scene, Vector } from '@engine/core';
-import { Sprite, AnimatedSprite } from '@engine/elements';
+import { Sprite } from '@engine/elements';
 import { Aseprite } from '@engine/loaders';
+import { Captain } from '@game/entities';
 
 export default class StartScene extends Scene {
   constructor() {
@@ -15,19 +16,19 @@ export default class StartScene extends Scene {
     );
     islandAseprite.ignoreLayers(['Grid']);
 
-    const captainAseprite = await Aseprite.load(
-      '/sprites/Treasure Hunters/Captain Clown Nose/Aseprite/Captain Clown Nose.aseprite'
-    );
-    captainAseprite.ignoreLayers(['Grid']);
-
     const terrain = await islandAseprite.getTilemap('Terrain');
     this.addChild(new Sprite(terrain.get(27), new Vector(0, 0)));
 
     this.addChild(
-      new AnimatedSprite(
-        await captainAseprite.getAnimation('Run S'),
-        new Vector(0, 32)
-      )
+      new Captain(new Vector(0, 32))
     );
+
+    for (let i = 0; i < 30; i++) {
+      for (let j = 0; j < 30; j++) {
+        this.addChild(
+          new Captain(new Vector(i, j + 32))
+        );
+      }
+    }
   }
 }

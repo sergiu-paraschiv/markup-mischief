@@ -1,7 +1,7 @@
-import Event from '../core/Event';
+import { Event } from '@engine/core';
 
 export default class TickEvent extends Event {
-  constructor(public readonly elapsedTime: number) {
+  constructor(public readonly currentTime: number) {
     super();
   }
 }
