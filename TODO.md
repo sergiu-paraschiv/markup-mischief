@@ -1,7 +1,7 @@
 [x] migrate to Events system instead of TickingElement + Query
-[ ] push to GIT
+[x] push to GIT
 [ ] Inputs system on top of Events
 [ ] Physics system
 [?] level loader
-[ ] GUI
+[ ] GUI, Events might need to propagate up through parents too
 [?] more levels
