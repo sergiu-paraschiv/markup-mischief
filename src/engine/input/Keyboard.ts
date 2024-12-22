@@ -16,20 +16,16 @@ export class KeyboardInputEvent extends InputEvent {
 }
 
 export default class Keyboard extends InputDevice {
-  constructor() {
+  constructor(container: HTMLElement) {
     super();
 
-    document.documentElement.addEventListener(
-      'keydown',
-      this.eventHandler.bind(this)
-    );
-    document.documentElement.addEventListener(
-      'keyup',
-      this.eventHandler.bind(this)
-    );
+    container.addEventListener('keydown', this.eventHandler.bind(this));
+    container.addEventListener('keyup', this.eventHandler.bind(this));
   }
 
   private eventHandler(event: KeyboardEvent) {
+    event.preventDefault();
+
     this.dispatchEvent(
       new KeyboardInputEvent(
         event.key,

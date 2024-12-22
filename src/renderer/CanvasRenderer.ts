@@ -1,4 +1,4 @@
-import { Element, Query } from '@engine/core';
+import { Element, Query, WorkLoop } from '@engine/core';
 import { CanvasItem } from '@engine/elements';
 import { TickEvent } from '@engine/events';
 import IRenderer from './IRenderer';
@@ -8,20 +8,10 @@ export default class CanvasRenderer implements IRenderer {
   private context: CanvasRenderingContext2D;
 
   private rootElement?: Element;
-  private maxFps: number;
-  private fpsInterval: number;
-  private frameCount: number;
-  private startTime: number;
-  private previousTime: number;
-  private currentFps: number;
+  private workLoop: WorkLoop;
 
   constructor(container: HTMLElement, width: number, height: number) {
-    this.maxFps = 10;
-    this.fpsInterval = this.computeFpsInterval();
-    this.frameCount = 0;
-    this.startTime = 0;
-    this.previousTime = 0;
-    this.currentFps = 0;
+    this.workLoop = new WorkLoop(this.render.bind(this));
 
     this.canvas = document.createElement('canvas');
     this.canvas.width = width;
@@ -47,39 +37,7 @@ export default class CanvasRenderer implements IRenderer {
   }
 
   start(maxFps: number): void {
-    this.maxFps = maxFps;
-    this.fpsInterval = this.computeFpsInterval();
-    this.previousTime = 0;
-    this.startTime = 0;
-
-    requestAnimationFrame(this.renderLoop.bind(this));
-  }
-
-  private renderLoop(currentTime: number) {
-    if (this.startTime === 0) {
-      this.startTime = currentTime;
-    }
-
-    const deltaTime = currentTime - this.previousTime;
-    if (deltaTime >= this.fpsInterval) {
-      this.previousTime = currentTime - (deltaTime % this.fpsInterval);
-
-      this.render(currentTime);
-
-      const sinceStart = currentTime - this.startTime;
-
-      this.frameCount += 1;
-      this.currentFps =
-        Math.round((1000 / (sinceStart / this.frameCount)) * 100) / 100;
-
-      // average FPS over the last 10 seconds only
-      if (sinceStart >= 10000) {
-        this.startTime = this.previousTime;
-        this.frameCount = 0;
-      }
-    }
-
-    requestAnimationFrame(this.renderLoop.bind(this));
+    this.workLoop.start(maxFps);
   }
 
   private render(currentTime: number) {
@@ -92,16 +50,7 @@ export default class CanvasRenderer implements IRenderer {
     this.rootElement.dispatchEvent(new TickEvent(currentTime));
 
     for (const item of Query.childrenByType(CanvasItem, this.rootElement)) {
-      const pixels = item.draw();
-      if (pixels) {
-        this.context.drawImage(...pixels);
-      }
+      item.draw(this.context);
     }
-
-    this.context.fillText(this.currentFps.toFixed(0), 0, this.canvas.height);
-  }
-
-  private computeFpsInterval() {
-    return 1000 / this.maxFps;
   }
 }

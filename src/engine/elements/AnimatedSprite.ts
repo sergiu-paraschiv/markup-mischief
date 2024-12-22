@@ -124,15 +124,13 @@ export default class AnimatedSprite extends Node2D {
     }
   }
 
-  override draw(): undefined | [CanvasImageSource, number, number] {
+  override draw(context: CanvasRenderingContext2D) {
     if (this._frames.length > this.frameIndex) {
-      return [
+      context.drawImage(
         this._frames[this.frameIndex].texture.data,
         this.position.x,
-        this.position.y,
-      ];
+        this.position.y
+      );
     }
-
-    return;
   }
 }

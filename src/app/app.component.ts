@@ -2,6 +2,8 @@ import { Component, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { Engine } from '@engine';
 import { Keyboard, Mouse } from '@engine/input';
 import { CanvasRenderer } from '@renderer';
+import { RapierPhysicsSimulation } from '@engine/physics';
+import { Debugger } from '@debugger';
 import StartScene from '../game/scenes/StartScene';
 
 @Component({
@@ -19,12 +21,18 @@ export class AppComponent implements AfterViewInit {
       throw new Error('Game element not found!');
     }
 
-    const engine = new Engine(new CanvasRenderer(gameElement, 256, 192), [
-      new Keyboard(),
-      new Mouse(),
-    ]);
+    const engine = new Engine(
+      new CanvasRenderer(gameElement, 256, 192),
+      new RapierPhysicsSimulation(),
+      [new Keyboard(document.documentElement), new Mouse(gameElement)]
+    );
 
-    engine.loadScene(new StartScene());
-    engine.start(144);
+    const scene = new StartScene();
+
+    engine.loadScene(scene);
+    engine.start(144, 60);
+
+    const dbgr = new Debugger();
+    dbgr.attachToScene(scene);
   }
 }

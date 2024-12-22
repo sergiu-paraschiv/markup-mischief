@@ -23,21 +23,15 @@ export class MouseInputEvent extends InputEvent {
 }
 
 export default class Mouse extends InputDevice {
-  constructor() {
+  constructor(container: HTMLElement) {
     super();
 
-    document.documentElement.addEventListener('contextmenu', event => {
+    container.addEventListener('contextmenu', event => {
       event.preventDefault();
     });
 
-    document.documentElement.addEventListener(
-      'mousedown',
-      this.eventHandler.bind(this)
-    );
-    document.documentElement.addEventListener(
-      'mouseup',
-      this.eventHandler.bind(this)
-    );
+    container.addEventListener('mousedown', this.eventHandler.bind(this));
+    container.addEventListener('mouseup', this.eventHandler.bind(this));
   }
 
   private eventHandler(event: MouseEvent) {

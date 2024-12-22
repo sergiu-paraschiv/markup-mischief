@@ -21,7 +21,7 @@ export default class Sprite extends Node2D {
     this._texture = texture;
   }
 
-  override draw(): [CanvasImageSource, number, number] {
-    return [this._texture.data, this.position.x, this.position.y];
+  override draw(context: CanvasRenderingContext2D) {
+    context.drawImage(this._texture.data, this.position.x, this.position.y);
   }
 }

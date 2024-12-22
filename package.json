@@ -21,7 +21,6 @@
     "@angular/router": "^18.2.0",
     "binary-parser": "^2.2.1",
     "pako": "^2.1.0",
-    "pixi.js": "^8.5.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.10"

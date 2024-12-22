@@ -17,7 +17,7 @@ export default class StartScene extends Scene {
     islandAseprite.ignoreLayers(['Grid']);
 
     const terrain = await islandAseprite.getTilemap('Terrain');
-    this.addChild(new Sprite(terrain.get(27), new Vector(0, 0)));
+    this.addChild(new Sprite(terrain.get(27), new Vector(0, 120)));
 
     this.addChild(new Captain(new Vector(0, 32)));
 
