@@ -1,5 +1,5 @@
 import { Vector, Element, Query } from '@engine/core';
-import CanvasItem from './CanvasItem';
+import { CanvasItem } from '@engine/renderer';
 
 export default class Node2D extends CanvasItem {
   private _position: Vector;

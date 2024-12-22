@@ -1,5 +1,5 @@
 import { Element, EventEmitter } from '@engine/core';
-import { InputEvent } from '@engine/events';
+import InputEvent from './InputEvent';
 
 interface InputMapTrigger<T extends InputEvent> {
   type: new (...args: never[]) => T;
@@ -25,11 +25,15 @@ export default class InputMapper extends EventEmitter {
   trigger(output: Output, meta?: string | number | object) {
     const whenThis = {
       when: <T extends InputEvent>(trigger: InputMapTrigger<T>) => {
-        this.element.on(trigger.type, event => {
-          if (trigger.condition(event)) {
-            this.dispatchEvent(new MappedInputEvent(output, meta));
-          }
-        });
+        this.element.on(
+          trigger.type,
+          event => {
+            if (trigger.condition(event)) {
+              this.handleEvent(new MappedInputEvent(output, meta));
+            }
+          },
+          true
+        );
 
         return whenThis;
       },

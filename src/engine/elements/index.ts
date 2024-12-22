@@ -1,4 +1,4 @@
-import CanvasItem from './CanvasItem';
+import CanvasItem from '../renderer/CanvasItem';
 import Node2D from './Node2D';
 import Sprite from './Sprite';
 import AnimatedSprite, {

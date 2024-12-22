@@ -1,4 +1,4 @@
-import { InputEvent } from '@engine/events';
+import InputEvent from './InputEvent';
 import InputDevice from './InputDevice';
 
 export enum MouseButton {

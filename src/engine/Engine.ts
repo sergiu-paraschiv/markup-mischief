@@ -1,4 +1,4 @@
-import { IRenderer } from '@renderer';
+import { IRenderer } from '@engine/renderer';
 import { Scene } from './core';
 import { InputDevice } from './input';
 import { IPhysicsSimulation } from './physics';

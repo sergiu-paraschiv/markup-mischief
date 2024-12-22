@@ -7,7 +7,8 @@ export default class InputDevice extends EventEmitter {
     this.rootElement = element;
   }
 
-  override dispatchEvent(event: Event): void {
+  dispatchEvent(event: Event): void {
+    event.target = null;
     this.rootElement?.dispatchEvent(event);
   }
 }

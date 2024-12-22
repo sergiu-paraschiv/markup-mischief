@@ -1,4 +1,4 @@
-import Event from './Event';
+import Event, { EventPhase } from './Event';
 import EventEmitter from './EventEmitter';
 
 export default class Element extends EventEmitter {
@@ -31,6 +31,14 @@ export default class Element extends EventEmitter {
     this._parent = newParent;
   }
 
+  get rootElement(): Element {
+    if (this._parent === undefined) {
+      return this;
+    }
+
+    return this._parent.rootElement;
+  }
+
   clearParent() {
     this._parent = undefined;
   }
@@ -60,16 +68,44 @@ export default class Element extends EventEmitter {
     this._parent.removeChild(this);
   }
 
-  override dispatchEvent(event: Event): void {
-    super.dispatchEvent(event);
+  dispatchEvent(event: Event): void {
+    if (event.target === undefined) {
+      event.target = this;
+      this.rootElement.dispatchEvent(event);
+      return;
+    }
+
+    super.handleEvent(event);
     if (event.propagationStopped) {
       return;
     }
 
-    for (const child of this._children) {
-      child.dispatchEvent(event);
+    if (event.target === this) {
+      event.capture();
+
+      super.handleEvent(event);
       if (event.propagationStopped) {
         return;
+      }
+
+      event.bubble();
+    }
+
+    if (event.phase === EventPhase.CAPTURING) {
+      if (this._children.length === 0) {
+        event.destroy();
+      }
+      for (const child of this._children) {
+        child.dispatchEvent(event);
+        if (event.propagationStopped) {
+          return;
+        }
+      }
+    } else if (event.phase === EventPhase.BUBBLING) {
+      if (this.parent) {
+        this.parent.dispatchEvent(event);
+      } else {
+        event.destroy();
       }
     }
   }

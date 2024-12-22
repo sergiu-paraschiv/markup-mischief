@@ -1,7 +1,7 @@
 import { Element, Query, WorkLoop } from '@engine/core';
 import { CanvasItem } from '@engine/elements';
-import { TickEvent } from '@engine/events';
 import IRenderer from './IRenderer';
+import TickEvent from './TickEvent';
 
 export default class CanvasRenderer implements IRenderer {
   private canvas: HTMLCanvasElement;

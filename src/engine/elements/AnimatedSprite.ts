@@ -1,5 +1,5 @@
 import { Vector, Element } from '@engine/core';
-import { TickEvent } from '@engine/events';
+import { TickEvent } from '@engine/renderer';
 import { Texture } from '@engine/loaders';
 import Node2D from './Node2D';
 
@@ -54,7 +54,7 @@ export default class AnimatedSprite extends Node2D {
 
     this.animationRepeatIndex = animation.repeatTimes;
 
-    this.on(TickEvent, this.onTick.bind(this));
+    this.on(TickEvent, this.onTick.bind(this), true);
   }
 
   private onTick(event: TickEvent) {

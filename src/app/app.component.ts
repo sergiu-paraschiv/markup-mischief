@@ -1,7 +1,7 @@
 import { Component, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { Engine } from '@engine';
 import { Keyboard, Mouse } from '@engine/input';
-import { CanvasRenderer } from '@renderer';
+import { CanvasRenderer } from '@engine/renderer';
 import { RapierPhysicsSimulation } from '@engine/physics';
 import { Debugger } from '@debugger';
 import StartScene from '../game/scenes/StartScene';

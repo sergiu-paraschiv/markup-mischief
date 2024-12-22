@@ -7,6 +7,7 @@ import Mouse, {
 } from './Mouse';
 import InputMapper, { MappedInputEvent } from './InputMapper';
 import InputState from './InputState';
+import InputEvent from './InputEvent';
 
 export {
   InputDevice,
@@ -20,4 +21,5 @@ export {
   InputMapper,
   MappedInputEvent,
   InputState,
+  InputEvent,
 };

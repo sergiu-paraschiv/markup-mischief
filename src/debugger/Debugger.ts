@@ -1,6 +1,7 @@
 import { Element } from '@engine/core';
 import { CanvasItem } from '@engine/elements';
-import { TickEvent, PhysicsTickEvent } from '@engine/events';
+import { TickEvent } from '@engine/renderer';
+import { PhysicsTickEvent } from '@engine/physics';
 import FpsCounter from './FpsCounter';
 
 export default class Debugger extends CanvasItem {
@@ -11,8 +12,8 @@ export default class Debugger extends CanvasItem {
   constructor() {
     super();
 
-    this.on(TickEvent, this.onTick.bind(this));
-    this.on(PhysicsTickEvent, this.onPhysicsTick.bind(this));
+    this.on(TickEvent, this.onTick.bind(this), true);
+    this.on(PhysicsTickEvent, this.onPhysicsTick.bind(this), true);
   }
 
   attachToScene(scene: Element) {

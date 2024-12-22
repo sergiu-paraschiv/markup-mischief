@@ -1,15 +1,20 @@
+import RAPIER from '@dimforge/rapier2d-compat';
 import { Element, WorkLoop } from '@engine/core';
-import { PhysicsTickEvent } from '@engine/events';
 import IPhysicsSimulation from './IPhysicsSimulation';
+import PhysicsTickEvent from './PhysicsTickEvent';
 
 export default class RapierPhysicsSimulation implements IPhysicsSimulation {
   private rootElement?: Element;
-  private workLoop: WorkLoop;
+  private readonly workLoop: WorkLoop;
+  private world: RAPIER.World | undefined;
 
   constructor() {
     this.workLoop = new WorkLoop(this.step.bind(this));
 
-    // TODO: initialise Rapier
+    (async () => {
+      await RAPIER.init();
+      this.world = new RAPIER.World({ x: 0.0, y: -9.81 });
+    })();
   }
 
   setRootElement(element: Element): void {
@@ -21,11 +26,11 @@ export default class RapierPhysicsSimulation implements IPhysicsSimulation {
   }
 
   private step(currentTime: number) {
-    if (!this.rootElement) {
+    if (!this.rootElement || !this.world) {
       return;
     }
 
-    // TODO: run Rapier step
+    this.world.step();
 
     this.rootElement.dispatchEvent(new PhysicsTickEvent(currentTime));
   }

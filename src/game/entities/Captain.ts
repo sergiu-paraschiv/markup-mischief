@@ -9,7 +9,7 @@ import {
   MouseButtonAction,
   KeyAction,
 } from '@engine/input';
-import { TickEvent } from '@engine/events';
+import { TickEvent } from '@engine/renderer';
 
 enum Input {
   UP = 0,
@@ -118,18 +118,22 @@ export default class Captain extends Node2D {
           (event.key === 'ArrowLeft' || event.key === 'ArrowRight'),
       });
 
-    this.on(TickEvent, () => {
-      if (input.state.get(Input.UP)) {
-        this.position.y += 1;
-      }
+    this.on(
+      TickEvent,
+      () => {
+        if (input.state.get(Input.UP)) {
+          this.position.y += 1;
+        }
 
-      if (input.state.get(Input.DOWN)) {
-        this.position.y -= 1;
-      }
+        if (input.state.get(Input.DOWN)) {
+          this.position.y -= 1;
+        }
 
-      if (input.state.get(Input.RESET)) {
-        this.position.y = this.initialPosition.y;
-      }
-    });
+        if (input.state.get(Input.RESET)) {
+          this.position.y = this.initialPosition.y;
+        }
+      },
+      true
+    );
   }
 }
