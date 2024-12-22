@@ -1,6 +1,7 @@
-import IPhysicsSimulation from './IPhysicsSimulation';
+import IPhysicsSimulation, { DebugLine } from './IPhysicsSimulation';
 import RapierPhysicsSimulation from './RapierPhysicsSimulation';
 import PhysicsTickEvent from './PhysicsTickEvent';
+import PhysicsBody from './PhysicsBody';
 
-export { RapierPhysicsSimulation, PhysicsTickEvent };
-export type { IPhysicsSimulation };
+export { RapierPhysicsSimulation, PhysicsTickEvent, PhysicsBody };
+export type { IPhysicsSimulation, DebugLine };

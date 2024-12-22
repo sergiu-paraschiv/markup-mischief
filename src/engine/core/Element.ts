@@ -1,4 +1,6 @@
 import Event, { EventPhase } from './Event';
+import ElementAddedEvent from './ElementAddedEvent';
+import ElementRemovedEvent from './ElementRemovedEvent';
 import EventEmitter from './EventEmitter';
 
 export default class Element extends EventEmitter {
@@ -9,8 +11,7 @@ export default class Element extends EventEmitter {
     super();
 
     if (children) {
-      this._children = children;
-      children.forEach(child => (child.parent = this));
+      children.forEach(child => this.addChild(child));
     }
   }
 
@@ -46,17 +47,22 @@ export default class Element extends EventEmitter {
   addChild(child: Element): void {
     this._children.push(child);
     child.parent = this;
+    child.dispatchEvent(new ElementAddedEvent());
   }
 
   removeChild(child: Element): void {
     this._children = this._children.filter(
       searchedChild => searchedChild !== child
     );
+    child.dispatchEvent(new ElementRemovedEvent());
     child.clearParent();
   }
 
   removeAllChildren(): void {
-    this._children.forEach(child => child.clearParent());
+    this._children.forEach(child => {
+      child.dispatchEvent(new ElementRemovedEvent());
+      child.clearParent();
+    });
     this._children = [];
   }
 

@@ -40,9 +40,13 @@ export default class InputState extends EventEmitter {
   }
 
   onChange(handler: (state: StateProps) => void) {
-    this.on(StateChangeEvent, () => {
-      handler(this._state);
-    });
+    this.on(
+      StateChangeEvent,
+      () => {
+        handler(this._state);
+      },
+      true
+    );
   }
 
   get state() {

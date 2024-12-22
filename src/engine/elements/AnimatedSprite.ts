@@ -133,4 +133,12 @@ export default class AnimatedSprite extends Node2D {
       );
     }
   }
+
+  override get width() {
+    return this._frames[0].texture.width;
+  }
+
+  override get height() {
+    return this._frames[0].texture.height;
+  }
 }

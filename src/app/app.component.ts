@@ -23,7 +23,7 @@ export class AppComponent implements AfterViewInit {
 
     const engine = new Engine(
       new CanvasRenderer(gameElement, 256, 192),
-      new RapierPhysicsSimulation(),
+      new RapierPhysicsSimulation(24, 192),
       [new Keyboard(document.documentElement), new Mouse(gameElement)]
     );
 

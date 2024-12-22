@@ -13,6 +13,7 @@ export default class Event {
 
   public stopPropagation(): void {
     this._propagationStopped = true;
+    this.destroy();
   }
 
   public get propagationStopped() {

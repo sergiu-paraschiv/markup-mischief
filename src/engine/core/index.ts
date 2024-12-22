@@ -5,5 +5,17 @@ import Query from './Query';
 import Event from './Event';
 import EventEmitter from './EventEmitter';
 import WorkLoop from './WorkLoop';
+import ElementAddedEvent from './ElementAddedEvent';
+import ElementRemovedEvent from './ElementRemovedEvent';
 
-export { Vector, Element, Scene, Query, Event, EventEmitter, WorkLoop };
+export {
+  Vector,
+  Element,
+  Scene,
+  Query,
+  Event,
+  EventEmitter,
+  WorkLoop,
+  ElementAddedEvent,
+  ElementRemovedEvent,
+};
