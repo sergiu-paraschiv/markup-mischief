@@ -17,27 +17,14 @@
     "importHelpers": true,
     "target": "ES2022",
     "module": "ES2022",
-    "lib": [
-      "ES2022",
-      "dom"
-    ],
+    "lib": ["ES2022", "dom"],
     "baseUrl": "src",
     "paths": {
-      "@engine": [
-        "engine/index.ts"
-      ],
-      "@engine/*": [
-        "engine/*/index.ts"
-      ],
-      "@game": [
-        "game/index.ts"
-      ],
-      "@game/*": [
-        "game/*/index.ts"
-      ],
-      "@renderer": [
-        "renderer/index.ts"
-      ]
+      "@engine": ["engine/index.ts"],
+      "@engine/*": ["engine/*/index.ts"],
+      "@game": ["game/index.ts"],
+      "@game/*": ["game/*/index.ts"],
+      "@renderer": ["renderer/index.ts"]
     }
   },
   "angularCompilerOptions": {

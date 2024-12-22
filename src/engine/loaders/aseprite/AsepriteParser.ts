@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Parser } from 'binary-parser';
 
 const ignoreChunkDataParser = new Parser().endianness('little').array('data', {
@@ -99,7 +100,9 @@ export type LayerChunk = ReturnType<typeof layerChunkParser.parse>;
 const celChunkLinkedFrameParser = new Parser()
   .endianness('little')
   .uint16('linkedFrame');
-export type CelChunkLinkedFrame = ReturnType<typeof celChunkLinkedFrameParser.parse>;
+export type CelChunkLinkedFrame = ReturnType<
+  typeof celChunkLinkedFrameParser.parse
+>;
 
 const celChunkCompressedImageParser = new Parser()
   .endianness('little')

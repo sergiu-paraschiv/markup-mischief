@@ -1,10 +1,11 @@
 import Event from './Event';
 
-type EventType<E extends Event> = new (...args: any[]) => E;
+type EventType<E extends Event> = new (...args: never[]) => E;
 type EventHandler<E extends Event> = (event: E) => boolean | void;
 
 export default class EventEmitter {
-  private _eventHandlers: Map<EventType<any>, Set<EventHandler<any>>> = new Map();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private _eventHandlers = new Map<EventType<any>, Set<EventHandler<any>>>();
 
   on<T extends Event>(eventType: EventType<T>, handler: EventHandler<T>): void {
     const handlers = this._eventHandlers.get(eventType) || new Set();

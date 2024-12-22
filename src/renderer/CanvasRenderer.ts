@@ -1,5 +1,5 @@
 import { Element, Query } from '@engine/core';
-import { Sprite } from '@engine/elements';
+import { CanvasItem } from '@engine/elements';
 import { TickEvent } from '@engine/events';
 import IRenderer from './IRenderer';
 
@@ -15,11 +15,7 @@ export default class CanvasRenderer implements IRenderer {
   private previousTime: number;
   private currentFps: number;
 
-  constructor(
-    container: HTMLElement,
-    width: number,
-    height: number
-  ) {
+  constructor(container: HTMLElement, width: number, height: number) {
     this.maxFps = 10;
     this.fpsInterval = this.computeFpsInterval();
     this.frameCount = 0;
@@ -31,8 +27,8 @@ export default class CanvasRenderer implements IRenderer {
     this.canvas.width = width;
     this.canvas.height = height;
     this.canvas.style.display = 'block';
-    this.canvas.style.width = (width * 4) + 'px';
-    this.canvas.style.height = (height * 4) + 'px';
+    this.canvas.style.width = width * 4 + 'px';
+    this.canvas.style.height = height * 4 + 'px';
     this.canvas.style.imageRendering = 'pixelated';
 
     const context = this.canvas.getContext('2d');
@@ -95,12 +91,11 @@ export default class CanvasRenderer implements IRenderer {
 
     this.rootElement.dispatchEvent(new TickEvent(currentTime));
 
-    for (const sprite of Query.childrenByType(Sprite, this.rootElement)) {
-      this.context.drawImage(
-        sprite.texture.data,
-        sprite.position.x,
-        sprite.position.y
-      );
+    for (const item of Query.childrenByType(CanvasItem, this.rootElement)) {
+      const pixels = item.draw();
+      if (pixels) {
+        this.context.drawImage(...pixels);
+      }
     }
 
     this.context.fillText(this.currentFps.toFixed(0), 0, this.canvas.height);

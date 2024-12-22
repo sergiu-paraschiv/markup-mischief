@@ -1,12 +1,12 @@
 import { Vector, Element } from '@engine/core';
 import { TickEvent } from '@engine/events';
 import { Texture } from '@engine/loaders';
-import Sprite from './Sprite';
+import Node2D from './Node2D';
 
-export type AnimationFrame = {
+export interface AnimationFrame {
   texture: Texture;
   duration: number;
-};
+}
 
 export enum AnimationDirection {
   Forward = 0,
@@ -22,22 +22,26 @@ export enum AnimationRepeat {
   Fixed = 3,
 }
 
-export type Animation = {
+export interface Animation {
   frames: AnimationFrame[];
   direction: AnimationDirection;
   repeat: AnimationRepeat;
   repeatTimes: number;
-};
+}
 
-export default class AnimatedSprite extends Element {
+export default class AnimatedSprite extends Node2D {
   private _frames: AnimationFrame[] = [];
   private frameIndex: number;
   private animationRepeatIndex: number;
   private stopped = false;
   private previousTime: number;
 
-  constructor(private animation: Animation, position?: Vector, children: Element[] = []) {
-    super([new Sprite(undefined, position), ...children]);
+  constructor(
+    private animation: Animation,
+    position?: Vector,
+    children: Element[] = []
+  ) {
+    super(position, children);
 
     this.frameIndex = 0;
     this.previousTime = 0;
@@ -49,8 +53,6 @@ export default class AnimatedSprite extends Element {
     // TODO: handle AnimationDirection.PingPong and AnimationDirection.PingPongReverse
 
     this.animationRepeatIndex = animation.repeatTimes;
-
-    this.updateSprite();
 
     this.on(TickEvent, this.onTick.bind(this));
   }
@@ -82,7 +84,6 @@ export default class AnimatedSprite extends Element {
 
     if (advancedFrames > 0) {
       this.previousTime = event.currentTime;
-      this.updateSprite();
     }
   }
 
@@ -123,9 +124,15 @@ export default class AnimatedSprite extends Element {
     }
   }
 
-  private updateSprite() {
+  override draw(): undefined | [CanvasImageSource, number, number] {
     if (this._frames.length > this.frameIndex) {
-      (this.children[0] as Sprite).texture = this._frames[this.frameIndex].texture;
+      return [
+        this._frames[this.frameIndex].texture.data,
+        this.position.x,
+        this.position.y,
+      ];
     }
+
+    return;
   }
 }

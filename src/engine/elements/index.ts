@@ -1,4 +1,5 @@
-import PositionedElement from './PositionedElement';
+import CanvasItem from './CanvasItem';
+import Node2D from './Node2D';
 import Sprite from './Sprite';
 import AnimatedSprite, {
   AnimationFrame,
@@ -8,7 +9,8 @@ import AnimatedSprite, {
 } from './AnimatedSprite';
 
 export {
-  PositionedElement,
+  CanvasItem,
+  Node2D,
   Sprite,
   AnimatedSprite,
   AnimationDirection,

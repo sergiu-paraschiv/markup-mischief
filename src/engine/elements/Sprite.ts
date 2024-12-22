@@ -1,8 +1,8 @@
 import { Vector, Element } from '@engine/core';
 import { Texture } from '@engine/loaders';
-import PositionedElement from './PositionedElement';
+import Node2D from './Node2D';
 
-export default class Sprite extends PositionedElement {
+export default class Sprite extends Node2D {
   private _texture = Texture.empty();
 
   constructor(texture?: Texture, position?: Vector, children?: Element[]) {
@@ -19,5 +19,9 @@ export default class Sprite extends PositionedElement {
 
   set texture(texture: Texture) {
     this._texture = texture;
+  }
+
+  override draw(): [CanvasImageSource, number, number] {
+    return [this._texture.data, this.position.x, this.position.y];
   }
 }

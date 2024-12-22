@@ -10,7 +10,7 @@ export default class Element extends EventEmitter {
 
     if (children) {
       this._children = children;
-      children.forEach((child) => (child.parent = this));
+      children.forEach(child => (child.parent = this));
     }
   }
 
@@ -24,7 +24,9 @@ export default class Element extends EventEmitter {
 
   set parent(newParent: Element) {
     if (this._parent !== undefined) {
-      throw new Error('Cannot set parent while one already set! First remove this child from existing parent.');
+      throw new Error(
+        'Cannot set parent while one already set! First remove this child from existing parent.'
+      );
     }
     this._parent = newParent;
   }
@@ -39,12 +41,14 @@ export default class Element extends EventEmitter {
   }
 
   removeChild(child: Element): void {
-    this._children = this._children.filter((searchedChild) => searchedChild !== child);
+    this._children = this._children.filter(
+      searchedChild => searchedChild !== child
+    );
     child.clearParent();
   }
 
   removeAllChildren(): void {
-    this._children.forEach((child) => child.clearParent());
+    this._children.forEach(child => child.clearParent());
     this._children = [];
   }
 

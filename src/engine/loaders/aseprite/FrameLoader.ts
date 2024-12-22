@@ -35,7 +35,10 @@ export default class FrameLoader {
       const colorPallette = this.collorPalletteLoader.getColorPallette(0);
 
       const layers = this.loader.findFrameChunks<LayerChunk>(0, LAYER_CHUNK);
-      const celChunks = this.loader.findFrameChunks<CelChunk>(frameIndex, CEL_CHUNK);
+      const celChunks = this.loader.findFrameChunks<CelChunk>(
+        frameIndex,
+        CEL_CHUNK
+      );
 
       for (const celChunk of celChunks) {
         if (celChunk.cellType === LINKED_FRAME_CEL_TYPE) {

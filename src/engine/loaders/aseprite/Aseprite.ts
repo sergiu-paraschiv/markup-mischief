@@ -3,7 +3,6 @@ import AsepriteLoader from './AsepriteLoader';
 import FrameLoader from './FrameLoader';
 import TilemapLoader from './TilemapLoader';
 
-
 export default class Aseprite {
   private readonly frameLoader: FrameLoader;
   private readonly animationLoader: AnimationLoader;

@@ -20,7 +20,7 @@ export default class AnimationLoader {
       }
 
       const animationTag = tagsChunk.tags.find(
-        (tag) => tag.tagName.value === animationName
+        tag => tag.tagName.value === animationName
       );
       if (!animationTag) {
         throw Error(`Animation with name ${animationName} not found !`);

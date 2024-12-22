@@ -30,7 +30,7 @@ export default class Texture {
   static load(src: string): Texture {
     const texture = new Texture();
 
-    loadImageBitmap(src, (data) => {
+    loadImageBitmap(src, data => {
       texture.data = data;
       texture.width = data.width;
       texture.height = data.height;

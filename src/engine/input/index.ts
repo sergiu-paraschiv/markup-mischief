@@ -1,6 +1,10 @@
 import InputDevice from './InputDevice';
 import Keyboard, { KeyboardInputEvent, KeyAction } from './Keyboard';
-import Mouse, { MouseInputEvent, MouseButton, MouseButtonAction } from './Mouse';
+import Mouse, {
+  MouseInputEvent,
+  MouseButton,
+  MouseButtonAction,
+} from './Mouse';
 import InputMapper, { MappedInputEvent } from './InputMapper';
 import InputState from './InputState';
 

@@ -12,7 +12,7 @@ export default class AsepriteLoader {
       const response = await fetch(src);
       const buffer = await response.arrayBuffer();
 
-      aseprite.data = mainParser.parse(new Uint8Array(buffer) as any);
+      aseprite.data = mainParser.parse(new Uint8Array(buffer) as Buffer);
       if (aseprite.data.header.magicNumber !== 0xa5e0) {
         throw Error('Invalid Aseprite file header magic number!');
       }
@@ -28,11 +28,9 @@ export default class AsepriteLoader {
 
     const frameData = this.data.frames[frameIndex];
 
-    const chunks = frameData.chunks.filter(
-      (chunk) => chunk.chunkType === ofType
-    ) as unknown[];
+    const chunks = frameData.chunks.filter(chunk => chunk.chunkType === ofType);
 
-    return chunks.map((chunk) => (chunk as any).data) as T[];
+    return chunks.map(chunk => chunk.data) as T[];
   }
 
   findFrameChunk<T>(frameIndex: number, ofType: number): T | undefined {

@@ -3,7 +3,7 @@ import { PalletteV3Chunk, PALLETTE_CHUNK_V3 } from './AsepriteParser';
 
 type Color = [number, number, number, number];
 class ColorPallette {
-  private data: Map<number, Color> = new Map();
+  private data = new Map<number, Color>();
 
   get(index: number) {
     return this.data.get(index);

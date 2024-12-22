@@ -10,12 +10,12 @@ function traverseChildren(node: Element, action: (childNode: Element) => void) {
 // TODO: figure out how to cache this
 export default class Query {
   static childrenByType<T extends Element>(
-    type: new (...args: any[]) => T,
+    type: new (...args: never[]) => T,
     node: Element
   ): T[] {
     const foundNodes: T[] = [];
 
-    traverseChildren(node, (child) => {
+    traverseChildren(node, child => {
       if (child instanceof type) {
         foundNodes.push(child);
       }
@@ -25,7 +25,7 @@ export default class Query {
   }
 
   static parentByType<T extends Element>(
-    type: new (...args: any[]) => T,
+    type: new (...args: never[]) => T,
     node: Element
   ): T | undefined {
     if (node.parent instanceof type) {

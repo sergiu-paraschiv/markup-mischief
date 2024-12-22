@@ -9,7 +9,11 @@ export default class PixiRenderer implements IRenderer {
   private app: PIXI.Application;
   private rootElement?: Element;
 
-  constructor(private container: HTMLElement, private width: number, private height: number) {
+  constructor(
+    private container: HTMLElement,
+    private width: number,
+    private height: number
+  ) {
     this.app = new PIXI.Application();
   }
 
@@ -48,11 +52,11 @@ export default class PixiRenderer implements IRenderer {
     this.app.stage.addChild(fpsText);
 
     let currentTime = this.app.ticker.elapsedMS;
-    const spriteMap: Map<Sprite, PIXI.Sprite> = new Map();
-    const spriteTextureMap: Map<Sprite, Texture> = new Map();
-    const textureMap: Map<Texture, PIXI.Texture> = new Map();
+    const spriteMap = new Map<Sprite, PIXI.Sprite>();
+    const spriteTextureMap = new Map<Sprite, Texture>();
+    const textureMap = new Map<Texture, PIXI.Texture>();
 
-    this.app.ticker.add((time) => {
+    this.app.ticker.add(time => {
       if (!this.rootElement) {
         return;
       }
@@ -61,7 +65,7 @@ export default class PixiRenderer implements IRenderer {
       this.rootElement.dispatchEvent(new TickEvent(currentTime));
 
       const allSprites = Query.childrenByType(Sprite, this.rootElement);
-      const flaggedSprites: Map<Sprite, boolean> = new Map();
+      const flaggedSprites = new Map<Sprite, boolean>();
 
       for (const [sprite] of spriteMap) {
         flaggedSprites.set(sprite, false);
@@ -82,7 +86,9 @@ export default class PixiRenderer implements IRenderer {
 
           let loadedTexture = textureMap.get(sprite.texture);
           if (!loadedTexture) {
-            loadedTexture = PIXI.Texture.from(sprite.texture.toOffscreenCanvas());
+            loadedTexture = PIXI.Texture.from(
+              sprite.texture.toOffscreenCanvas()
+            );
             textureMap.set(sprite.texture, loadedTexture);
           }
           pixiSprite.texture = loadedTexture;

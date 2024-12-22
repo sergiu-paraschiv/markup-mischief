@@ -1,6 +1,7 @@
 import { Vector, Element, Query } from '@engine/core';
+import CanvasItem from './CanvasItem';
 
-export default class PositionedElement extends Element {
+export default class Node2D extends CanvasItem {
   private _position: Vector;
 
   constructor(position?: Vector, children?: Element[]) {
@@ -10,7 +11,7 @@ export default class PositionedElement extends Element {
   }
 
   get position() {
-    const positionedParent = Query.parentByType(PositionedElement, this);
+    const positionedParent = Query.parentByType(Node2D, this);
     if (positionedParent) {
       return positionedParent.position.add(this._position);
     }

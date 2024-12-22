@@ -37,7 +37,7 @@ export default class TilemapLoader {
           LAYER_CHUNK
         );
         const tilemapLayer = layers.find(
-          (layer) => layer.name.value === tilemapName
+          layer => layer.name.value === tilemapName
         );
         if (!tilemapLayer) {
           throw new Error(`Tilemap Layer with name ${tilemapName} not found!`);
