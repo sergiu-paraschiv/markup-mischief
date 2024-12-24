@@ -1,10 +1,10 @@
 import { Event } from '@engine/core';
-import IPhysicsSimulation from './IPhysicsSimulation';
+import RapierPhysicsSimulation from './RapierPhysicsSimulation';
 
 export default class PhysicsTickEvent extends Event {
   constructor(
     public readonly currentTime: number,
-    public readonly simulation: IPhysicsSimulation
+    public readonly simulation: RapierPhysicsSimulation
   ) {
     super();
     super.target = null;

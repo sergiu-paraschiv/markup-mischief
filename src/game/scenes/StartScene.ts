@@ -1,8 +1,8 @@
 import { Scene, Vector } from '@engine/core';
 import { Sprite } from '@engine/elements';
 import { Aseprite } from '@engine/loaders';
-import { Captain } from '@game/entities';
 import { PhysicsBody } from '@engine/physics';
+import { Captain } from '@game/entities';
 
 export default class StartScene extends Scene {
   constructor() {
@@ -24,16 +24,16 @@ export default class StartScene extends Scene {
       return terrainBody;
     }
 
-    this.addChild(makeTerrainTile(new Vector(0, 128)));
-    this.addChild(makeTerrainTile(new Vector(32, 128)));
-    this.addChild(makeTerrainTile(new Vector(64, 128)));
-    this.addChild(makeTerrainTile(new Vector(96, 128)));
-    this.addChild(makeTerrainTile(new Vector(128, 128)));
-    this.addChild(makeTerrainTile(new Vector(160, 128)));
-    this.addChild(makeTerrainTile(new Vector(192, 128)));
-    this.addChild(makeTerrainTile(new Vector(224, 128)));
-    this.addChild(makeTerrainTile(new Vector(64, 96)));
-    this.addChild(makeTerrainTile(new Vector(32, 64)));
+    this.addChild(makeTerrainTile(new Vector(0, 32 * 5)));
+    this.addChild(makeTerrainTile(new Vector(32, 32 * 5)));
+    this.addChild(makeTerrainTile(new Vector(32 * 2, 32 * 5)));
+    this.addChild(makeTerrainTile(new Vector(32 * 3, 32 * 5)));
+    this.addChild(makeTerrainTile(new Vector(32 * 4, 32 * 5)));
+    this.addChild(makeTerrainTile(new Vector(32 * 5, 32 * 5)));
+    this.addChild(makeTerrainTile(new Vector(32 * 6, 32 * 5)));
+    this.addChild(makeTerrainTile(new Vector(32 * 7, 32 * 5)));
+    this.addChild(makeTerrainTile(new Vector(32 * 2, 32 * 4)));
+    this.addChild(makeTerrainTile(new Vector(32, 32 * 3)));
 
     // const terrainDynBody = new PhysicsBody(new Vector(55, 0), true);
     // terrainDynBody.addChild(new Sprite(terrain.get(27)));

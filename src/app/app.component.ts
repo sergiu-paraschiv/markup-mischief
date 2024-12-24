@@ -1,10 +1,11 @@
 import { Component, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { Engine } from '@engine';
+import { Vector } from '@engine/core';
 import { Keyboard, Mouse } from '@engine/input';
 import { CanvasRenderer } from '@engine/renderer';
 import { RapierPhysicsSimulation } from '@engine/physics';
 import { Debugger } from '@debugger';
-import StartScene from '../game/scenes/StartScene';
+import { StartScene } from '@game/scenes';
 
 @Component({
   selector: 'app-root',
@@ -22,17 +23,17 @@ export class AppComponent implements AfterViewInit {
     }
 
     const engine = new Engine(
-      new CanvasRenderer(gameElement, 256, 192),
-      new RapierPhysicsSimulation(24, 192),
+      new Vector(256, 192),
+      new CanvasRenderer(gameElement, 4),
+      new RapierPhysicsSimulation(24),
       [new Keyboard(document.documentElement), new Mouse(gameElement)]
     );
 
-    const scene = new StartScene();
+    const dbgr = new Debugger();
+    dbgr.attachTo(engine);
 
+    const scene = new StartScene();
     engine.loadScene(scene);
     engine.start(144, 60);
-
-    const dbgr = new Debugger();
-    dbgr.attachToScene(scene);
   }
 }

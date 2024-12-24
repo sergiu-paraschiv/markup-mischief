@@ -1,25 +1,35 @@
 import RAPIER from '@dimforge/rapier2d-compat';
 import { Element, ElementAddedEvent, Vector, WorkLoop } from '@engine/core';
-import IPhysicsSimulation, { DebugLine } from './IPhysicsSimulation';
 import PhysicsTickEvent from './PhysicsTickEvent';
-import PhysicsImpulseEvent from './PhysicsImpulseEvent';
-import PhysicsBody, { PhysicsBodyType } from './PhysicsBody';
+import PhysicsBody from './PhysicsBody';
 
-export default class RapierPhysicsSimulation implements IPhysicsSimulation {
+export interface DebugLine {
+  from: Vector;
+  to: Vector;
+  color: string;
+}
+
+export default class RapierPhysicsSimulation {
+  private viewport?: Vector;
   private rootElement?: Element;
   private readonly workLoop: WorkLoop;
-  private world: RAPIER.World | undefined;
+  private _world: RAPIER.World | undefined;
 
-  constructor(
-    private readonly pixelsPerMeter: number,
-    private readonly heightAdjustment: number
-  ) {
+  constructor(private readonly pixelsPerMeter: number) {
     this.workLoop = new WorkLoop(this.step.bind(this));
 
     (async () => {
       await RAPIER.init();
-      this.world = new RAPIER.World({ x: 0.0, y: -9.81 });
+      this._world = new RAPIER.World({ x: 0.0, y: -9.81 });
     })();
+  }
+
+  get world() {
+    return this._world;
+  }
+
+  setViewport(viewport: Vector): void {
+    this.viewport = viewport;
   }
 
   setRootElement(element: Element): void {
@@ -28,103 +38,8 @@ export default class RapierPhysicsSimulation implements IPhysicsSimulation {
       ElementAddedEvent,
       event => {
         const pb = event.target;
-        if (this.world && pb instanceof PhysicsBody) {
-          const position = pb.collider.position;
-          const dimensions = pb.collider.dimensions;
-          const hw = dimensions.x / this.pixelsPerMeter / 2;
-          const hh = dimensions.y / this.pixelsPerMeter / 2;
-
-          const x = position.x / this.pixelsPerMeter;
-          const y =
-            (this.heightAdjustment - position.y - dimensions.y) /
-            this.pixelsPerMeter;
-
-          let colliderDesc = new RAPIER.ColliderDesc(new RAPIER.Cuboid(hw, hh));
-
-          if (pb.type === PhysicsBodyType.STATIC) {
-            colliderDesc.setTranslation(x + hw, y + hh);
-            this.world.createCollider(colliderDesc);
-          } else if (pb.type === PhysicsBodyType.DYNAMIC) {
-            colliderDesc.setMass(0.25);
-            const body = this.world.createRigidBody(
-              RAPIER.RigidBodyDesc.dynamic()
-                .lockRotations()
-                .setTranslation(x + hw, y + hh)
-            );
-
-            this.world.createCollider(colliderDesc, body);
-            pb.on(
-              PhysicsTickEvent,
-              () => {
-                const newPosition = body.translation();
-                pb.position = new Vector(
-                  (newPosition.x - hw) * this.pixelsPerMeter,
-                  this.heightAdjustment -
-                    (newPosition.y + hh) * this.pixelsPerMeter
-                );
-              },
-              true
-            );
-
-            pb.on(
-              PhysicsImpulseEvent,
-              event => {
-                body.applyImpulse(
-                  {
-                    x: event.impulse.x / this.pixelsPerMeter,
-                    y: event.impulse.y / this.pixelsPerMeter,
-                  },
-                  true
-                );
-              },
-              true
-            );
-          } else if (pb.type === PhysicsBodyType.CHARACTER) {
-            colliderDesc = new RAPIER.ColliderDesc(
-              new RAPIER.Capsule(hh / 2, hw / 2)
-            );
-            colliderDesc.setMass(0.25);
-            const body = this.world.createRigidBody(
-              RAPIER.RigidBodyDesc.dynamic()
-                .setDominanceGroup(10)
-                .lockRotations()
-                .setTranslation(x + hw, y + hh)
-            );
-
-            this.world.createCollider(colliderDesc, body);
-
-            pb.on(
-              PhysicsTickEvent,
-              () => {
-                const newPosition = body.translation();
-                pb.position = new Vector(
-                  (newPosition.x - hw) * this.pixelsPerMeter,
-                  this.heightAdjustment -
-                    (newPosition.y + hh) * this.pixelsPerMeter
-                );
-              },
-              true
-            );
-
-            pb.on(
-              PhysicsImpulseEvent,
-              event => {
-                let x = event.impulse.x / this.pixelsPerMeter;
-                let y = event.impulse.y / this.pixelsPerMeter;
-
-                if (Math.abs(body.linvel().x) > 4) {
-                  x = 0;
-                }
-
-                if (Math.abs(body.linvel().y) > 0.1) {
-                  y = 0;
-                }
-
-                body.applyImpulse({ x, y }, true);
-              },
-              true
-            );
-          }
+        if (this._world && pb instanceof PhysicsBody) {
+          pb.attachToSimulation(this);
         }
       },
       true
@@ -136,24 +51,20 @@ export default class RapierPhysicsSimulation implements IPhysicsSimulation {
   }
 
   getDebugInformation() {
-    if (!this.world) {
+    if (!this._world) {
       return [];
     }
 
     const lines: DebugLine[] = [];
-    const { vertices, colors } = this.world.debugRender();
+    const { vertices, colors } = this._world.debugRender();
 
     for (let i = 0; i < vertices.length / 4; i += 1) {
       lines.push({
-        from: new Vector(
-          Math.round(vertices[i * 4] * this.pixelsPerMeter),
-          this.heightAdjustment -
-            Math.round(vertices[i * 4 + 1] * this.pixelsPerMeter)
+        from: this.simToVpCoords(
+          new Vector(vertices[i * 4], vertices[i * 4 + 1])
         ),
-        to: new Vector(
-          Math.round(vertices[i * 4 + 2] * this.pixelsPerMeter),
-          this.heightAdjustment -
-            Math.round(vertices[i * 4 + 3] * this.pixelsPerMeter)
+        to: this.simToVpCoords(
+          new Vector(vertices[i * 4 + 2], vertices[i * 4 + 3])
         ),
         color: `rgba(${Math.floor(colors[i * 8] * 255)}, ${Math.floor(colors[i * 8 + 1] * 255)}, ${Math.floor(colors[i * 8 + 2] * 255)}, ${colors[i * 8 + 3]})`,
       });
@@ -163,12 +74,53 @@ export default class RapierPhysicsSimulation implements IPhysicsSimulation {
   }
 
   private step(currentTime: number) {
-    if (!this.rootElement || !this.world) {
+    if (!this.rootElement || !this._world) {
       return;
     }
 
-    this.world.step();
+    this._world.step();
 
     this.rootElement.dispatchEvent(new PhysicsTickEvent(currentTime, this));
+  }
+
+  vpToSimDim(c: Vector): Vector {
+    return c.div(this.pixelsPerMeter);
+  }
+
+  simToVpDim(c: Vector): Vector {
+    return c.mul(this.pixelsPerMeter);
+  }
+
+  vpToSimCoords(c: Vector, d: Vector): Vector {
+    const vh = this.viewport?.height || 0;
+    const simD = this.vpToSimDim(d).div(2);
+
+    let x = c.x / this.pixelsPerMeter;
+    let y = (vh - (c.y + d.height)) / this.pixelsPerMeter;
+
+    x += simD.width;
+    y += simD.height;
+
+    return new Vector(x, y);
+  }
+
+  simToVpCoords(c: Vector, d?: Vector): Vector {
+    const vh = this.viewport?.height || 0;
+    const vpC = this.simToVpDim(c);
+    let x = vpC.x;
+    let y = vpC.y;
+
+    y = vh - y;
+
+    if (d) {
+      const simD = d.div(2);
+      x -= simD.width;
+      y -= simD.height;
+    }
+
+    x = Math.round(x);
+    y = Math.round(y);
+
+    return new Vector(x, y);
   }
 }

@@ -30,6 +30,8 @@ export interface Animation {
 }
 
 export default class AnimatedSprite extends Node2D {
+  public flipH = false;
+  public flipV = false;
   private _frames: AnimationFrame[] = [];
   private frameIndex: number;
   private animationRepeatIndex: number;
@@ -55,6 +57,15 @@ export default class AnimatedSprite extends Node2D {
     this.animationRepeatIndex = animation.repeatTimes;
 
     this.on(TickEvent, this.onTick.bind(this), true);
+  }
+
+  static empty() {
+    return new AnimatedSprite({
+      frames: [],
+      direction: AnimationDirection.Forward,
+      repeat: AnimationRepeat.Default,
+      repeatTimes: 0,
+    });
   }
 
   private onTick(event: TickEvent) {
@@ -126,11 +137,24 @@ export default class AnimatedSprite extends Node2D {
 
   override draw(context: CanvasRenderingContext2D) {
     if (this._frames.length > this.frameIndex) {
-      context.drawImage(
-        this._frames[this.frameIndex].texture.data,
-        this.position.x,
-        this.position.y
-      );
+      const texture = this._frames[this.frameIndex].texture;
+
+      if (this.flipH || this.flipV) {
+        const scaleX = this.flipH ? -1 : 1;
+        const scaleY = this.flipV ? -1 : 1;
+        context.save();
+        context.scale(scaleX, scaleY);
+        context.drawImage(
+          texture.data,
+          scaleX * this.position.x,
+          this.position.y,
+          scaleX * texture.width,
+          texture.height
+        );
+        context.restore();
+      } else {
+        context.drawImage(texture.data, this.position.x, this.position.y);
+      }
     }
   }
 
@@ -140,5 +164,15 @@ export default class AnimatedSprite extends Node2D {
 
   override get height() {
     return this._frames[0].texture.height;
+  }
+
+  get animationDuration() {
+    let d = 0;
+
+    for (const frame of this._frames) {
+      d += frame.duration;
+    }
+
+    return d;
   }
 }

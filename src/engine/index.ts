@@ -1,3 +1,4 @@
 import Engine from './Engine';
+import SceneLoadedEvent from './SceneLoadedEvent';
 
-export { Engine };
+export { Engine, SceneLoadedEvent };
