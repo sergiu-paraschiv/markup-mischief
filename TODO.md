@@ -4,6 +4,7 @@
 [x] implement a GPU renderer - did, not faster
 [-] Physics system
 [x] Events might need to propagate up through parents too
-[?] level loader
+[ ] level designer
+[ ] game logic
 [ ] GUI
 [?] more levels

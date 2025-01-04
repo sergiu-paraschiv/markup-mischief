@@ -1,4 +1,4 @@
-type WorkFn = (currentTime: number) => void;
+type WorkFn = (currentTime: number, deltaTime: number) => void;
 
 export default class WorkLoop {
   private maxFps: number;
@@ -6,7 +6,10 @@ export default class WorkLoop {
   private startTime: number;
   private previousTime: number;
 
-  constructor(private readonly workFn: WorkFn) {
+  constructor(
+    private readonly workFn: WorkFn,
+    private readonly recouperateLostTime = true
+  ) {
     this.maxFps = 10;
     this.fpsInterval = this.computeFpsInterval();
     this.startTime = 0;
@@ -22,6 +25,10 @@ export default class WorkLoop {
     requestAnimationFrame(this.workLoop.bind(this));
   }
 
+  get expectedDeltaT() {
+    return this.fpsInterval;
+  }
+
   private workLoop(currentTime: number) {
     if (this.startTime === 0) {
       this.startTime = currentTime;
@@ -29,9 +36,12 @@ export default class WorkLoop {
 
     const deltaTime = currentTime - this.previousTime;
     if (deltaTime >= this.fpsInterval) {
-      this.previousTime = currentTime - (deltaTime % this.fpsInterval);
+      this.previousTime = currentTime;
+      if (this.recouperateLostTime) {
+        this.previousTime -= deltaTime % this.fpsInterval;
+      }
 
-      this.workFn(currentTime);
+      this.workFn(currentTime, deltaTime);
     }
 
     requestAnimationFrame(this.workLoop.bind(this));

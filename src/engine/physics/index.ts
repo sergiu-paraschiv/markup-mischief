@@ -1,6 +1,14 @@
-import RapierPhysicsSimulation, { DebugLine } from './RapierPhysicsSimulation';
+import PhysicsSimulation, { DebugLine } from './PhysicsSimulation';
 import PhysicsTickEvent from './PhysicsTickEvent';
-import PhysicsBody from './PhysicsBody';
+import CollisionObject from './CollisionObject';
+import StaticBody from './StaticBody';
+import DynamicBody from './DynamicBody';
 
-export { RapierPhysicsSimulation, PhysicsTickEvent, PhysicsBody };
+export {
+  PhysicsSimulation,
+  PhysicsTickEvent,
+  CollisionObject,
+  StaticBody,
+  DynamicBody,
+};
 export type { DebugLine };

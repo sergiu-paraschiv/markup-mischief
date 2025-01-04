@@ -26,11 +26,14 @@ export default class AnimationLoader {
         throw Error(`Animation with name ${animationName} not found !`);
       }
 
+      const frames = await this.frameLoader.getFrames(
+        animationTag.fromFrame,
+        animationTag.toFrame
+      );
+
       return {
-        frames: await this.frameLoader.getFrames(
-          animationTag.fromFrame,
-          animationTag.toFrame
-        ),
+        duration: frames.map(f => f.duration).reduce((a, b) => a + b, 0),
+        frames,
         direction: animationTag.loopAnimationDirection,
         repeat:
           animationTag.repeatAnimation <= 2 ? animationTag.repeatAnimation : 3,

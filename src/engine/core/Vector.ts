@@ -27,6 +27,10 @@ export default class Vector {
     return new Vector(this.x + otherVector.x, this.y + otherVector.y);
   }
 
+  sub(otherVector: Vector): Vector {
+    return this.add(otherVector.mul(-1));
+  }
+
   mul(a: number): Vector {
     return new Vector(this.x * a, this.y * a);
   }
@@ -38,4 +42,17 @@ export default class Vector {
   clone(): Vector {
     return new Vector(this.x, this.y);
   }
+
+  public get normal() {
+    return new Vector(normal(this.x), normal(this.y));
+  }
+}
+
+function normal(n: number) {
+  if (n > 0) {
+    return 1;
+  } else if (n < 0) {
+    return -1;
+  }
+  return 0;
 }

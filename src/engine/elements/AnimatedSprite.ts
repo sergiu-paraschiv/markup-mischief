@@ -23,6 +23,7 @@ export enum AnimationRepeat {
 }
 
 export interface Animation {
+  duration: number;
   frames: AnimationFrame[];
   direction: AnimationDirection;
   repeat: AnimationRepeat;
@@ -61,6 +62,7 @@ export default class AnimatedSprite extends Node2D {
 
   static empty() {
     return new AnimatedSprite({
+      duration: 0,
       frames: [],
       direction: AnimationDirection.Forward,
       repeat: AnimationRepeat.Default,
@@ -79,6 +81,10 @@ export default class AnimatedSprite extends Node2D {
 
     let deltaTime = event.currentTime - this.previousTime;
     let currentFrame = this._frames[this.frameIndex];
+    if (!currentFrame) {
+      return;
+    }
+
     let advancedFrames = 0;
 
     while (deltaTime >= currentFrame.duration) {
@@ -146,14 +152,18 @@ export default class AnimatedSprite extends Node2D {
         context.scale(scaleX, scaleY);
         context.drawImage(
           texture.data,
-          scaleX * this.position.x,
-          this.position.y,
+          scaleX * Math.floor(this.position.x),
+          Math.floor(this.position.y),
           scaleX * texture.width,
           texture.height
         );
         context.restore();
       } else {
-        context.drawImage(texture.data, this.position.x, this.position.y);
+        context.drawImage(
+          texture.data,
+          Math.floor(this.position.x),
+          Math.floor(this.position.y)
+        );
       }
     }
   }
@@ -167,12 +177,6 @@ export default class AnimatedSprite extends Node2D {
   }
 
   get animationDuration() {
-    let d = 0;
-
-    for (const frame of this._frames) {
-      d += frame.duration;
-    }
-
-    return d;
+    return this.animation.duration;
   }
 }

@@ -10,7 +10,7 @@ import {
 } from './AsepriteParser';
 import ColorPalletteLoader from './ColorPalletteLoader';
 
-type TileMap = Map<number, Texture>;
+export type TileMap = Map<number, Texture>;
 
 export default class TilemapLoader {
   private static tilemapCache = new AsepriteCache<TileMap>();

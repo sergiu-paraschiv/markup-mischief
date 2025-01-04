@@ -1,52 +1,49 @@
 import { Scene, Vector } from '@engine/core';
 import { Sprite } from '@engine/elements';
-import { Aseprite } from '@engine/loaders';
-import { PhysicsBody } from '@engine/physics';
+import { StaticBody } from '@engine/physics';
 import { Captain } from '@game/entities';
+import { Assets } from '@game';
 
 export default class StartScene extends Scene {
   constructor() {
     super();
 
-    this.init();
-  }
-
-  private async init() {
-    const islandAseprite = await Aseprite.load(
-      '/sprites/Treasure Hunters/Palm Tree Island/Aseprite/Palm Tree Island (ArtBoard).aseprite'
-    );
-    islandAseprite.ignoreLayers(['Grid']);
-    const terrain = await islandAseprite.getTilemap('Terrain');
-
-    function makeTerrainTile(position: Vector) {
-      const terrainBody = new PhysicsBody(position);
-      terrainBody.addChild(new Sprite(terrain.get(27)));
-      return terrainBody;
+    function makeEdgeTile(position: Vector) {
+      const body = new StaticBody(position);
+      body.addChild(
+        new Sprite(Assets.tilemap['Palm Tree Island Terrain'].get(27))
+      );
+      return body;
     }
 
-    this.addChild(makeTerrainTile(new Vector(0, 32 * 5)));
-    this.addChild(makeTerrainTile(new Vector(32, 32 * 5)));
-    this.addChild(makeTerrainTile(new Vector(32 * 2, 32 * 5)));
-    this.addChild(makeTerrainTile(new Vector(32 * 3, 32 * 5)));
-    this.addChild(makeTerrainTile(new Vector(32 * 4, 32 * 5)));
-    this.addChild(makeTerrainTile(new Vector(32 * 5, 32 * 5)));
-    this.addChild(makeTerrainTile(new Vector(32 * 6, 32 * 5)));
-    this.addChild(makeTerrainTile(new Vector(32 * 7, 32 * 5)));
-    this.addChild(makeTerrainTile(new Vector(32 * 2, 32 * 4)));
-    this.addChild(makeTerrainTile(new Vector(32, 32 * 3)));
+    function makePlatformTile(position: Vector) {
+      const body = new StaticBody(position);
+      body.setColliderDimensions(new Vector(32, 2));
+      body.addChild(
+        new Sprite(Assets.tilemap['Pirate Ship Platforms'].get(52))
+      );
+      return body;
+    }
 
-    // const terrainDynBody = new PhysicsBody(new Vector(55, 0), true);
-    // terrainDynBody.addChild(new Sprite(terrain.get(27)));
-    // this.addChild(terrainDynBody);
+    for (let i = 0; i < 8; i += 1) {
+      this.addChild(makeEdgeTile(new Vector(32 * i, 0)));
+      this.addChild(makeEdgeTile(new Vector(32 * i, 32 * 5)));
+    }
 
-    this.addChild(new Captain(new Vector(32, 0)));
+    for (let i = 1; i < 5; i += 1) {
+      this.addChild(makeEdgeTile(new Vector(0, 32 * i)));
+      this.addChild(makeEdgeTile(new Vector(32 * 7, 32 * i)));
+    }
 
-    // for (let i = 0; i < 100; i++) {
-    //   for (let j = 0; j < 100; j++) {
-    //     this.addChild(
-    //       new Captain(new Vector(i, j + 32))
-    //     );
-    //   }
-    // }
+    this.addChild(makeEdgeTile(new Vector(32 * 3, 32 * 4)));
+
+    this.addChild(makePlatformTile(new Vector(32 * 2, 32 * 4)));
+    this.addChild(makePlatformTile(new Vector(32, 32 * 3)));
+
+    // this.addChild(new Captain(new Vector(35 * 3, 32)));
+
+    for (let j = 1; j < 7; j++) {
+      this.addChild(new Captain(new Vector(j * 32, 32)));
+    }
   }
 }
