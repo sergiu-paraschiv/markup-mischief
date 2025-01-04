@@ -19,10 +19,9 @@ export default class Assets {
     );
     Assets.aseprite['Pirate Ship'].ignoreLayers(['Grid']);
 
-    Assets.aseprite['Wood and Paper'] = await Aseprite.load(
-      '/sprites/Treasure Hunters/Wood and Paper UI/Aseprite/Wood and Paper.aseprite'
+    Assets.aseprite['Paper'] = await Aseprite.load(
+      '/sprites/Treasure Hunters/Wood and Paper UI/Aseprite/Paper.aseprite'
     );
-    Assets.aseprite['Wood and Paper'].ignoreLayers(['Grid']);
 
     Assets.aseprite['Chars'] = await Aseprite.load(
       '/sprites/Treasure Hunters/Wood and Paper UI/Aseprite/Chars.aseprite'
@@ -55,8 +54,8 @@ export default class Assets {
     Assets.animation['Captain Clown Nose Run'] =
       await Assets.aseprite['Captain Clown Nose'].getAnimation('Run');
 
-    Assets.tilemap['Wood and Paper'] =
-      await Assets.aseprite['Wood and Paper'].getTilemap('Wood and Paper');
+    Assets.tilemap['Paper'] =
+      await Assets.aseprite['Paper'].getTilemap('Paper');
 
     Assets.tilemap['Chars'] =
       await Assets.aseprite['Chars'].getTilemap('Chars');

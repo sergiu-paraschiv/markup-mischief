@@ -5,6 +5,6 @@
 [x] Physics system
 [x] Events might need to propagate up through parents too
 [ ] level designer
-[-] game logic
+[x] game logic
 [ ] GUI
 [?] more levels

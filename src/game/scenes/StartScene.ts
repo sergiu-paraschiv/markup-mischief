@@ -1,4 +1,4 @@
-import { Scene, Vector } from '@engine/core';
+import { Query, Scene, Vector } from '@engine/core';
 import { Sprite } from '@engine/elements';
 import { StaticBody } from '@engine/physics';
 import { Captain, Tag } from '@game/entities';
@@ -83,9 +83,9 @@ export default class StartScene extends Scene {
     const captain = new Captain(new Vector(35 * 3, 32));
     this.addChild(captain);
 
-    this.addChild(makeTagTile(new Vector(130, 32), '<em>'));
+    this.addChild(makeTagTile(new Vector(180, 32), '<em>'));
+    this.addChild(makeTagTile(new Vector(130, 32), '</em>'));
     this.addChild(makeTagTile(new Vector(160, 32), 'text'));
-    this.addChild(makeTagTile(new Vector(190, 32), '</em>'));
 
     this.on(
       CaptainDropEvent,
@@ -118,6 +118,28 @@ export default class StartScene extends Scene {
       () => {
         if (grabbedTag) {
           grabbedTag.position = captain.position.add(new Vector(10, 18));
+        } else {
+          const tags = Query.childrenByType(Tag, this);
+          tags.sort((a, b) => {
+            if (a.position.y > b.position.y) {
+              return 1;
+            } else if (a.position.y < b.position.y) {
+              return -1;
+            }
+
+            if (a.position.x > b.position.x) {
+              return 1;
+            } else if (a.position.x < b.position.x) {
+              return -1;
+            }
+
+            return 0;
+          });
+
+          const html = tags.map(tag => tag.text).join(' ');
+          if (html === '<em> text </em>') {
+            console.log('win');
+          }
         }
       },
       true
