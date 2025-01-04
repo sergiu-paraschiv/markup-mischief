@@ -15,7 +15,7 @@ export interface DebugLine {
   color: string;
 }
 
-type ColliderCheckFn = (collider: CollisionObject) => boolean;
+export type ColliderCheckFn = (collider: CollisionObject) => boolean;
 
 export default class PhysicsSimulation {
   private viewport?: Vector;
@@ -102,7 +102,9 @@ export default class PhysicsSimulation {
         drawBox(
           collisionObject.collider.position,
           collisionObject.collider.dimensions,
-          `rgba(172, 144, 0, 0.5)`
+          collisionObject.sleeping
+            ? `rgba(199, 198, 194, 0.5)`
+            : `rgba(172, 144, 0, 0.5)`
         );
       }
 
@@ -168,18 +170,17 @@ export default class PhysicsSimulation {
       Math.max(r1Top, r2Top) < Math.min(r1Bottom, r2Bottom);
 
     if (intersection) {
-      return true;
+      return collisionObject;
     }
 
-    return false;
+    return undefined;
   }
 
   checkFutureCollisionX(
-    position: Vector,
+    checkedObject: CollisionObject,
     velocity: Vector,
-    colliderDimensions: Vector,
     colliderCheckFn?: ColliderCheckFn,
-    debugKey?: string
+    disableOtherColliderChecks?: boolean
   ) {
     if (!this.rootElement) {
       return undefined;
@@ -189,19 +190,32 @@ export default class PhysicsSimulation {
       CollisionObject,
       this.rootElement
     );
-    const futurePosition = position.add(velocity);
+    const futurePosition = checkedObject.collider.position.add(velocity);
     const r1Left = futurePosition.x;
-    const r1Right = futurePosition.x + colliderDimensions.x;
+    const r1Right = futurePosition.x + checkedObject.collider.dimensions.x;
 
     for (const collisionObject of collisionObjects) {
-      if (colliderCheckFn && !colliderCheckFn(collisionObject)) {
+      if (
+        !disableOtherColliderChecks &&
+        colliderCheckFn &&
+        !colliderCheckFn(collisionObject)
+      ) {
+        continue;
+      }
+
+      if (
+        !collisionObject.filterCollision({
+          velocity,
+          collider: checkedObject,
+        })
+      ) {
         continue;
       }
 
       const intersection = this.checkFutureIntersection(
-        position,
+        checkedObject.collider.position,
         velocity,
-        colliderDimensions,
+        checkedObject.collider.dimensions,
         collisionObject
       );
 
@@ -221,7 +235,7 @@ export default class PhysicsSimulation {
               // console.log(debugKey, '+dx', distanceX);
 
               this.lastCollisionObjects.x = [
-                { position, dimensions: colliderDimensions },
+                checkedObject.collider,
                 collisionObject.collider,
               ];
 
@@ -240,7 +254,7 @@ export default class PhysicsSimulation {
               // console.log(debugKey, '-dx', distanceX);
 
               this.lastCollisionObjects.x = [
-                { position, dimensions: colliderDimensions },
+                checkedObject.collider,
                 collisionObject.collider,
               ];
 
@@ -260,11 +274,10 @@ export default class PhysicsSimulation {
   }
 
   checkFutureCollisionY(
-    position: Vector,
+    checkedObject: CollisionObject,
     velocity: Vector,
-    colliderDimensions: Vector,
     colliderCheckFn?: ColliderCheckFn,
-    debugKey?: string
+    disableOtherColliderChecks?: boolean
   ) {
     if (!this.rootElement) {
       return undefined;
@@ -274,23 +287,32 @@ export default class PhysicsSimulation {
       CollisionObject,
       this.rootElement
     );
-    const futurePosition = position.add(velocity);
+    const futurePosition = checkedObject.collider.position.add(velocity);
     const r1Top = futurePosition.y;
-    const r1Bottom = futurePosition.y + colliderDimensions.y;
+    const r1Bottom = futurePosition.y + checkedObject.collider.dimensions.y;
 
     for (const collisionObject of collisionObjects) {
-      if (colliderCheckFn && !colliderCheckFn(collisionObject)) {
+      if (
+        !disableOtherColliderChecks &&
+        colliderCheckFn &&
+        !colliderCheckFn(collisionObject)
+      ) {
         continue;
       }
 
-      if (!collisionObject.filterCollision(velocity)) {
+      if (
+        !collisionObject.filterCollision({
+          velocity,
+          collider: checkedObject,
+        })
+      ) {
         continue;
       }
 
       const intersection = this.checkFutureIntersection(
-        position,
+        checkedObject.collider.position,
         velocity,
-        colliderDimensions,
+        checkedObject.collider.dimensions,
         collisionObject
       );
 
@@ -310,7 +332,7 @@ export default class PhysicsSimulation {
               // console.log(debugKey, '+dy', distanceY);
 
               this.lastCollisionObjects.y = [
-                { position, dimensions: colliderDimensions },
+                checkedObject.collider,
                 collisionObject.collider,
               ];
 
@@ -329,7 +351,7 @@ export default class PhysicsSimulation {
               // console.log(debugKey, '-dy', distanceY);
 
               this.lastCollisionObjects.y = [
-                { position, dimensions: colliderDimensions },
+                checkedObject.collider,
                 collisionObject.collider,
               ];
 

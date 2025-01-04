@@ -1,7 +1,7 @@
 import { Vector } from '@engine/core';
 import { AnimatedSprite, Node2D } from '@engine/elements';
-import CharacterController from './CharacterController';
 import { Assets } from '@game';
+import CharacterController from './CharacterController';
 
 enum Stance {
   IDLE = 'Captain Clown Nose Idle',
@@ -35,15 +35,17 @@ export default class Captain extends CharacterController {
   protected override switchStance(currentTime: number) {
     let newStance = Stance.IDLE;
 
-    if (this.avgVelocity.y > 1) {
+    const velocity = this.avgVelocity();
+
+    if (velocity.y > 1) {
       newStance = Stance.FALLING;
-    } else if (this.avgVelocity.y < -1) {
+    } else if (velocity.y < -1) {
       newStance = Stance.JUMPING;
     }
 
-    if (this.avgVelocity.x > 1) {
+    if (velocity.x > 1) {
       this.pointing = Pointing.RIGHT;
-    } else if (this.avgVelocity.x < -1) {
+    } else if (velocity.x < -1) {
       this.pointing = Pointing.LEFT;
     }
 
@@ -60,8 +62,8 @@ export default class Captain extends CharacterController {
 
     if (
       newStance !== Stance.GROUND &&
-      Math.abs(this.avgVelocity.y) < 1 &&
-      Math.abs(this.avgVelocity.x) > 1
+      Math.abs(velocity.y) < 1 &&
+      Math.abs(velocity.x) > 1
     ) {
       newStance = Stance.RUNNING;
     }

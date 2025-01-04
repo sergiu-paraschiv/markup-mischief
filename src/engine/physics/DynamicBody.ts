@@ -1,11 +1,23 @@
-import { Vector } from '@engine/core';
+import { Query, Vector } from '@engine/core';
 import CollisionObject from './CollisionObject';
 import AfterPhysicsTickEvent from './AfterPhysicsTickEvent';
 import PhysicsTickEvent from './PhysicsTickEvent';
+import { ColliderCheckFn } from './PhysicsSimulation';
 
 export default class DynamicBody extends CollisionObject {
   private _impulse = new Vector(0, 0);
-  private avgVelAcc = [new Vector(0, 0), new Vector(0, 0), new Vector(0, 0)];
+  private avgVelAcc = [
+    new Vector(0, 0),
+    new Vector(0, 0),
+    new Vector(0, 0),
+    new Vector(0, 0),
+    new Vector(0, 0),
+    new Vector(0, 0),
+    new Vector(0, 0),
+    new Vector(0, 0),
+    new Vector(0, 0),
+    new Vector(0, 0),
+  ];
 
   constructor(position?: Vector) {
     super(position);
@@ -13,7 +25,7 @@ export default class DynamicBody extends CollisionObject {
     this.on(
       PhysicsTickEvent,
       e => {
-        if (this.sim) {
+        if (this.sim && !this._sleeping) {
           this.applyDrag();
           this.applyImpulse(this.sim.gravity, e.deltaTime);
         }
@@ -24,6 +36,10 @@ export default class DynamicBody extends CollisionObject {
     this.on(
       AfterPhysicsTickEvent,
       e => {
+        if (this._sleeping) {
+          return;
+        }
+
         const totalMove = new Vector(0, 0);
         if (Math.abs(this._impulse.x) < 1) {
           this._impulse = new Vector(0, this._impulse.y);
@@ -35,11 +51,7 @@ export default class DynamicBody extends CollisionObject {
 
         if (this._impulse.x !== 0 || this._impulse.y !== 0) {
           const velocity = this.velocityDelta(this._impulse, e.deltaTime);
-          const hit = this.checkHit(
-            this._impulse,
-            e.deltaTime,
-            'AfterPhysicsTickEvent'
-          );
+          const hit = this.checkHit(this._impulse, e.deltaTime);
 
           if (this._impulse.normal.x !== 0) {
             if (hit.x) {
@@ -68,8 +80,15 @@ export default class DynamicBody extends CollisionObject {
           }
         }
 
-        this.avgVelAcc.shift();
-        this.avgVelAcc.push(totalMove);
+        this.avgVelAcc.pop();
+        this.avgVelAcc.unshift(totalMove);
+
+        if (this.canSleep) {
+          const avgVel = this.avgVelocity(9);
+          if (avgVel.x === 0 && avgVel.y === 0) {
+            this._sleeping = true;
+          }
+        }
       },
       true
     );
@@ -80,12 +99,14 @@ export default class DynamicBody extends CollisionObject {
   }
 
   applyImpulse(impulse: Vector, deltaTime?: number) {
+    this._sleeping = false;
+
     if (deltaTime === undefined) {
       deltaTime = this.sim?.expectedDeltaT || 0;
     }
 
     const newImpulse = this._impulse.add(impulse);
-    const hit = this.checkHit(newImpulse, deltaTime, 'applyImpulse');
+    const hit = this.checkHit(newImpulse, deltaTime);
 
     if (impulse.normal.x !== 0 && !hit.x) {
       this._impulse.x = newImpulse.x;
@@ -104,51 +125,72 @@ export default class DynamicBody extends CollisionObject {
     );
   }
 
-  // clampVelocity() {
-  //   if (!this.sim) {
-  //     return;
-  //   }
-
-  //   if (Math.abs(this._impulse.x) > this.sim.maxVelocity.x) {
-  //     this._impulse.x = this.sim.maxVelocity.x * this._impulse.normal.x;
-  //   }
-
-  //   if (Math.abs(this._impulse.y) > this.sim.maxVelocity.y) {
-  //     this._impulse.y = this.sim.maxVelocity.y * this._impulse.normal.y;
-  //   }
-  // }
-
-  checkHit(velocity: Vector, deltaTime: number, debugKey?: string) {
+  checkHit(
+    velocity: Vector,
+    deltaTime: number,
+    colliderCheckFn?: ColliderCheckFn,
+    disableOtherColliderChecks?: boolean
+  ) {
     return {
       x: this.sim?.checkFutureCollisionX(
-        this.collider.position,
+        this,
         this.velocityDelta(velocity, deltaTime),
-        this.collider.dimensions,
-        this.colliderCheck,
-        debugKey
+        collider =>
+          this.colliderCheck(collider) &&
+          (colliderCheckFn ? colliderCheckFn(collider) : true),
+        disableOtherColliderChecks
       ),
       y: this.sim?.checkFutureCollisionY(
-        this.collider.position,
+        this,
         this.velocityDelta(velocity, deltaTime),
-        this.collider.dimensions,
-        this.colliderCheck,
-        debugKey
+        collider =>
+          this.colliderCheck(collider) &&
+          (colliderCheckFn ? colliderCheckFn(collider) : true),
+        disableOtherColliderChecks
       ),
     };
   }
 
+  checkCurrentIntersection(colliderCheckFn?: ColliderCheckFn) {
+    const collisionObjects = Query.childrenByType(
+      CollisionObject,
+      this.rootElement
+    );
+
+    for (const collisionObject of collisionObjects) {
+      if (colliderCheckFn && !colliderCheckFn(collisionObject)) {
+        continue;
+      }
+
+      const intersects = this.sim?.checkFutureIntersection(
+        this.collider.position,
+        new Vector(0, 0),
+        this.collider.dimensions,
+        collisionObject
+      );
+
+      if (intersects) {
+        return intersects;
+      }
+    }
+
+    return undefined;
+  }
+
   isGrounded() {
-    const hit = this.checkHit(new Vector(0, 1), 1000, 'isGrounded');
+    const hit = this.checkHit(new Vector(0, 1), 1000);
     return !!hit.y;
   }
 
-  get avgVelocity() {
+  avgVelocity(numSamples = 3) {
     const avg = new Vector(0, 0);
-    for (const v of this.avgVelAcc) {
+    numSamples = Math.min(numSamples, 9);
+    const samples = this.avgVelAcc.slice(0, numSamples);
+    for (const v of samples) {
       avg.x += v.x;
       avg.y += v.y;
     }
-    return avg.div(this.avgVelAcc.length);
+    return avg.div(numSamples);
   }
 
   private colliderCheck(collider: CollisionObject) {

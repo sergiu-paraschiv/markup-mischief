@@ -2,13 +2,19 @@ import { Vector, Query } from '@engine/core';
 import { Node2D } from '@engine/elements';
 import PhysicsSimulation from './PhysicsSimulation';
 
-type FilterCollisionFn = (velocity: Vector) => boolean;
+interface CollisionFilterData {
+  collider: CollisionObject;
+  velocity: Vector;
+}
+type FilterCollisionFn = (data: CollisionFilterData) => boolean;
 
 export default class CollisionObject extends Node2D {
+  protected sim: PhysicsSimulation | undefined;
   private _colliderDimensions: Vector | undefined;
   private _colliderOffset: Vector | undefined;
-  protected sim: PhysicsSimulation | undefined;
   private _filterCollision: FilterCollisionFn | undefined;
+  protected _sleeping = false;
+  private _canSleep = false;
 
   constructor(position?: Vector) {
     super(position);
@@ -19,8 +25,8 @@ export default class CollisionObject extends Node2D {
     let height = this.height;
 
     for (const child of Query.childrenByType(Node2D, this)) {
-      height = Math.max(width, child.width);
-      width = Math.max(height, child.height);
+      width = Math.max(width, child.width);
+      height = Math.max(height, child.height);
     }
 
     return new Vector(width, height);
@@ -52,11 +58,27 @@ export default class CollisionObject extends Node2D {
     this.sim = sim;
   }
 
-  filterCollision(velocity: Vector): boolean {
+  filterCollision(data: CollisionFilterData): boolean {
     if (this._filterCollision) {
-      return this._filterCollision(velocity);
+      return this._filterCollision(data);
     }
 
     return true;
+  }
+
+  get sleeping() {
+    return this._sleeping;
+  }
+
+  wakeUp() {
+    this._sleeping = false;
+  }
+
+  get canSleep() {
+    return this._canSleep;
+  }
+
+  set canSleep(canSleep: boolean) {
+    this._canSleep = canSleep;
   }
 }

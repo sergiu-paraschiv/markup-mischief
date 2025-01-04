@@ -3,11 +3,12 @@ import { KeyboardInputEvent, InputState, KeyAction } from '@engine/input';
 import { DynamicBody, PhysicsTickEvent } from '@engine/physics';
 import AfterPhysicsTickEvent from 'engine/physics/AfterPhysicsTickEvent';
 
-enum Input {
+export enum CharacterInput {
   UP = 0,
   LEFT = 1,
   RIGHT = 2,
   DROP = 3,
+  GRAB = 4,
 }
 
 export class CaptainDropEvent extends Event {
@@ -16,81 +17,103 @@ export class CaptainDropEvent extends Event {
   }
 }
 
+export class CaptainGrabEvent extends Event {}
+
 export default class CharacterController extends DynamicBody {
+  protected input: InputState;
+
   constructor(initialPosition: Vector) {
     super(initialPosition);
 
     // this.setMaxVelocity(new Vector(96, 0));
 
-    const input = new InputState(this);
-    input.setOn(Input.UP).when({
+    this.input = new InputState(this);
+    this.input.setOn(CharacterInput.UP).when({
       type: KeyboardInputEvent,
       condition: event =>
         event.action === KeyAction.DOWN && event.key === 'ArrowUp',
     });
-    input.setOff(Input.UP).when({
+    this.input.setOff(CharacterInput.UP).when({
       type: KeyboardInputEvent,
       condition: event =>
         event.action === KeyAction.UP && event.key === 'ArrowUp',
     });
 
-    input.setOn(Input.DROP).when({
+    this.input.setOn(CharacterInput.DROP).when({
       type: KeyboardInputEvent,
       condition: event =>
         event.action === KeyAction.DOWN && event.key === 'ArrowDown',
     });
-    input.setOff(Input.DROP).when({
+    this.input.setOff(CharacterInput.DROP).when({
       type: KeyboardInputEvent,
       condition: event =>
         event.action === KeyAction.UP && event.key === 'ArrowDown',
     });
 
-    input.setOn(Input.LEFT).when({
+    this.input.setOn(CharacterInput.LEFT).when({
       type: KeyboardInputEvent,
       condition: event =>
         event.action === KeyAction.DOWN && event.key === 'ArrowLeft',
     });
-    input.setOff(Input.LEFT).when({
+    this.input.setOff(CharacterInput.LEFT).when({
       type: KeyboardInputEvent,
       condition: event =>
         event.action === KeyAction.UP && event.key === 'ArrowLeft',
     });
 
-    input.setOn(Input.RIGHT).when({
+    this.input.setOn(CharacterInput.RIGHT).when({
       type: KeyboardInputEvent,
       condition: event =>
         event.action === KeyAction.DOWN && event.key === 'ArrowRight',
     });
-    input.setOff(Input.RIGHT).when({
+    this.input.setOff(CharacterInput.RIGHT).when({
       type: KeyboardInputEvent,
       condition: event =>
         event.action === KeyAction.UP && event.key === 'ArrowRight',
     });
 
+    this.input.setOn(CharacterInput.GRAB).when({
+      type: KeyboardInputEvent,
+      condition: event => event.action === KeyAction.DOWN && event.key === ' ',
+    });
+    this.input.setOff(CharacterInput.GRAB).when({
+      type: KeyboardInputEvent,
+      condition: event => event.action === KeyAction.UP && event.key === ' ',
+    });
+
     let jumping = false;
     let dropping = false;
-    input.onChange(newState => {
-      if (newState.get(Input.UP) && this.isGrounded()) {
+    this.input.onChange(newState => {
+      if (newState.get(CharacterInput.UP) && this.isGrounded()) {
         jumping = true;
       }
 
-      if (newState.get(Input.DROP) && this.isGrounded()) {
+      if (newState.get(CharacterInput.DROP) && this.isGrounded()) {
         dropping = true;
         this.dispatchEvent(new CaptainDropEvent(true));
       } else if (dropping) {
         dropping = false;
         this.dispatchEvent(new CaptainDropEvent(false));
       }
+
+      if (newState.get(CharacterInput.GRAB) && this.isGrounded()) {
+        this.dispatchEvent(new CaptainGrabEvent());
+      }
     });
 
     this.on(
       PhysicsTickEvent,
       e => {
-        if (!(input.state.get(Input.LEFT) && input.state.get(Input.RIGHT))) {
-          if (input.state.get(Input.LEFT)) {
+        if (
+          !(
+            this.input.state.get(CharacterInput.LEFT) &&
+            this.input.state.get(CharacterInput.RIGHT)
+          )
+        ) {
+          if (this.input.state.get(CharacterInput.LEFT)) {
             this.applyImpulse(new Vector(-16, 0), e.deltaTime);
           }
-          if (input.state.get(Input.RIGHT)) {
+          if (this.input.state.get(CharacterInput.RIGHT)) {
             this.applyImpulse(new Vector(16, 0), e.deltaTime);
           }
         }
@@ -98,6 +121,10 @@ export default class CharacterController extends DynamicBody {
         if (jumping) {
           jumping = false;
           this.applyImpulse(new Vector(0, -32 * 9));
+        }
+
+        if (dropping) {
+          this.applyImpulse(new Vector(0, 32));
         }
       },
       true

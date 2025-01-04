@@ -1,15 +1,20 @@
-import { Scene, Vector } from '@engine/core';
+import { Query, Scene, Vector } from '@engine/core';
 import { Sprite } from '@engine/elements';
 import { StaticBody } from '@engine/physics';
-import { Captain } from '@game/entities';
+import { Captain, Tag } from '@game/entities';
 import { Assets } from '@game';
-import { CaptainDropEvent } from 'game/entities/CharacterController';
+import {
+  CaptainDropEvent,
+  CaptainGrabEvent,
+} from 'game/entities/CharacterController';
+import { TickEvent } from '@engine/renderer';
 
 export default class StartScene extends Scene {
   constructor() {
     super();
 
     let dropping = false;
+    let grabbedTag: Tag | undefined;
 
     function makeEdgeTile(position: Vector) {
       const body = new StaticBody(position);
@@ -27,14 +32,23 @@ export default class StartScene extends Scene {
         new Sprite(Assets.tilemap['Pirate Ship Platforms'].get(52))
       );
 
-      body.filterCollisionFn = velocity => {
-        if (!dropping && velocity.y > 0) {
-          return true;
+      body.filterCollisionFn = ({ velocity }) => {
+        if (dropping) {
+          return false;
         }
-        return false;
+
+        if (velocity.y <= 0) {
+          return false;
+        }
+
+        return true;
       };
 
       return body;
+    }
+
+    function makeTagTile(position: Vector, text: string) {
+      return new Tag(position, text);
     }
 
     for (let i = 0; i < 8; i += 1) {
@@ -52,16 +66,50 @@ export default class StartScene extends Scene {
     this.addChild(makePlatformTile(new Vector(32 * 2, 32 * 4)));
     this.addChild(makePlatformTile(new Vector(32, 32 * 3)));
 
-    this.addChild(new Captain(new Vector(35 * 3, 32)));
+    const captain = new Captain(new Vector(35 * 3, 32));
+    this.addChild(captain);
 
     // for (let j = 1; j < 7; j++) {
     //   this.addChild(new Captain(new Vector(j * 32, 32)));
     // }
 
+    this.addChild(makeTagTile(new Vector(130, 32), '<em>'));
+    this.addChild(makeTagTile(new Vector(160, 32), 'text'));
+    this.addChild(makeTagTile(new Vector(190, 32), '</em>'));
+
     this.on(
       CaptainDropEvent,
       event => {
         dropping = event.start;
+      },
+      true
+    );
+
+    this.on(
+      CaptainGrabEvent,
+      () => {
+        Query.childrenByType(Tag, this).forEach(tag => tag.wakeUp());
+
+        if (grabbedTag) {
+          grabbedTag = undefined;
+        } else {
+          const tag = captain.checkCurrentIntersection(
+            collider => collider instanceof Tag
+          );
+          if (tag) {
+            grabbedTag = tag as Tag;
+          }
+        }
+      },
+      true
+    );
+
+    this.on(
+      TickEvent,
+      () => {
+        if (grabbedTag) {
+          grabbedTag.position = captain.position;
+        }
       },
       true
     );
