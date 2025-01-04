@@ -1,4 +1,4 @@
-import { Query, Scene, Vector } from '@engine/core';
+import { Scene, Vector } from '@engine/core';
 import { Sprite } from '@engine/elements';
 import { StaticBody } from '@engine/physics';
 import { Captain, Tag } from '@game/entities';
@@ -32,12 +32,12 @@ export default class StartScene extends Scene {
         new Sprite(Assets.tilemap['Pirate Ship Platforms'].get(52))
       );
 
-      body.filterCollisionFn = ({ velocity }) => {
-        if (dropping) {
+      body.filterCollisionFn = ({ collider, velocity }) => {
+        if (collider instanceof Captain && dropping) {
           return false;
         }
 
-        if (velocity.y <= 0) {
+        if (collider instanceof Captain && velocity.y <= 0) {
           return false;
         }
 
@@ -48,7 +48,21 @@ export default class StartScene extends Scene {
     }
 
     function makeTagTile(position: Vector, text: string) {
-      return new Tag(position, text);
+      const tag = new Tag(position, text);
+
+      tag.filterCollisionFn = ({ collider, velocity }) => {
+        if (collider instanceof Captain && dropping) {
+          return false;
+        }
+
+        if (collider instanceof Captain && velocity.y <= 0) {
+          return false;
+        }
+
+        return true;
+      };
+
+      return tag;
     }
 
     for (let i = 0; i < 8; i += 1) {
@@ -69,10 +83,6 @@ export default class StartScene extends Scene {
     const captain = new Captain(new Vector(35 * 3, 32));
     this.addChild(captain);
 
-    // for (let j = 1; j < 7; j++) {
-    //   this.addChild(new Captain(new Vector(j * 32, 32)));
-    // }
-
     this.addChild(makeTagTile(new Vector(130, 32), '<em>'));
     this.addChild(makeTagTile(new Vector(160, 32), 'text'));
     this.addChild(makeTagTile(new Vector(190, 32), '</em>'));
@@ -88,12 +98,11 @@ export default class StartScene extends Scene {
     this.on(
       CaptainGrabEvent,
       () => {
-        Query.childrenByType(Tag, this).forEach(tag => tag.wakeUp());
-
         if (grabbedTag) {
           grabbedTag = undefined;
         } else {
-          const tag = captain.checkCurrentIntersection(
+          const tag = captain.checkFutureIntersection(
+            new Vector(0, 1),
             collider => collider instanceof Tag
           );
           if (tag) {
@@ -108,7 +117,7 @@ export default class StartScene extends Scene {
       TickEvent,
       () => {
         if (grabbedTag) {
-          grabbedTag.position = captain.position;
+          grabbedTag.position = captain.position.add(new Vector(10, 18));
         }
       },
       true
