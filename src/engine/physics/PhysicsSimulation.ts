@@ -174,7 +174,7 @@ export default class PhysicsSimulation {
     return false;
   }
 
-  checkFutureCollisionsX(
+  checkFutureCollisionX(
     position: Vector,
     velocity: Vector,
     colliderDimensions: Vector,
@@ -259,7 +259,7 @@ export default class PhysicsSimulation {
     return undefined;
   }
 
-  checkFutureCollisionsY(
+  checkFutureCollisionY(
     position: Vector,
     velocity: Vector,
     colliderDimensions: Vector,
@@ -280,6 +280,10 @@ export default class PhysicsSimulation {
 
     for (const collisionObject of collisionObjects) {
       if (colliderCheckFn && !colliderCheckFn(collisionObject)) {
+        continue;
+      }
+
+      if (!collisionObject.filterCollision(velocity)) {
         continue;
       }
 

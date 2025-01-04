@@ -120,14 +120,14 @@ export default class DynamicBody extends CollisionObject {
 
   checkHit(velocity: Vector, deltaTime: number, debugKey?: string) {
     return {
-      x: this.sim?.checkFutureCollisionsX(
+      x: this.sim?.checkFutureCollisionX(
         this.collider.position,
         this.velocityDelta(velocity, deltaTime),
         this.collider.dimensions,
         this.colliderCheck,
         debugKey
       ),
-      y: this.sim?.checkFutureCollisionsY(
+      y: this.sim?.checkFutureCollisionY(
         this.collider.position,
         this.velocityDelta(velocity, deltaTime),
         this.collider.dimensions,

@@ -1,4 +1,4 @@
-import { Vector } from '@engine/core';
+import { Vector, Event } from '@engine/core';
 import { KeyboardInputEvent, InputState, KeyAction } from '@engine/input';
 import { DynamicBody, PhysicsTickEvent } from '@engine/physics';
 import AfterPhysicsTickEvent from 'engine/physics/AfterPhysicsTickEvent';
@@ -7,6 +7,13 @@ enum Input {
   UP = 0,
   LEFT = 1,
   RIGHT = 2,
+  DROP = 3,
+}
+
+export class CaptainDropEvent extends Event {
+  constructor(public readonly start: boolean) {
+    super();
+  }
 }
 
 export default class CharacterController extends DynamicBody {
@@ -25,6 +32,17 @@ export default class CharacterController extends DynamicBody {
       type: KeyboardInputEvent,
       condition: event =>
         event.action === KeyAction.UP && event.key === 'ArrowUp',
+    });
+
+    input.setOn(Input.DROP).when({
+      type: KeyboardInputEvent,
+      condition: event =>
+        event.action === KeyAction.DOWN && event.key === 'ArrowDown',
+    });
+    input.setOff(Input.DROP).when({
+      type: KeyboardInputEvent,
+      condition: event =>
+        event.action === KeyAction.UP && event.key === 'ArrowDown',
     });
 
     input.setOn(Input.LEFT).when({
@@ -50,9 +68,18 @@ export default class CharacterController extends DynamicBody {
     });
 
     let jumping = false;
+    let dropping = false;
     input.onChange(newState => {
       if (newState.get(Input.UP) && this.isGrounded()) {
         jumping = true;
+      }
+
+      if (newState.get(Input.DROP) && this.isGrounded()) {
+        dropping = true;
+        this.dispatchEvent(new CaptainDropEvent(true));
+      } else if (dropping) {
+        dropping = false;
+        this.dispatchEvent(new CaptainDropEvent(false));
       }
     });
 

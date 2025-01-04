@@ -2,10 +2,13 @@ import { Vector, Query } from '@engine/core';
 import { Node2D } from '@engine/elements';
 import PhysicsSimulation from './PhysicsSimulation';
 
+type FilterCollisionFn = (velocity: Vector) => boolean;
+
 export default class CollisionObject extends Node2D {
   private _colliderDimensions: Vector | undefined;
   private _colliderOffset: Vector | undefined;
   protected sim: PhysicsSimulation | undefined;
+  private _filterCollision: FilterCollisionFn | undefined;
 
   constructor(position?: Vector) {
     super(position);
@@ -33,6 +36,10 @@ export default class CollisionObject extends Node2D {
     };
   }
 
+  set filterCollisionFn(fn: FilterCollisionFn | undefined) {
+    this._filterCollision = fn;
+  }
+
   setColliderOffset(offset: Vector | undefined) {
     this._colliderOffset = offset;
   }
@@ -43,5 +50,13 @@ export default class CollisionObject extends Node2D {
 
   attachToSimulation(sim: PhysicsSimulation) {
     this.sim = sim;
+  }
+
+  filterCollision(velocity: Vector): boolean {
+    if (this._filterCollision) {
+      return this._filterCollision(velocity);
+    }
+
+    return true;
   }
 }
