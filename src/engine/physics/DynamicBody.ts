@@ -22,76 +22,68 @@ export default class DynamicBody extends CollisionObject {
   constructor(position?: Vector) {
     super(position);
 
-    this.on(
-      PhysicsTickEvent,
-      e => {
-        if (this.sim && !this._sleeping) {
-          this.applyDrag();
-          this.applyImpulse(this.sim.gravity, e.deltaTime);
-        }
-      },
-      true
-    );
+    this.on(PhysicsTickEvent, e => {
+      if (this.sim && !this._sleeping) {
+        this.applyDrag();
+        this.applyImpulse(this.sim.gravity, e.deltaTime);
+      }
+    });
 
-    this.on(
-      AfterPhysicsTickEvent,
-      e => {
-        if (this._sleeping) {
-          return;
-        }
+    this.on(AfterPhysicsTickEvent, e => {
+      if (this._sleeping) {
+        return;
+      }
 
-        const totalMove = new Vector(0, 0);
-        if (Math.abs(this._impulse.x) < 1) {
-          this._impulse = new Vector(0, this._impulse.y);
-        }
+      const totalMove = new Vector(0, 0);
+      if (Math.abs(this._impulse.x) < 1) {
+        this._impulse = new Vector(0, this._impulse.y);
+      }
 
-        if (Math.abs(this._impulse.y) < 1) {
-          this._impulse = new Vector(this._impulse.x, 0);
-        }
+      if (Math.abs(this._impulse.y) < 1) {
+        this._impulse = new Vector(this._impulse.x, 0);
+      }
 
-        if (this._impulse.x !== 0 || this._impulse.y !== 0) {
-          const velocity = this.velocityDelta(this._impulse, e.deltaTime);
-          const hit = this.checkHit(this._impulse, e.deltaTime);
+      if (this._impulse.x !== 0 || this._impulse.y !== 0) {
+        const velocity = this.velocityDelta(this._impulse, e.deltaTime);
+        const hit = this.checkHit(this._impulse, e.deltaTime);
 
-          if (this._impulse.normal.x !== 0) {
-            if (hit.x) {
-              // console.log('x', hit.x.distance);
-              this.position = this.position.add(new Vector(hit.x.distance, 0));
-              this._impulse.x = 0;
-              totalMove.x += hit.x.distance;
-            } else {
-              this.position = this.position.add(new Vector(velocity.x, 0));
-              this._impulse.x -= velocity.x;
-              totalMove.x += velocity.x;
-            }
-          }
-
-          if (this._impulse.normal.y !== 0) {
-            if (hit.y) {
-              // console.log('y', hit.y.distance);
-              this.position = this.position.add(new Vector(0, hit.y.distance));
-              this._impulse.y = 0;
-              totalMove.y += hit.y.distance;
-            } else {
-              this.position = this.position.add(new Vector(0, velocity.y));
-              this._impulse.y -= velocity.y;
-              totalMove.y += velocity.y;
-            }
+        if (this._impulse.normal.x !== 0) {
+          if (hit.x) {
+            // console.log('x', hit.x.distance);
+            this.position = this.position.add(new Vector(hit.x.distance, 0));
+            this._impulse.x = 0;
+            totalMove.x += hit.x.distance;
+          } else {
+            this.position = this.position.add(new Vector(velocity.x, 0));
+            this._impulse.x -= velocity.x;
+            totalMove.x += velocity.x;
           }
         }
 
-        this.avgVelAcc.pop();
-        this.avgVelAcc.unshift(totalMove);
-
-        if (this.canSleep) {
-          const avgVel = this.avgVelocity(9);
-          if (avgVel.x === 0 && avgVel.y === 0) {
-            this._sleeping = true;
+        if (this._impulse.normal.y !== 0) {
+          if (hit.y) {
+            // console.log('y', hit.y.distance);
+            this.position = this.position.add(new Vector(0, hit.y.distance));
+            this._impulse.y = 0;
+            totalMove.y += hit.y.distance;
+          } else {
+            this.position = this.position.add(new Vector(0, velocity.y));
+            this._impulse.y -= velocity.y;
+            totalMove.y += velocity.y;
           }
         }
-      },
-      true
-    );
+      }
+
+      this.avgVelAcc.pop();
+      this.avgVelAcc.unshift(totalMove);
+
+      if (this.canSleep) {
+        const avgVel = this.avgVelocity(9);
+        if (avgVel.x === 0 && avgVel.y === 0) {
+          this._sleeping = true;
+        }
+      }
+    });
   }
 
   private applyDrag(dragCoeficient = 0.9) {

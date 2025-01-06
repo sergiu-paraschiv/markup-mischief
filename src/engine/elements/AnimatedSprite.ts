@@ -57,7 +57,7 @@ export default class AnimatedSprite extends Node2D {
 
     this.animationRepeatIndex = animation.repeatTimes;
 
-    this.on(TickEvent, this.onTick.bind(this), true);
+    this.on(TickEvent, this.onTick.bind(this));
   }
 
   static empty() {

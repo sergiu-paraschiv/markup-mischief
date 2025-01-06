@@ -25,15 +25,11 @@ export default class InputMapper extends EventEmitter {
   trigger(output: Output, meta?: string | number | object) {
     const whenThis = {
       when: <T extends InputEvent>(trigger: InputMapTrigger<T>) => {
-        this.element.on(
-          trigger.type,
-          event => {
-            if (trigger.condition(event)) {
-              this.handleEvent(new MappedInputEvent(output, meta));
-            }
-          },
-          true
-        );
+        this.element.on(trigger.type, event => {
+          if (trigger.condition(event)) {
+            this.handleEvent(new MappedInputEvent(output, meta));
+          }
+        });
 
         return whenThis;
       },

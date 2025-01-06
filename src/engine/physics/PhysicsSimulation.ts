@@ -44,16 +44,12 @@ export default class PhysicsSimulation {
       co.attachToSimulation(this);
     }
 
-    this.rootElement.on(
-      ElementAddedEvent,
-      event => {
-        const co = event.target;
-        if (co instanceof CollisionObject) {
-          co.attachToSimulation(this);
-        }
-      },
-      true
-    );
+    this.rootElement.on(ElementAddedEvent, event => {
+      const co = event.target;
+      if (co instanceof CollisionObject) {
+        co.attachToSimulation(this);
+      }
+    });
   }
 
   start(maxFps: number): void {

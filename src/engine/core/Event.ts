@@ -3,7 +3,6 @@ import Element from './Element';
 export enum EventPhase {
   CAPTURING,
   TARGETING,
-  BUBBLING,
 }
 
 export default class Event {
@@ -39,10 +38,6 @@ export default class Event {
 
   public capture() {
     this._phase = EventPhase.TARGETING;
-  }
-
-  public bubble() {
-    this._phase = EventPhase.BUBBLING;
   }
 
   public destroy() {

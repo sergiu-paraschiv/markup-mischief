@@ -87,62 +87,50 @@ export default class StartScene extends Scene {
     this.addChild(makeTagTile(new Vector(130, 32), '</em>'));
     this.addChild(makeTagTile(new Vector(160, 32), 'text'));
 
-    this.on(
-      CaptainDropEvent,
-      event => {
-        dropping = event.start;
-      },
-      true
-    );
+    this.on(CaptainDropEvent, event => {
+      dropping = event.start;
+    });
 
-    this.on(
-      CaptainGrabEvent,
-      () => {
-        if (grabbedTag) {
-          grabbedTag = undefined;
-        } else {
-          const tag = captain.checkFutureIntersection(
-            new Vector(0, 1),
-            collider => collider instanceof Tag
-          );
-          if (tag) {
-            grabbedTag = tag as Tag;
-          }
+    this.on(CaptainGrabEvent, () => {
+      if (grabbedTag) {
+        grabbedTag = undefined;
+      } else {
+        const tag = captain.checkFutureIntersection(
+          new Vector(0, 1),
+          collider => collider instanceof Tag
+        );
+        if (tag) {
+          grabbedTag = tag as Tag;
         }
-      },
-      true
-    );
+      }
+    });
 
-    this.on(
-      TickEvent,
-      () => {
-        if (grabbedTag) {
-          grabbedTag.position = captain.position.add(new Vector(10, 18));
-        } else {
-          const tags = Query.childrenByType(Tag, this);
-          tags.sort((a, b) => {
-            if (a.position.y > b.position.y) {
-              return 1;
-            } else if (a.position.y < b.position.y) {
-              return -1;
-            }
-
-            if (a.position.x > b.position.x) {
-              return 1;
-            } else if (a.position.x < b.position.x) {
-              return -1;
-            }
-
-            return 0;
-          });
-
-          const html = tags.map(tag => tag.text).join(' ');
-          if (html === '<em> text </em>') {
-            console.log('win');
+    this.on(TickEvent, () => {
+      if (grabbedTag) {
+        grabbedTag.position = captain.position.add(new Vector(10, 18));
+      } else {
+        const tags = Query.childrenByType(Tag, this);
+        tags.sort((a, b) => {
+          if (a.position.y > b.position.y) {
+            return 1;
+          } else if (a.position.y < b.position.y) {
+            return -1;
           }
+
+          if (a.position.x > b.position.x) {
+            return 1;
+          } else if (a.position.x < b.position.x) {
+            return -1;
+          }
+
+          return 0;
+        });
+
+        const html = tags.map(tag => tag.text).join(' ');
+        if (html === '<em> text </em>') {
+          console.log('win');
         }
-      },
-      true
-    );
+      }
+    });
   }
 }

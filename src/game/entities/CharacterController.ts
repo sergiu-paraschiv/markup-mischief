@@ -101,42 +101,34 @@ export default class CharacterController extends DynamicBody {
       }
     });
 
-    this.on(
-      PhysicsTickEvent,
-      e => {
-        if (
-          !(
-            this.input.state.get(CharacterInput.LEFT) &&
-            this.input.state.get(CharacterInput.RIGHT)
-          )
-        ) {
-          if (this.input.state.get(CharacterInput.LEFT)) {
-            this.applyImpulse(new Vector(-16, 0), e.deltaTime);
-          }
-          if (this.input.state.get(CharacterInput.RIGHT)) {
-            this.applyImpulse(new Vector(16, 0), e.deltaTime);
-          }
+    this.on(PhysicsTickEvent, e => {
+      if (
+        !(
+          this.input.state.get(CharacterInput.LEFT) &&
+          this.input.state.get(CharacterInput.RIGHT)
+        )
+      ) {
+        if (this.input.state.get(CharacterInput.LEFT)) {
+          this.applyImpulse(new Vector(-16, 0), e.deltaTime);
         }
-
-        if (jumping) {
-          jumping = false;
-          this.applyImpulse(new Vector(0, -32 * 9));
+        if (this.input.state.get(CharacterInput.RIGHT)) {
+          this.applyImpulse(new Vector(16, 0), e.deltaTime);
         }
+      }
 
-        if (dropping) {
-          this.applyImpulse(new Vector(0, 32));
-        }
-      },
-      true
-    );
+      if (jumping) {
+        jumping = false;
+        this.applyImpulse(new Vector(0, -32 * 9));
+      }
 
-    this.on(
-      AfterPhysicsTickEvent,
-      e => {
-        this.switchStance(e.currentTime);
-      },
-      true
-    );
+      if (dropping) {
+        this.applyImpulse(new Vector(0, 32));
+      }
+    });
+
+    this.on(AfterPhysicsTickEvent, e => {
+      this.switchStance(e.currentTime);
+    });
   }
 
   protected switchStance(currentTime: number) {

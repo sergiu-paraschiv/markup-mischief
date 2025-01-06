@@ -15,19 +15,15 @@ export default class Debugger extends CanvasItem {
   constructor() {
     super();
 
-    this.on(TickEvent, this.onTick.bind(this), true);
-    this.on(PhysicsTickEvent, this.onPhysicsTick.bind(this), true);
+    this.on(TickEvent, this.onTick.bind(this));
+    this.on(PhysicsTickEvent, this.onPhysicsTick.bind(this));
   }
 
   attachTo(engine: Engine) {
     this.engine = engine;
-    engine.on(
-      SceneLoadedEvent,
-      event => {
-        this.attachToScene(event.scene);
-      },
-      true
-    );
+    engine.on(SceneLoadedEvent, event => {
+      this.attachToScene(event.scene);
+    });
   }
 
   private attachToScene(scene: Element) {

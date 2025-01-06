@@ -18,17 +18,13 @@ export default class InputState extends EventEmitter {
     super();
 
     this.inputMapper = new InputMapper(element);
-    this.inputMapper.on(
-      MappedInputEvent,
-      event => {
-        const newState = event.meta === State.On;
-        if (newState !== this._state.get(event.type)) {
-          this._state.set(event.type, newState);
-          this.handleEvent(new StateChangeEvent());
-        }
-      },
-      true
-    );
+    this.inputMapper.on(MappedInputEvent, event => {
+      const newState = event.meta === State.On;
+      if (newState !== this._state.get(event.type)) {
+        this._state.set(event.type, newState);
+        this.handleEvent(new StateChangeEvent());
+      }
+    });
   }
 
   setOn(prop: Output) {
@@ -40,13 +36,9 @@ export default class InputState extends EventEmitter {
   }
 
   onChange(handler: (state: StateProps) => void) {
-    this.on(
-      StateChangeEvent,
-      () => {
-        handler(this._state);
-      },
-      true
-    );
+    this.on(StateChangeEvent, () => {
+      handler(this._state);
+    });
   }
 
   get state() {

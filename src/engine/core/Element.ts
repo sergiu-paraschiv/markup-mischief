@@ -93,8 +93,6 @@ export default class Element extends EventEmitter {
       if (event.propagationStopped) {
         return;
       }
-
-      event.bubble();
     }
 
     if (event.phase === EventPhase.CAPTURING) {
@@ -106,12 +104,6 @@ export default class Element extends EventEmitter {
         if (event.propagationStopped) {
           return;
         }
-      }
-    } else if (event.phase === EventPhase.BUBBLING) {
-      if (this.parent) {
-        this.parent.dispatchEvent(event);
-      } else {
-        event.destroy();
       }
     }
   }
