@@ -30,8 +30,16 @@ export default class Aseprite {
     return this.frameLoader.getFrames(startIndex, endIndex);
   }
 
+  getAnimationNames() {
+    return this.animationLoader.getAnimationNames();
+  }
+
   async getAnimation(animationName: string) {
     return this.animationLoader.getAnimation(animationName);
+  }
+
+  getTilemapNames(frameIndex = 0) {
+    return this.tilemapLoader.getTilemapNames(frameIndex);
   }
 
   async getTilemap(tilemapName: string, frameIndex = 0) {

@@ -19,7 +19,9 @@ export default class BasicLevelScene extends Scene {
     function makeEdgeTile(position: Vector) {
       const body = new StaticBody(position);
       body.addChild(
-        new Sprite(Assets.tilemap['Palm Tree Island Terrain'].get(27))
+        new Sprite(
+          Assets.aseprite['Palm Tree Island'].tilemaps['Terrain'].get(27)
+        )
       );
 
       return body;
@@ -29,7 +31,7 @@ export default class BasicLevelScene extends Scene {
       const body = new StaticBody(position);
       body.setColliderDimensions(new Vector(32, 2));
       body.addChild(
-        new Sprite(Assets.tilemap['Pirate Ship Platforms'].get(52))
+        new Sprite(Assets.aseprite['Pirate Ship'].tilemaps['Platforms'].get(52))
       );
 
       body.filterCollisionFn = ({ collider, velocity }) => {
@@ -83,9 +85,9 @@ export default class BasicLevelScene extends Scene {
     const captain = new Captain(new Vector(32 * 3, 32 * 2));
     this.addChild(captain);
 
-    // this.addChild(makeTagTile(new Vector(180, 32), '<em>'));
-    // this.addChild(makeTagTile(new Vector(130, 32), '</em>'));
-    // this.addChild(makeTagTile(new Vector(160, 32), 'text'));
+    this.addChild(makeTagTile(new Vector(50, 32), '<em>'));
+    this.addChild(makeTagTile(new Vector(130, 32), '</em>'));
+    this.addChild(makeTagTile(new Vector(180, 32), 'text'));
 
     this.on(CaptainDropEvent, event => {
       dropping = event.start;
@@ -103,6 +105,8 @@ export default class BasicLevelScene extends Scene {
           grabbedTag = tag as Tag;
         }
       }
+
+      Query.childrenByType(Tag, this).forEach(tag => tag.wakeUp());
     });
 
     this.on(TickEvent, () => {
@@ -128,7 +132,7 @@ export default class BasicLevelScene extends Scene {
 
         const html = tags.map(tag => tag.text).join(' ');
         if (html === '<em> text </em>') {
-          console.log('win');
+          // TODO: WIN!
         }
       }
     });

@@ -4,11 +4,11 @@ import { Assets } from '@game';
 import CharacterController from './CharacterController';
 
 enum Stance {
-  IDLE = 'Captain Clown Nose Idle',
-  JUMPING = 'Captain Clown Nose Jump',
-  FALLING = 'Captain Clown Nose Fall',
-  GROUND = 'Captain Clown Nose Ground',
-  RUNNING = 'Captain Clown Nose Run',
+  IDLE = 'Idle',
+  JUMPING = 'Jump',
+  FALLING = 'Fall',
+  GROUND = 'Ground',
+  RUNNING = 'Run',
 }
 
 enum Pointing {
@@ -55,7 +55,8 @@ export default class Captain extends CharacterController {
       newStance = Stance.GROUND;
     } else if (
       this.activeStance === Stance.GROUND &&
-      activeStanceDuration <= Assets.animation[Stance.GROUND].duration
+      activeStanceDuration <=
+        Assets.aseprite['Captain Clown Nose'].animations[Stance.GROUND].duration
     ) {
       newStance = Stance.GROUND;
     }
@@ -73,7 +74,11 @@ export default class Captain extends CharacterController {
       this.activeStance = newStance;
 
       this.gfx.removeAllChildren();
-      this.gfx.addChild(new AnimatedSprite(Assets.animation[newStance]));
+      this.gfx.addChild(
+        new AnimatedSprite(
+          Assets.aseprite['Captain Clown Nose'].animations[newStance]
+        )
+      );
     }
 
     if (this.gfx.children.length === 1) {

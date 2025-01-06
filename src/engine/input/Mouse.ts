@@ -26,9 +26,9 @@ export default class Mouse extends InputDevice {
   constructor(container: HTMLElement) {
     super();
 
-    container.addEventListener('contextmenu', event => {
-      event.preventDefault();
-    });
+    // container.addEventListener('contextmenu', event => {
+    //   event.preventDefault();
+    // });
 
     container.addEventListener('mousedown', this.eventHandler.bind(this));
     container.addEventListener('mouseup', this.eventHandler.bind(this));

@@ -6,14 +6,18 @@ import { DebugLine, PhysicsTickEvent } from '@engine/physics';
 import FpsCounter from './FpsCounter';
 
 export default class Debugger extends CanvasItem {
+  private debugLayer: HTMLDivElement;
   private engine: Engine | undefined;
   private previousScene: Element | undefined;
   private renderFpsCounter = new FpsCounter();
   private physicsFpsCounter = new FpsCounter();
   private debugLines: DebugLine[] = [];
 
-  constructor() {
+  constructor(container: HTMLElement) {
     super();
+
+    this.debugLayer = document.createElement('div');
+    container.appendChild(this.debugLayer);
 
     this.on(TickEvent, this.onTick.bind(this));
     this.on(PhysicsTickEvent, this.onPhysicsTick.bind(this));
@@ -71,12 +75,10 @@ export default class Debugger extends CanvasItem {
     context.rect(0, 0, VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
     context.stroke();
 
-    context.fillStyle = '#ddff55';
-    context.fillText(
-      `${this.renderFpsCounter.fps.toFixed(0)} / ${this.physicsFpsCounter.fps.toFixed(0)}`,
-      0,
-      10
-    );
+    const newText = `${this.renderFpsCounter.fps.toFixed(0)} / ${this.physicsFpsCounter.fps.toFixed(0)}`;
+    if (this.debugLayer.innerText !== newText) {
+      this.debugLayer.innerText = newText;
+    }
 
     for (const line of this.debugLines) {
       context.beginPath();

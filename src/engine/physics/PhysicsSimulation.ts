@@ -27,10 +27,7 @@ export default class PhysicsSimulation {
     y: { position: Vector; dimensions: Vector }[];
   } = { x: [], y: [] };
 
-  constructor(
-    public readonly gravity = new Vector(0, 1024),
-    public readonly maxVelocity = new Vector(128, 128)
-  ) {
+  constructor(public readonly gravity = new Vector(0, 1024)) {
     this.workLoop = new WorkLoop(this.step.bind(this));
   }
 

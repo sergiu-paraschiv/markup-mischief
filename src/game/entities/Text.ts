@@ -13,7 +13,8 @@ export default class Text extends Node2D {
     for (let i = 0; i < chars.length; i += 1) {
       const char = chars[i];
       const texture =
-        Assets.charmap['Chars'][char] || Assets.tilemap['Chars'].get(78);
+        Assets.charmap['Chars'][char] ||
+        Assets.aseprite['Chars'].tilemaps['Chars'].get(78);
       const charSprite = new Sprite(texture);
       charSprite.position = new Vector(this._width, 0);
       this.addChild(charSprite);

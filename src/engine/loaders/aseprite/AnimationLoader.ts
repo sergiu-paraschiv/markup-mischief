@@ -12,8 +12,25 @@ export default class AnimationLoader {
     this.frameLoader = new FrameLoader(loader);
   }
 
+  getAnimationNames(): string[] {
+    if (!this.loader.data) {
+      throw new Error('Aseprite file not loaded!');
+    }
+
+    const tagsChunk = this.loader.findFrameChunk<TagsChunk>(0, TAGS_CHUNK);
+    if (!tagsChunk) {
+      return [];
+    }
+
+    return tagsChunk.tags.map(tag => tag.tagName.value);
+  }
+
   async getAnimation(animationName: string): Promise<Animation> {
     return AnimationLoader.animationCache.get(animationName, async () => {
+      if (!this.loader.data) {
+        throw new Error('Aseprite file not loaded!');
+      }
+
       const tagsChunk = this.loader.findFrameChunk<TagsChunk>(0, TAGS_CHUNK);
       if (!tagsChunk) {
         throw Error('Aseprite file has no tags!');

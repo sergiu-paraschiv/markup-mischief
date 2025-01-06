@@ -4,7 +4,7 @@ import AfterPhysicsTickEvent from './AfterPhysicsTickEvent';
 import PhysicsTickEvent from './PhysicsTickEvent';
 import { ColliderCheckFn } from './PhysicsSimulation';
 
-const SLEEP_DELAY = 5000;
+const SLEEP_DELAY = 1000;
 
 export default class DynamicBody extends CollisionObject {
   private _impulse = new Vector(0, 0);
@@ -32,7 +32,8 @@ export default class DynamicBody extends CollisionObject {
         this.applyDrag();
         this.applyImpulse(
           this.velocityDelta(this.sim.gravity, e.deltaTime),
-          e.deltaTime
+          e.deltaTime,
+          false
         );
       }
     });
@@ -102,8 +103,10 @@ export default class DynamicBody extends CollisionObject {
     this._impulse.x *= dragCoeficient;
   }
 
-  applyImpulse(impulse: Vector, deltaTime: number) {
-    this.wakeUp();
+  applyImpulse(impulse: Vector, deltaTime: number, wakeUp = true) {
+    if (wakeUp) {
+      this.wakeUp();
+    }
 
     const newImpulse = this._impulse.add(impulse);
     const hit = this.checkHit(newImpulse, deltaTime);

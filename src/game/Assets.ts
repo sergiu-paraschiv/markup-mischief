@@ -2,94 +2,82 @@ import { Aseprite, AsepriteTileMap, Texture } from '@engine/loaders';
 import { Animation } from '@engine/elements';
 
 export default class Assets {
-  public static aseprite: Record<string, Aseprite> = {};
-  public static tilemap: Record<string, AsepriteTileMap> = {};
+  public static aseprite: Record<
+    string,
+    {
+      animations: Record<string, Animation>;
+      tilemaps: Record<string, AsepriteTileMap>;
+    }
+  > = {};
   public static charmap: Record<string, Record<string, Texture | undefined>> =
     {};
-  public static animation: Record<string, Animation> = {};
 
   async init() {
-    Assets.aseprite['Palm Tree Island'] = await Aseprite.load(
-      '/sprites/Treasure Hunters/Palm Tree Island/Aseprite/Palm Tree Island (ArtBoard).aseprite'
-    );
-    Assets.aseprite['Palm Tree Island'].ignoreLayers(['Grid']);
+    const files: Record<string, string> = {
+      'Palm Tree Island':
+        '/sprites/Treasure Hunters/Palm Tree Island/Aseprite/Palm Tree Island (ArtBoard).aseprite',
+      'Pirate Ship':
+        '/sprites/Treasure Hunters/Pirate Ship/Aseprite/TileSets.aseprite',
+      Paper:
+        '/sprites/Treasure Hunters/Wood and Paper UI/Aseprite/Paper.aseprite',
+      Chars:
+        '/sprites/Treasure Hunters/Wood and Paper UI/Aseprite/Chars.aseprite',
+      'Captain Clown Nose':
+        '/sprites/Treasure Hunters/Captain Clown Nose/Aseprite/Captain Clown Nose.aseprite',
+    };
 
-    Assets.aseprite['Pirate Ship'] = await Aseprite.load(
-      '/sprites/Treasure Hunters/Pirate Ship/Aseprite/TileSets.aseprite'
-    );
-    Assets.aseprite['Pirate Ship'].ignoreLayers(['Grid']);
+    for (const fileName in files) {
+      const filePath = files[fileName];
 
-    Assets.aseprite['Paper'] = await Aseprite.load(
-      '/sprites/Treasure Hunters/Wood and Paper UI/Aseprite/Paper.aseprite'
-    );
+      const aseprite = await Aseprite.load(filePath);
+      aseprite.ignoreLayers(['Grid']);
 
-    Assets.aseprite['Chars'] = await Aseprite.load(
-      '/sprites/Treasure Hunters/Wood and Paper UI/Aseprite/Chars.aseprite'
-    );
-    Assets.aseprite['Chars'].ignoreLayers(['Grid']);
+      Assets.aseprite[fileName] = {
+        tilemaps: {},
+        animations: {},
+      };
 
-    Assets.aseprite['Captain Clown Nose'] = await Aseprite.load(
-      '/sprites/Treasure Hunters/Captain Clown Nose/Aseprite/Captain Clown Nose.aseprite'
-    );
-    Assets.aseprite['Captain Clown Nose'].ignoreLayers(['Grid']);
+      for (const tilemapName of aseprite.getTilemapNames()) {
+        Assets.aseprite[fileName].tilemaps[tilemapName] =
+          await aseprite.getTilemap(tilemapName);
+      }
 
-    Assets.tilemap['Palm Tree Island Terrain'] =
-      await Assets.aseprite['Palm Tree Island'].getTilemap('Terrain');
-
-    Assets.tilemap['Pirate Ship Platforms'] =
-      await Assets.aseprite['Pirate Ship'].getTilemap('Platforms');
-
-    Assets.animation['Captain Clown Nose Idle'] =
-      await Assets.aseprite['Captain Clown Nose'].getAnimation('Idle');
-
-    Assets.animation['Captain Clown Nose Jump'] =
-      await Assets.aseprite['Captain Clown Nose'].getAnimation('Jump');
-
-    Assets.animation['Captain Clown Nose Fall'] =
-      await Assets.aseprite['Captain Clown Nose'].getAnimation('Fall');
-
-    Assets.animation['Captain Clown Nose Ground'] =
-      await Assets.aseprite['Captain Clown Nose'].getAnimation('Ground');
-
-    Assets.animation['Captain Clown Nose Run'] =
-      await Assets.aseprite['Captain Clown Nose'].getAnimation('Run');
-
-    Assets.tilemap['Paper'] =
-      await Assets.aseprite['Paper'].getTilemap('Paper');
-
-    Assets.tilemap['Chars'] =
-      await Assets.aseprite['Chars'].getTilemap('Chars');
+      for (const animationName of aseprite.getAnimationNames()) {
+        Assets.aseprite[fileName].animations[animationName] =
+          await aseprite.getAnimation(animationName);
+      }
+    }
 
     Assets.charmap['Chars'] = {
-      a: Assets.tilemap['Chars'].get(1),
-      b: Assets.tilemap['Chars'].get(2),
-      c: Assets.tilemap['Chars'].get(3),
-      d: Assets.tilemap['Chars'].get(4),
-      e: Assets.tilemap['Chars'].get(5),
-      f: Assets.tilemap['Chars'].get(6),
-      g: Assets.tilemap['Chars'].get(7),
-      h: Assets.tilemap['Chars'].get(8),
-      i: Assets.tilemap['Chars'].get(9),
-      j: Assets.tilemap['Chars'].get(10),
-      k: Assets.tilemap['Chars'].get(11),
-      l: Assets.tilemap['Chars'].get(12),
-      m: Assets.tilemap['Chars'].get(13),
-      n: Assets.tilemap['Chars'].get(14),
-      o: Assets.tilemap['Chars'].get(15),
-      p: Assets.tilemap['Chars'].get(16),
-      q: Assets.tilemap['Chars'].get(17),
-      r: Assets.tilemap['Chars'].get(18),
-      s: Assets.tilemap['Chars'].get(19),
-      t: Assets.tilemap['Chars'].get(20),
-      u: Assets.tilemap['Chars'].get(21),
-      v: Assets.tilemap['Chars'].get(22),
-      w: Assets.tilemap['Chars'].get(23),
-      x: Assets.tilemap['Chars'].get(24),
-      y: Assets.tilemap['Chars'].get(25),
-      z: Assets.tilemap['Chars'].get(26),
-      '/': Assets.tilemap['Chars'].get(40),
-      '<': Assets.tilemap['Chars'].get(85),
-      '>': Assets.tilemap['Chars'].get(86),
+      a: Assets.aseprite['Chars'].tilemaps['Chars'].get(1),
+      b: Assets.aseprite['Chars'].tilemaps['Chars'].get(2),
+      c: Assets.aseprite['Chars'].tilemaps['Chars'].get(3),
+      d: Assets.aseprite['Chars'].tilemaps['Chars'].get(4),
+      e: Assets.aseprite['Chars'].tilemaps['Chars'].get(5),
+      f: Assets.aseprite['Chars'].tilemaps['Chars'].get(6),
+      g: Assets.aseprite['Chars'].tilemaps['Chars'].get(7),
+      h: Assets.aseprite['Chars'].tilemaps['Chars'].get(8),
+      i: Assets.aseprite['Chars'].tilemaps['Chars'].get(9),
+      j: Assets.aseprite['Chars'].tilemaps['Chars'].get(10),
+      k: Assets.aseprite['Chars'].tilemaps['Chars'].get(11),
+      l: Assets.aseprite['Chars'].tilemaps['Chars'].get(12),
+      m: Assets.aseprite['Chars'].tilemaps['Chars'].get(13),
+      n: Assets.aseprite['Chars'].tilemaps['Chars'].get(14),
+      o: Assets.aseprite['Chars'].tilemaps['Chars'].get(15),
+      p: Assets.aseprite['Chars'].tilemaps['Chars'].get(16),
+      q: Assets.aseprite['Chars'].tilemaps['Chars'].get(17),
+      r: Assets.aseprite['Chars'].tilemaps['Chars'].get(18),
+      s: Assets.aseprite['Chars'].tilemaps['Chars'].get(19),
+      t: Assets.aseprite['Chars'].tilemaps['Chars'].get(20),
+      u: Assets.aseprite['Chars'].tilemaps['Chars'].get(21),
+      v: Assets.aseprite['Chars'].tilemaps['Chars'].get(22),
+      w: Assets.aseprite['Chars'].tilemaps['Chars'].get(23),
+      x: Assets.aseprite['Chars'].tilemaps['Chars'].get(24),
+      y: Assets.aseprite['Chars'].tilemaps['Chars'].get(25),
+      z: Assets.aseprite['Chars'].tilemaps['Chars'].get(26),
+      '/': Assets.aseprite['Chars'].tilemaps['Chars'].get(40),
+      '<': Assets.aseprite['Chars'].tilemaps['Chars'].get(85),
+      '>': Assets.aseprite['Chars'].tilemaps['Chars'].get(86),
     };
   }
 }

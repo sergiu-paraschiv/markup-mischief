@@ -20,6 +20,26 @@ export default class TilemapLoader {
     this.collorPalletteLoader = new ColorPalletteLoader(loader);
   }
 
+  getTilemapNames(frameIndex = 0): string[] {
+    if (!this.loader.data) {
+      throw new Error('Aseprite file not loaded!');
+    }
+
+    const layers = this.loader.findFrameChunks<LayerChunk>(
+      frameIndex,
+      LAYER_CHUNK
+    );
+
+    return layers
+      .filter(layer => {
+        if (!layer.tilesetIndex || layer.tilesetIndex.length !== 1) {
+          return false;
+        }
+        return true;
+      })
+      .map(layer => layer.name.value);
+  }
+
   async getTilemap(tilemapName: string, frameIndex = 0): Promise<TileMap> {
     return TilemapLoader.tilemapCache.get(
       `${tilemapName}-${frameIndex}`,

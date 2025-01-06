@@ -5,6 +5,7 @@ import { Keyboard, Mouse } from '@engine/input';
 import { CanvasRenderer } from '@engine/renderer';
 import { PhysicsSimulation } from '@engine/physics';
 import { Debugger } from '@debugger';
+import { Editor } from '@editor';
 import { Game } from '@game';
 
 @Component({
@@ -29,8 +30,11 @@ export class AppComponent implements AfterViewInit {
       [new Keyboard(document.documentElement), new Mouse(gameElement)]
     );
 
-    const dbgr = new Debugger();
+    const dbgr = new Debugger(gameElement);
     dbgr.attachTo(engine);
+
+    const editor = new Editor(gameElement);
+    editor.attachTo(engine);
 
     const game = new Game();
     await game.init();
