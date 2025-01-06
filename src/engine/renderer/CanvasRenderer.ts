@@ -11,12 +11,12 @@ export default class CanvasRenderer implements IRenderer {
   private workLoop: WorkLoop;
 
   constructor(
-    container: HTMLElement,
+    canvas: HTMLCanvasElement,
     private readonly zoom: number
   ) {
     this.workLoop = new WorkLoop(this.render.bind(this));
 
-    this.canvas = document.createElement('canvas');
+    this.canvas = canvas;
     this.canvas.style.display = 'block';
     this.canvas.style.imageRendering = 'pixelated';
 
@@ -27,8 +27,6 @@ export default class CanvasRenderer implements IRenderer {
 
     this.context = context;
     this.context.imageSmoothingEnabled = false;
-
-    container.appendChild(this.canvas);
   }
 
   setViewport(viewport: Vector): void {
@@ -36,6 +34,25 @@ export default class CanvasRenderer implements IRenderer {
     this.canvas.height = viewport.height;
     this.canvas.style.width = viewport.width * this.zoom + 'px';
     this.canvas.style.height = viewport.height * this.zoom + 'px';
+  }
+
+  getElement(): HTMLElement {
+    return this.canvas;
+  }
+
+  globalToLocalPoint(point: Vector): Vector {
+    let x = point.x;
+    let y = point.y;
+
+    const containerRect = this.canvas.getBoundingClientRect();
+    x -= containerRect.left;
+    y -= containerRect.top;
+
+    return new Vector(Math.round(x / this.zoom), Math.round(y / this.zoom));
+  }
+
+  localToGlobalPoint(point: Vector): Vector {
+    return new Vector(point.x * this.zoom, point.y * this.zoom);
   }
 
   setRootElement(element: Element): void {

@@ -1,0 +1,42 @@
+* {
+  box-sizing: border-box;
+}
+
+:host {
+  width: 100%;
+  padding: 10px;
+}
+
+.grid-settings {
+  display: flex;
+}
+
+.grid-settings > input {
+  width: 40%;
+}
+
+.grid-settings > span {
+  width: 20%;
+  text-align: center;
+}
+
+.tilemap {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.tilemap a {
+  display: block;
+  border: 1px solid #000000;
+}
+
+.tilemap a:hover,
+.tilemap a.selected {
+  border: 1px solid #ff0000;
+}
+
+.tilemap a img {
+  display: block;
+  min-width: 40px;
+  max-width: 50%;
+}

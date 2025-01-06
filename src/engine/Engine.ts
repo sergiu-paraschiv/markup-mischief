@@ -19,6 +19,7 @@ export default class Engine extends EventEmitter {
   loadScene(scene: Scene) {
     this.renderer.setRootElement(scene);
     this.physicsSimulation.setRootElement(scene);
+
     this.inputDevices.forEach(inputDevice => inputDevice.setRootElement(scene));
 
     this.handleEvent(new SceneLoadedEvent(scene));

@@ -1,0 +1,57 @@
+<grid
+  [step]="localGridStep"
+  [position]="canvasPosition"
+  [size]="canvasSize"
+/>
+
+<div class="grid-settings">
+  <input type="number" [ngModel]="gridStep.x" (ngModelChange)="onGridStepXChange($event)" />
+  <span>x</span>
+  <input type="number" [ngModel]="gridStep.y" (ngModelChange)="onGridStepYChange($event)" />
+</div>
+
+<ul>
+  @for (asset of assetNames; track asset) {
+    <li>
+      <a href="" (click)="onSelectAsset($event, asset)">{{ asset }}</a>
+    </li>
+  }
+</ul>
+
+@if (selectedAsset) {
+  <div>
+    @if (selectedAsset.tilemaps.length > 0) {
+      <div>Tilemaps:</div>
+      <ul>
+        @for (tilemap of selectedAsset.tilemaps; track tilemap) {
+          <li>
+            <a href="" (click)="onSelectTilemap($event, tilemap)">{{ tilemap }}</a>
+          </li>
+        }
+      </ul>
+    }
+
+    @if (selectedTilemap) {
+      <div class="tilemap">
+        @for (tileId of selectedTilemap.tileIds; track tileId) {
+          <a href="" (click)="onSelectTile($event, tileId)" [class.selected]="tileId === selectedTileId">
+            <img src="{{ selectedTilemap.tileImages[tileId] }}" alt="{{ tileId }}" />
+          </a>
+        }
+      </div>
+
+      <a href="" (click)="onUseTilemapGrid($event)">use grid</a>
+    }
+
+    @if (selectedAsset.animations.length > 0) {
+      <div>Animations:</div>
+      <ul>
+        @for (animation of selectedAsset.animations; track animation) {
+          <li>
+            <a href="" (click)="onSelectAnimation($event, animation)">{{ animation }}</a>
+          </li>
+        }
+      </ul>
+    }
+  </div>
+}

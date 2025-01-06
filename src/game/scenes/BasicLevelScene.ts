@@ -1,8 +1,8 @@
 import { Query, Scene, Vector } from '@engine/core';
 import { Sprite } from '@engine/elements';
 import { StaticBody } from '@engine/physics';
+import { Game } from '@game';
 import { Captain, Tag } from '@game/entities';
-import { Assets } from '@game';
 import {
   CaptainDropEvent,
   CaptainGrabEvent,
@@ -19,9 +19,7 @@ export default class BasicLevelScene extends Scene {
     function makeEdgeTile(position: Vector) {
       const body = new StaticBody(position);
       body.addChild(
-        new Sprite(
-          Assets.aseprite['Palm Tree Island'].tilemaps['Terrain'].get(27)
-        )
+        new Sprite(Game.assets['Palm Tree Island'].tilemaps['Terrain'].get(27))
       );
 
       return body;
@@ -31,7 +29,7 @@ export default class BasicLevelScene extends Scene {
       const body = new StaticBody(position);
       body.setColliderDimensions(new Vector(32, 2));
       body.addChild(
-        new Sprite(Assets.aseprite['Pirate Ship'].tilemaps['Platforms'].get(52))
+        new Sprite(Game.assets['Pirate Ship'].tilemaps['Platforms'].get(52))
       );
 
       body.filterCollisionFn = ({ collider, velocity }) => {

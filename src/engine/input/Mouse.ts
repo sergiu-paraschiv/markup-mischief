@@ -1,3 +1,4 @@
+import { Vector } from '@engine/core';
 import InputEvent from './InputEvent';
 import InputDevice from './InputDevice';
 
@@ -16,14 +17,18 @@ export enum MouseButtonAction {
 export class MouseInputEvent extends InputEvent {
   constructor(
     public readonly button: MouseButton,
-    public readonly action: MouseButtonAction
+    public readonly action: MouseButtonAction,
+    public readonly point: Vector
   ) {
     super();
   }
 }
 
 export default class Mouse extends InputDevice {
-  constructor(container: HTMLElement) {
+  constructor(
+    container: HTMLElement,
+    private readonly getLocalPoint: (point: Vector) => Vector
+  ) {
     super();
 
     // container.addEventListener('contextmenu', event => {
@@ -42,7 +47,8 @@ export default class Mouse extends InputDevice {
             buttonIndex,
             event.type === 'mousedown'
               ? MouseButtonAction.DOWN
-              : MouseButtonAction.UP
+              : MouseButtonAction.UP,
+            this.getLocalPoint(new Vector(event.x, event.y))
           )
         );
       }

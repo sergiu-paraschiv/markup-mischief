@@ -1,6 +1,6 @@
 import { Vector } from '@engine/core';
 import { Node2D, Sprite } from '@engine/elements';
-import { Assets } from '@game';
+import { Game } from '@game';
 
 export default class Text extends Node2D {
   private _width = 0;
@@ -13,8 +13,8 @@ export default class Text extends Node2D {
     for (let i = 0; i < chars.length; i += 1) {
       const char = chars[i];
       const texture =
-        Assets.charmap['Chars'][char] ||
-        Assets.aseprite['Chars'].tilemaps['Chars'].get(78);
+        Game.assets['Chars'].charmaps['Chars'][char] ||
+        Game.assets['Chars'].tilemaps['Chars'].get(78);
       const charSprite = new Sprite(texture);
       charSprite.position = new Vector(this._width, 0);
       this.addChild(charSprite);

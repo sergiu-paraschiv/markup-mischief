@@ -15,12 +15,20 @@ export default class Vector {
     this.x = newX;
   }
 
+  public get left() {
+    return this.x;
+  }
+
   public get height() {
     return this.y;
   }
 
   public set height(newY: number) {
     this.y = newY;
+  }
+
+  public get top() {
+    return this.y;
   }
 
   add(otherVector: Vector): Vector {

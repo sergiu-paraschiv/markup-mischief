@@ -1,6 +1,7 @@
 import Texture from './Texture';
 import Aseprite from './aseprite/Aseprite';
 import { TileMap } from './aseprite/TilemapLoader';
+import AssetsLoader, { AssetsMap } from './AssetsLoader';
 
-export { Texture, Aseprite };
-export type { TileMap as AsepriteTileMap };
+export { Texture, Aseprite, AssetsLoader };
+export type { TileMap, AssetsMap };

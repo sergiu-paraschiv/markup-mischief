@@ -1,6 +1,6 @@
 import { Vector } from '@engine/core';
 import { AnimatedSprite, Node2D } from '@engine/elements';
-import { Assets } from '@game';
+import { Game } from '@game';
 import CharacterController from './CharacterController';
 
 enum Stance {
@@ -56,7 +56,7 @@ export default class Captain extends CharacterController {
     } else if (
       this.activeStance === Stance.GROUND &&
       activeStanceDuration <=
-        Assets.aseprite['Captain Clown Nose'].animations[Stance.GROUND].duration
+        Game.assets['Captain Clown Nose'].animations[Stance.GROUND].duration
     ) {
       newStance = Stance.GROUND;
     }
@@ -76,7 +76,7 @@ export default class Captain extends CharacterController {
       this.gfx.removeAllChildren();
       this.gfx.addChild(
         new AnimatedSprite(
-          Assets.aseprite['Captain Clown Nose'].animations[newStance]
+          Game.assets['Captain Clown Nose'].animations[newStance]
         )
       );
     }

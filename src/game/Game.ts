@@ -1,15 +1,17 @@
 import { Scene } from '@engine/core';
-import Assets from './Assets';
-import { BasicLevelScene, SpriteMashEditorScene } from './scenes';
+import { AssetsLoader, AssetsMap } from '@engine/loaders';
+import { BasicLevelScene } from './scenes';
 
 export default class Game {
   public scenes: Record<string, Scene> = {};
+  public static assets: AssetsMap = {};
 
-  public assets = new Assets();
+  async init(assetPaths: Record<string, string>) {
+    const assetsLoader = new AssetsLoader();
+    await assetsLoader.init(assetPaths);
 
-  async init() {
-    await this.assets.init();
+    Game.assets = assetsLoader.assets;
+
     this.scenes['Basic Level'] = new BasicLevelScene();
-    this.scenes['Sprite Mash Editor'] = new SpriteMashEditorScene();
   }
 }

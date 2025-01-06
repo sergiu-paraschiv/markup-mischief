@@ -1,6 +1,6 @@
 import { Vector } from '@engine/core';
 import { DynamicBody } from '@engine/physics';
-import { Assets } from '@game';
+import { Game } from '@game';
 import Text from './Text';
 import Layout3Slice from './Layout3Slice';
 
@@ -16,9 +16,9 @@ export default class Tag extends DynamicBody {
     this.addChild(
       new Layout3Slice(
         ts.width + 6,
-        Assets.aseprite['Paper'].tilemaps['Paper'].get(1),
-        Assets.aseprite['Paper'].tilemaps['Paper'].get(2),
-        Assets.aseprite['Paper'].tilemaps['Paper'].get(3)
+        Game.assets['Paper'].tilemaps['Paper'].get(1),
+        Game.assets['Paper'].tilemaps['Paper'].get(2),
+        Game.assets['Paper'].tilemaps['Paper'].get(3)
       )
     );
 
