@@ -39,8 +39,8 @@ export class AppComponent implements AfterViewInit {
     const game = new Game();
     await game.init();
 
-    // engine.loadScene(game.scenes['Sprite Mash Editor']);
-    engine.loadScene(game.scenes['Basic Level']);
+    engine.loadScene(game.scenes['Sprite Mash Editor']);
+    // engine.loadScene(game.scenes['Basic Level']);
     engine.start(200, 200);
   }
 }
