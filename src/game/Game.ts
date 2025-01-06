@@ -1,6 +1,6 @@
 import { Scene } from '@engine/core';
 import Assets from './Assets';
-import { StartScene } from './scenes';
+import { BasicLevelScene, SpriteMashEditorScene } from './scenes';
 
 export default class Game {
   public scenes: Record<string, Scene> = {};
@@ -9,6 +9,7 @@ export default class Game {
 
   async init() {
     await this.assets.init();
-    this.scenes['Start'] = new StartScene();
+    this.scenes['Basic Level'] = new BasicLevelScene();
+    this.scenes['Sprite Mash Editor'] = new SpriteMashEditorScene();
   }
 }

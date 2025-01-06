@@ -1,3 +1,4 @@
-import StartScene from './StartScene';
+import BasicLevelScene from './BasicLevelScene';
+import SpriteMashEditorScene from './SpriteMashEditorScene';
 
-export { StartScene };
+export { BasicLevelScene, SpriteMashEditorScene };

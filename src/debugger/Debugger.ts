@@ -49,8 +49,8 @@ export default class Debugger extends CanvasItem {
     const VIEWPORT_WIDTH = this.engine?.viewport.width || 0;
     const VIEWPORT_HEIGHT = this.engine?.viewport.height || 0;
 
-    const TILE_SIZE = 32;
-    for (let x = TILE_SIZE; x < VIEWPORT_WIDTH; x += TILE_SIZE) {
+    const GRID_SIZE = 32;
+    for (let x = GRID_SIZE; x < VIEWPORT_WIDTH; x += GRID_SIZE) {
       context.beginPath();
       context.strokeStyle = 'rgba(0, 0, 0, 0.2';
       context.moveTo(x, 0);
@@ -58,7 +58,7 @@ export default class Debugger extends CanvasItem {
       context.stroke();
     }
 
-    for (let y = TILE_SIZE; y < VIEWPORT_HEIGHT; y += TILE_SIZE) {
+    for (let y = GRID_SIZE; y < VIEWPORT_HEIGHT; y += GRID_SIZE) {
       context.beginPath();
       context.strokeStyle = 'rgba(0, 0, 0, 0.2';
       context.moveTo(0, y);
@@ -71,6 +71,7 @@ export default class Debugger extends CanvasItem {
     context.rect(0, 0, VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
     context.stroke();
 
+    context.fillStyle = '#ddff55';
     context.fillText(
       `${this.renderFpsCounter.fps.toFixed(0)} / ${this.physicsFpsCounter.fps.toFixed(0)}`,
       0,

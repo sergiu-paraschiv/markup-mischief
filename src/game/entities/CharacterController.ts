@@ -118,11 +118,11 @@ export default class CharacterController extends DynamicBody {
 
       if (jumping) {
         jumping = false;
-        this.applyImpulse(new Vector(0, -32 * 9));
+        this.applyImpulse(new Vector(0, -32 * 9), e.deltaTime);
       }
 
       if (dropping) {
-        this.applyImpulse(new Vector(0, 32));
+        this.applyImpulse(new Vector(0, 32), e.deltaTime);
       }
     });
 

@@ -8,6 +8,7 @@ import {
 import PhysicsTickEvent from './PhysicsTickEvent';
 import CollisionObject from './CollisionObject';
 import AfterPhysicsTickEvent from './AfterPhysicsTickEvent';
+import DynamicBody from './DynamicBody';
 
 export interface DebugLine {
   from: Vector;
@@ -27,7 +28,7 @@ export default class PhysicsSimulation {
   } = { x: [], y: [] };
 
   constructor(
-    public readonly gravity = new Vector(0, 32),
+    public readonly gravity = new Vector(0, 1024),
     public readonly maxVelocity = new Vector(128, 128)
   ) {
     this.workLoop = new WorkLoop(this.step.bind(this));
@@ -98,7 +99,7 @@ export default class PhysicsSimulation {
         drawBox(
           collisionObject.collider.position,
           collisionObject.collider.dimensions,
-          collisionObject.sleeping
+          collisionObject instanceof DynamicBody && collisionObject.sleeping
             ? `rgba(199, 198, 194, 0.5)`
             : `rgba(172, 144, 0, 0.5)`
         );
@@ -364,10 +365,6 @@ export default class PhysicsSimulation {
 
     this.lastCollisionObjects.y = [];
     return undefined;
-  }
-
-  get expectedDeltaT() {
-    return this.workLoop.expectedDeltaT;
   }
 
   private step(currentTime: number, deltaTime: number) {

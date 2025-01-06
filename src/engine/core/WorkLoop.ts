@@ -4,12 +4,14 @@ export default class WorkLoop {
   private maxFps: number;
   private fpsInterval: number;
   private previousTime: number;
+  private adjustedPreviousTime: number;
   private stopRequested: boolean;
 
   constructor(private readonly workFn: WorkFn) {
     this.maxFps = 10;
     this.fpsInterval = this.computeFpsInterval();
     this.previousTime = 0;
+    this.adjustedPreviousTime = 0;
     this.stopRequested = false;
 
     document.addEventListener('visibilitychange', () => {
@@ -25,13 +27,10 @@ export default class WorkLoop {
     this.maxFps = maxFps;
     this.fpsInterval = this.computeFpsInterval();
     this.previousTime = 0;
+    this.adjustedPreviousTime = 0;
     this.stopRequested = false;
 
     requestAnimationFrame(this.workLoop.bind(this));
-  }
-
-  get expectedDeltaT() {
-    return this.fpsInterval;
   }
 
   private workLoop(currentTime: number) {
@@ -41,12 +40,15 @@ export default class WorkLoop {
 
     if (this.previousTime === 0) {
       this.previousTime = currentTime;
-    }
-
-    const deltaTime = currentTime - this.previousTime;
-    if (deltaTime >= this.fpsInterval) {
-      this.previousTime = currentTime;
-      this.workFn(currentTime, deltaTime);
+      this.adjustedPreviousTime = currentTime;
+    } else {
+      const deltaTime = currentTime - this.adjustedPreviousTime;
+      if (deltaTime >= this.fpsInterval) {
+        this.workFn(currentTime, currentTime - this.previousTime);
+        this.adjustedPreviousTime =
+          currentTime - (deltaTime % this.fpsInterval);
+        this.previousTime = currentTime;
+      }
     }
 
     requestAnimationFrame(this.workLoop.bind(this));

@@ -9,7 +9,7 @@ import {
 } from 'game/entities/CharacterController';
 import { TickEvent } from '@engine/renderer';
 
-export default class StartScene extends Scene {
+export default class BasicLevelScene extends Scene {
   constructor() {
     super();
 
@@ -80,12 +80,12 @@ export default class StartScene extends Scene {
     this.addChild(makePlatformTile(new Vector(32 * 2, 32 * 4)));
     this.addChild(makePlatformTile(new Vector(32, 32 * 3)));
 
-    const captain = new Captain(new Vector(35 * 3, 32));
+    const captain = new Captain(new Vector(32 * 3, 32 * 2));
     this.addChild(captain);
 
-    this.addChild(makeTagTile(new Vector(180, 32), '<em>'));
-    this.addChild(makeTagTile(new Vector(130, 32), '</em>'));
-    this.addChild(makeTagTile(new Vector(160, 32), 'text'));
+    // this.addChild(makeTagTile(new Vector(180, 32), '<em>'));
+    // this.addChild(makeTagTile(new Vector(130, 32), '</em>'));
+    // this.addChild(makeTagTile(new Vector(160, 32), 'text'));
 
     this.on(CaptainDropEvent, event => {
       dropping = event.start;

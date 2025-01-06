@@ -17,8 +17,7 @@ export default class FpsCounter {
     const sinceStart = currentTime - this.startTime;
 
     this.frameCount += 1;
-    this.currentFps =
-      Math.round((1000 / (sinceStart / this.frameCount)) * 100) / 100;
+    this.currentFps = 1000 / (sinceStart / this.frameCount);
 
     // average FPS over the last 10 seconds only
     if (sinceStart >= 10000) {

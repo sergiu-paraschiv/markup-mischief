@@ -13,8 +13,6 @@ export default class CollisionObject extends Node2D {
   private _colliderDimensions: Vector | undefined;
   private _colliderOffset: Vector | undefined;
   private _filterCollision: FilterCollisionFn | undefined;
-  protected _sleeping = false;
-  private _canSleep = false;
 
   constructor(position?: Vector) {
     super(position);
@@ -64,21 +62,5 @@ export default class CollisionObject extends Node2D {
     }
 
     return true;
-  }
-
-  get sleeping() {
-    return this._sleeping;
-  }
-
-  wakeUp() {
-    this._sleeping = false;
-  }
-
-  get canSleep() {
-    return this._canSleep;
-  }
-
-  set canSleep(canSleep: boolean) {
-    this._canSleep = canSleep;
   }
 }
