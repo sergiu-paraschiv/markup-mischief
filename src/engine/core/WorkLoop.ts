@@ -3,24 +3,29 @@ type WorkFn = (currentTime: number, deltaTime: number) => void;
 export default class WorkLoop {
   private maxFps: number;
   private fpsInterval: number;
-  private startTime: number;
   private previousTime: number;
+  private stopRequested: boolean;
 
-  constructor(
-    private readonly workFn: WorkFn,
-    private readonly recouperateLostTime = true
-  ) {
+  constructor(private readonly workFn: WorkFn) {
     this.maxFps = 10;
     this.fpsInterval = this.computeFpsInterval();
-    this.startTime = 0;
     this.previousTime = 0;
+    this.stopRequested = false;
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        this.stopRequested = true;
+      } else {
+        this.start(this.maxFps);
+      }
+    });
   }
 
   start(maxFps: number): void {
     this.maxFps = maxFps;
     this.fpsInterval = this.computeFpsInterval();
     this.previousTime = 0;
-    this.startTime = 0;
+    this.stopRequested = false;
 
     requestAnimationFrame(this.workLoop.bind(this));
   }
@@ -30,17 +35,17 @@ export default class WorkLoop {
   }
 
   private workLoop(currentTime: number) {
-    if (this.startTime === 0) {
-      this.startTime = currentTime;
+    if (this.stopRequested) {
+      return;
+    }
+
+    if (this.previousTime === 0) {
+      this.previousTime = currentTime;
     }
 
     const deltaTime = currentTime - this.previousTime;
     if (deltaTime >= this.fpsInterval) {
       this.previousTime = currentTime;
-      if (this.recouperateLostTime) {
-        this.previousTime -= deltaTime % this.fpsInterval;
-      }
-
       this.workFn(currentTime, deltaTime);
     }
 

@@ -30,7 +30,7 @@ export default class PhysicsSimulation {
     public readonly gravity = new Vector(0, 32),
     public readonly maxVelocity = new Vector(128, 128)
   ) {
-    this.workLoop = new WorkLoop(this.step.bind(this), false);
+    this.workLoop = new WorkLoop(this.step.bind(this));
   }
 
   setViewport(viewport: Vector): void {

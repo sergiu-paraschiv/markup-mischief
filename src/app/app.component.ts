@@ -23,8 +23,8 @@ export class AppComponent implements AfterViewInit {
     }
 
     const engine = new Engine(
-      new Vector(256, 192),
-      new CanvasRenderer(gameElement, 4),
+      new Vector(512, 384),
+      new CanvasRenderer(gameElement, 2),
       new PhysicsSimulation(),
       [new Keyboard(document.documentElement), new Mouse(gameElement)]
     );
@@ -36,6 +36,6 @@ export class AppComponent implements AfterViewInit {
     await game.init();
 
     engine.loadScene(game.scenes['Start']);
-    engine.start(144, 30);
+    engine.start(30, 30);
   }
 }
