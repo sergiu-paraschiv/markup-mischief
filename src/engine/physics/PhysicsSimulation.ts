@@ -97,8 +97,8 @@ export default class PhysicsSimulation {
           collisionObject.collider.position,
           collisionObject.collider.dimensions,
           collisionObject instanceof DynamicBody && collisionObject.sleeping
-            ? `rgba(199, 198, 194, 0.5)`
-            : `rgba(172, 144, 0, 0.5)`
+            ? `rgba(199, 194, 198, 0.5)`
+            : `rgba(205, 93, 215, 0.5)`
         );
       }
 

@@ -11,32 +11,81 @@
   display: flex;
 }
 
-.grid-settings > input {
-  width: 40%;
+  .grid-settings > input {
+    width: 40%;
+  }
+
+  .grid-settings > span {
+    width: 20%;
+    text-align: center;
+  }
+
+.tools {
+  display: flex;
+  padding: 10px 0;
 }
 
-.grid-settings > span {
-  width: 20%;
-  text-align: center;
+  .tools button {
+    border-color: #000000;
+  }
+
+    .tools button.selected {
+      border-color: #ff0000;
+    }
+
+.layers {
 }
+
+  .layers a {
+    text-decoration: none;
+  }
+
+    .layers a.selected {
+      text-decoration: underline;
+      color: #ff0000;
+    }
+
+.assets {
+}
+
+  .assets a {
+    text-decoration: none;
+  }
+
+    .assets a.selected {
+      text-decoration: underline;
+      color: #ff0000;
+    }
+
+.tilemaps {
+}
+
+  .tilemaps a {
+    text-decoration: none;
+  }
+
+    .tilemaps a.selected {
+      text-decoration: underline;
+      color: #ff0000;
+    }
 
 .tilemap {
   display: flex;
   flex-wrap: wrap;
 }
 
-.tilemap a {
-  display: block;
-  border: 1px solid #000000;
-}
+  .tilemap a {
+    display: block;
+    border: 1px solid #000000;
+  }
 
-.tilemap a:hover,
-.tilemap a.selected {
-  border: 1px solid #ff0000;
-}
+    .tilemap a:hover,
+    .tilemap a.selected {
+      border: 1px solid #ff0000;
+    }
 
-.tilemap a img {
-  display: block;
-  min-width: 40px;
-  max-width: 50%;
-}
+      .tilemap a img {
+        display: block;
+        min-width: 40px;
+        max-width: 50%;
+      }

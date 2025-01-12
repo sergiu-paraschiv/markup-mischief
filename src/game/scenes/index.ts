@@ -1,3 +1,3 @@
-import BasicLevelScene from './BasicLevelScene';
+import GameLevelScene from './GameLevelScene';
 
-export { BasicLevelScene };
+export { GameLevelScene };

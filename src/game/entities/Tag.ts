@@ -1,6 +1,6 @@
-import { Vector } from '@engine/core';
+import { Vector, GlobalContext } from '@engine/core';
+import { AssetsMap } from '@engine/loaders';
 import { DynamicBody } from '@engine/physics';
-import { Game } from '@game';
 import Text from './Text';
 import Layout3Slice from './Layout3Slice';
 
@@ -10,15 +10,16 @@ export default class Tag extends DynamicBody {
     public readonly text: string
   ) {
     super(initialPosition);
+    const assets = GlobalContext.get<AssetsMap>('assets');
 
     const ts = new Text(text);
 
     this.addChild(
       new Layout3Slice(
         ts.width + 6,
-        Game.assets['Paper'].tilemaps['Paper'].get(1),
-        Game.assets['Paper'].tilemaps['Paper'].get(2),
-        Game.assets['Paper'].tilemaps['Paper'].get(3)
+        assets['Paper'].tilemaps['Paper'].get(1),
+        assets['Paper'].tilemaps['Paper'].get(2),
+        assets['Paper'].tilemaps['Paper'].get(3)
       )
     );
 

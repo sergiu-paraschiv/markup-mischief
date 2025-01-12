@@ -7,6 +7,7 @@ import EventEmitter from './EventEmitter';
 import WorkLoop from './WorkLoop';
 import ElementAddedEvent from './ElementAddedEvent';
 import ElementRemovedEvent from './ElementRemovedEvent';
+import GlobalContext from './GlobalContext';
 
 export {
   Vector,
@@ -18,4 +19,5 @@ export {
   WorkLoop,
   ElementAddedEvent,
   ElementRemovedEvent,
+  GlobalContext,
 };

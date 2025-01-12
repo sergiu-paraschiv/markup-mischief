@@ -1,24 +1,16 @@
 import { Component, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { Engine } from '@engine';
-import { Scene, Vector } from '@engine/core';
-import { SpriteMash } from '@engine/elements';
+import { Vector } from '@engine/core';
+// import { Scene } from '@engine/core';
 import { Keyboard, Mouse } from '@engine/input';
 import { CanvasRenderer } from '@engine/renderer';
 import { PhysicsSimulation } from '@engine/physics';
 import { Debugger } from '@debugger';
-import { Editor } from '@editor';
-// import { Game } from '@game';
+// import { SpriteMash } from '@engine/elements';
+// import { Editor } from '@editor';
+import { GameLevelScene } from '@game/scenes';
 
-const ASSETS = {
-  'Palm Tree Island':
-    '/sprites/Treasure Hunters/Palm Tree Island/Aseprite/Palm Tree Island (ArtBoard).aseprite',
-  'Pirate Ship':
-    '/sprites/Treasure Hunters/Pirate Ship/Aseprite/TileSets.aseprite',
-  Paper: '/sprites/Treasure Hunters/Wood and Paper UI/Aseprite/Paper.aseprite',
-  Chars: '/sprites/Treasure Hunters/Wood and Paper UI/Aseprite/Chars.aseprite',
-  'Captain Clown Nose':
-    '/sprites/Treasure Hunters/Captain Clown Nose/Aseprite/Captain Clown Nose.aseprite',
-};
+import ASSETS from './assets.json';
 
 @Component({
   selector: 'app-root',
@@ -55,20 +47,19 @@ export class AppComponent implements AfterViewInit {
     const dbgr = new Debugger(gameElement);
     dbgr.attachTo(engine);
     dbgr.enableFps = true;
+    // dbgr.enableGridLines = true;
+    dbgr.enablePhysicsDebugLines = true;
 
-    const editor = new Editor(
-      gameElement,
-      canvasElement,
-      ASSETS,
-      renderer.localToGlobalPoint.bind(renderer)
-    );
-    editor.attachTo(engine);
+    // const editor = new Editor(
+    //   gameElement,
+    //   canvasElement,
+    //   ASSETS,
+    //   renderer.localToGlobalPoint.bind(renderer)
+    // );
+    // editor.attachTo(engine);
 
-    // const game = new Game();
-    // await game.init(ASSETS);
-
-    engine.loadScene(new Scene([new SpriteMash()]));
-    // engine.loadScene(game.scenes['Basic Level']);
+    // engine.loadScene(new Scene([new SpriteMash(5)]));
+    engine.loadScene(new GameLevelScene(ASSETS));
     engine.start(200, 200);
   }
 }

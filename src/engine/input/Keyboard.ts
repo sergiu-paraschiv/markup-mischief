@@ -24,7 +24,7 @@ export default class Keyboard extends InputDevice {
   }
 
   private eventHandler(event: KeyboardEvent) {
-    event.preventDefault();
+    // event.preventDefault();
 
     this.dispatchEvent(
       new KeyboardInputEvent(

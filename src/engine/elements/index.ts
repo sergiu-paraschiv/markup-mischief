@@ -7,7 +7,7 @@ import AnimatedSprite, {
   AnimationDirection,
   AnimationRepeat,
 } from './AnimatedSprite';
-import SpriteMash from './SpriteMash';
+import SpriteMash, { SpriteMashData } from './SpriteMash';
 
 export {
   CanvasItem,
@@ -18,4 +18,4 @@ export {
   AnimationRepeat,
   SpriteMash,
 };
-export type { AnimationFrame, Animation };
+export type { AnimationFrame, Animation, SpriteMashData };

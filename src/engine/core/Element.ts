@@ -61,6 +61,7 @@ export default class Element extends EventEmitter {
   removeAllChildren(): void {
     this._children.forEach(child => {
       child.dispatchEvent(new ElementRemovedEvent());
+      child.removeAllChildren();
       child.clearParent();
     });
     this._children = [];

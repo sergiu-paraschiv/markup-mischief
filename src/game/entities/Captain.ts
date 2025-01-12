@@ -1,7 +1,7 @@
-import { Vector } from '@engine/core';
+import { Vector, GlobalContext } from '@engine/core';
 import { AnimatedSprite, Node2D } from '@engine/elements';
-import { Game } from '@game';
 import CharacterController from './CharacterController';
+import { AssetsMap } from '@engine/loaders';
 
 enum Stance {
   IDLE = 'Idle',
@@ -33,19 +33,22 @@ export default class Captain extends CharacterController {
   }
 
   protected override switchStance(currentTime: number) {
+    const assets = GlobalContext.get<AssetsMap>('assets');
+
     let newStance = Stance.IDLE;
 
     const velocity = this.avgVelocity();
+    console.log(velocity);
 
-    if (velocity.y > 1) {
+    if (velocity.y > 0.1) {
       newStance = Stance.FALLING;
-    } else if (velocity.y < -1) {
+    } else if (velocity.y < -0.1) {
       newStance = Stance.JUMPING;
     }
 
-    if (velocity.x > 1) {
+    if (velocity.x > 0.1) {
       this.pointing = Pointing.RIGHT;
-    } else if (velocity.x < -1) {
+    } else if (velocity.x < -0.1) {
       this.pointing = Pointing.LEFT;
     }
 
@@ -56,15 +59,15 @@ export default class Captain extends CharacterController {
     } else if (
       this.activeStance === Stance.GROUND &&
       activeStanceDuration <=
-        Game.assets['Captain Clown Nose'].animations[Stance.GROUND].duration
+        assets['Captain Clown Nose'].animations[Stance.GROUND].duration
     ) {
       newStance = Stance.GROUND;
     }
 
     if (
       newStance !== Stance.GROUND &&
-      Math.abs(velocity.y) < 1 &&
-      Math.abs(velocity.x) > 1
+      Math.abs(velocity.y) < 0.1 &&
+      Math.abs(velocity.x) > 0.1
     ) {
       newStance = Stance.RUNNING;
     }
@@ -75,9 +78,7 @@ export default class Captain extends CharacterController {
 
       this.gfx.removeAllChildren();
       this.gfx.addChild(
-        new AnimatedSprite(
-          Game.assets['Captain Clown Nose'].animations[newStance]
-        )
+        new AnimatedSprite(assets['Captain Clown Nose'].animations[newStance])
       );
     }
 

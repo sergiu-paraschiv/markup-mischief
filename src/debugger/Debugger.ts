@@ -68,6 +68,9 @@ export default class Debugger extends CanvasItem {
   private onPhysicsTick(event: PhysicsTickEvent) {
     if (this._enableFps) {
       this.physicsFpsCounter.advance(event.currentTime);
+    }
+
+    if (this._enablePhysicsDebugLines) {
       this.debugLines = event.simulation.getDebugInformation();
     }
   }

@@ -1,36 +1,42 @@
-import { Query, Scene, Vector } from '@engine/core';
-import { Sprite } from '@engine/elements';
+import { Query, Scene, Vector, GlobalContext } from '@engine/core';
+import { SpriteMash } from '@engine/elements';
 import { StaticBody } from '@engine/physics';
-import { Game } from '@game';
-import { Captain, Tag } from '@game/entities';
+import { AssetsLoader } from '@engine/loaders';
 import {
+  Captain,
   CaptainDropEvent,
   CaptainGrabEvent,
-} from 'game/entities/CharacterController';
+  Tag,
+  BOARD_DATA,
+  Wall,
+} from '@game/entities';
 import { TickEvent } from '@engine/renderer';
 
-export default class BasicLevelScene extends Scene {
-  constructor() {
+type AssetPaths = Record<string, string>;
+
+export default class GameLevelScene extends Scene {
+  constructor(assetPaths: AssetPaths) {
     super();
 
-    let dropping = false;
-    let grabbedTag: Tag | undefined;
+    this.run(assetPaths);
+  }
 
-    function makeEdgeTile(position: Vector) {
+  private async run(assetPaths: AssetPaths) {
+    const assetsLoader = new AssetsLoader();
+    await assetsLoader.init(assetPaths);
+
+    GlobalContext.set('assets', assetsLoader.assets);
+
+    function makeEdgeWall(position: Vector, size: Vector) {
       const body = new StaticBody(position);
-      body.addChild(
-        new Sprite(Game.assets['Palm Tree Island'].tilemaps['Terrain'].get(27))
-      );
+      body.addChild(new Wall(position, size));
 
       return body;
     }
 
-    function makePlatformTile(position: Vector) {
+    function makePlatformWall(position: Vector, size: Vector) {
       const body = new StaticBody(position);
-      body.setColliderDimensions(new Vector(32, 2));
-      body.addChild(
-        new Sprite(Game.assets['Pirate Ship'].tilemaps['Platforms'].get(52))
-      );
+      body.addChild(new Wall(position, size));
 
       body.filterCollisionFn = ({ collider, velocity }) => {
         if (collider instanceof Captain && dropping) {
@@ -65,20 +71,40 @@ export default class BasicLevelScene extends Scene {
       return tag;
     }
 
-    for (let i = 0; i < 8; i += 1) {
-      this.addChild(makeEdgeTile(new Vector(32 * i, 0)));
-      this.addChild(makeEdgeTile(new Vector(32 * i, 32 * 5)));
+    let dropping = false;
+    let grabbedTag: Tag | undefined;
+
+    const board = SpriteMash.fromData(BOARD_DATA);
+    this.addChild(board);
+    this.addChild(makeEdgeWall(new Vector(0, 0), new Vector(32, 32 * 12)));
+    this.addChild(
+      makeEdgeWall(new Vector(32 * 15, 0), new Vector(32, 32 * 12))
+    );
+    this.addChild(makeEdgeWall(new Vector(32, 0), new Vector(32 * 14, 32)));
+    this.addChild(
+      makeEdgeWall(new Vector(32, 32 * 11), new Vector(32 * 14, 32))
+    );
+    this.addChild(
+      makeEdgeWall(new Vector(32 * 11, 32 * 9), new Vector(32 * 4, 32 * 2))
+    );
+
+    for (let i = 6; i <= 10; i += 1) {
+      this.addChild(
+        makePlatformWall(new Vector(32 * 1, 2 + 32 * i), new Vector(32 * 9, 1))
+      );
     }
 
-    for (let i = 1; i < 5; i += 1) {
-      this.addChild(makeEdgeTile(new Vector(0, 32 * i)));
-      this.addChild(makeEdgeTile(new Vector(32 * 7, 32 * i)));
-    }
+    this.addChild(
+      makePlatformWall(new Vector(32 * 10 + 24, 2 + 32 * 8), new Vector(22, 1))
+    );
 
-    this.addChild(makeEdgeTile(new Vector(32 * 3, 32 * 4)));
+    this.addChild(
+      makePlatformWall(new Vector(32 * 13 + 24, 2 + 32 * 7), new Vector(22, 1))
+    );
 
-    this.addChild(makePlatformTile(new Vector(32 * 2, 32 * 4)));
-    this.addChild(makePlatformTile(new Vector(32, 32 * 3)));
+    this.addChild(
+      makePlatformWall(new Vector(32 * 6 + 24, 2 + 32 * 4), new Vector(22, 1))
+    );
 
     const captain = new Captain(new Vector(32 * 3, 32 * 2));
     this.addChild(captain);

@@ -3,6 +3,7 @@ import { Texture } from '@engine/loaders';
 import Node2D from './Node2D';
 
 export default class Sprite extends Node2D {
+  private _meta: object | undefined;
   private _texture = Texture.empty();
 
   constructor(texture?: Texture, position?: Vector, children?: Element[]) {
@@ -35,5 +36,13 @@ export default class Sprite extends Node2D {
 
   override get height() {
     return this._texture.height;
+  }
+
+  withMeta(meta: object | undefined) {
+    this._meta = meta;
+  }
+
+  getMeta() {
+    return this._meta;
   }
 }
