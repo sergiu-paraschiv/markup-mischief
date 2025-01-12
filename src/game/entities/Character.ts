@@ -16,7 +16,9 @@ enum Pointing {
   RIGHT = 1,
 }
 
-export default class Captain extends CharacterController {
+const ASSET_NAME = 'Captain Clown Nose';
+
+export default class Character extends CharacterController {
   private readonly gfx: Node2D;
   private activeStance: Stance | undefined;
   private activeStanceStartTime = 0;
@@ -38,7 +40,6 @@ export default class Captain extends CharacterController {
     let newStance = Stance.IDLE;
 
     const velocity = this.avgVelocity();
-    console.log(velocity);
 
     if (velocity.y > 0.1) {
       newStance = Stance.FALLING;
@@ -59,7 +60,7 @@ export default class Captain extends CharacterController {
     } else if (
       this.activeStance === Stance.GROUND &&
       activeStanceDuration <=
-        assets['Captain Clown Nose'].animations[Stance.GROUND].duration
+        assets[ASSET_NAME].animations[Stance.GROUND].duration
     ) {
       newStance = Stance.GROUND;
     }
@@ -78,7 +79,7 @@ export default class Captain extends CharacterController {
 
       this.gfx.removeAllChildren();
       this.gfx.addChild(
-        new AnimatedSprite(assets['Captain Clown Nose'].animations[newStance])
+        new AnimatedSprite(assets[ASSET_NAME].animations[newStance])
       );
     }
 

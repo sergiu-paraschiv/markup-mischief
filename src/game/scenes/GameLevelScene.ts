@@ -3,9 +3,9 @@ import { SpriteMash } from '@engine/elements';
 import { StaticBody } from '@engine/physics';
 import { AssetsLoader } from '@engine/loaders';
 import {
-  Captain,
-  CaptainDropEvent,
-  CaptainGrabEvent,
+  Character,
+  CharacterDropEvent,
+  CharacterGrabEvent,
   Tag,
   BOARD_DATA,
   Wall,
@@ -39,11 +39,11 @@ export default class GameLevelScene extends Scene {
       body.addChild(new Wall(position, size));
 
       body.filterCollisionFn = ({ collider, velocity }) => {
-        if (collider instanceof Captain && dropping) {
+        if (collider instanceof Character && dropping) {
           return false;
         }
 
-        if (collider instanceof Captain && velocity.y <= 0) {
+        if (collider instanceof Character && velocity.y <= 0) {
           return false;
         }
 
@@ -57,11 +57,11 @@ export default class GameLevelScene extends Scene {
       const tag = new Tag(position, text);
 
       tag.filterCollisionFn = ({ collider, velocity }) => {
-        if (collider instanceof Captain && dropping) {
+        if (collider instanceof Character && dropping) {
           return false;
         }
 
-        if (collider instanceof Captain && velocity.y <= 0) {
+        if (collider instanceof Character && velocity.y <= 0) {
           return false;
         }
 
@@ -106,18 +106,18 @@ export default class GameLevelScene extends Scene {
       makePlatformWall(new Vector(32 * 6 + 24, 2 + 32 * 4), new Vector(22, 1))
     );
 
-    const captain = new Captain(new Vector(32 * 3, 32 * 2));
+    const captain = new Character(new Vector(32 * 3, 32 * 2));
     this.addChild(captain);
 
     this.addChild(makeTagTile(new Vector(50, 32), '<em>'));
     this.addChild(makeTagTile(new Vector(130, 32), '</em>'));
     this.addChild(makeTagTile(new Vector(180, 32), 'text'));
 
-    this.on(CaptainDropEvent, event => {
+    this.on(CharacterDropEvent, event => {
       dropping = event.start;
     });
 
-    this.on(CaptainGrabEvent, () => {
+    this.on(CharacterGrabEvent, () => {
       if (grabbedTag) {
         grabbedTag = undefined;
       } else {

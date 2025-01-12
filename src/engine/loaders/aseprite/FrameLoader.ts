@@ -16,7 +16,7 @@ import {
 import ColorPalletteLoader from './ColorPalletteLoader';
 
 export default class FrameLoader {
-  private static frameCache = new AsepriteCache<AnimationFrame>();
+  private frameCache = new AsepriteCache<AnimationFrame>();
   private collorPalletteLoader: ColorPalletteLoader;
 
   constructor(private loader: AsepriteLoader) {
@@ -24,7 +24,7 @@ export default class FrameLoader {
   }
 
   async getFrame(frameIndex: number): Promise<AnimationFrame> {
-    return FrameLoader.frameCache.get(frameIndex.toString(10), async () => {
+    return this.frameCache.get(frameIndex.toString(10), async () => {
       if (!this.loader.data) {
         throw new Error('Aseprite file not loaded!');
       }

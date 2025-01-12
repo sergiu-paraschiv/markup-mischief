@@ -5,7 +5,7 @@ import { TagsChunk, TAGS_CHUNK } from './AsepriteParser';
 import FrameLoader from './FrameLoader';
 
 export default class AnimationLoader {
-  private static animationCache = new AsepriteCache<Animation>();
+  private animationCache = new AsepriteCache<Animation>();
   private frameLoader: FrameLoader;
 
   constructor(private loader: AsepriteLoader) {
@@ -26,7 +26,7 @@ export default class AnimationLoader {
   }
 
   async getAnimation(animationName: string): Promise<Animation> {
-    return AnimationLoader.animationCache.get(animationName, async () => {
+    return this.animationCache.get(animationName, async () => {
       if (!this.loader.data) {
         throw new Error('Aseprite file not loaded!');
       }

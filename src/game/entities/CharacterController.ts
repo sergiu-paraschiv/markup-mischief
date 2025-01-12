@@ -11,13 +11,13 @@ export enum CharacterInput {
   GRAB = 4,
 }
 
-export class CaptainDropEvent extends Event {
+export class CharacterDropEvent extends Event {
   constructor(public readonly start: boolean) {
     super();
   }
 }
 
-export class CaptainGrabEvent extends Event {}
+export class CharacterGrabEvent extends Event {}
 
 export default class CharacterController extends DynamicBody {
   protected input: InputState;
@@ -90,14 +90,14 @@ export default class CharacterController extends DynamicBody {
 
       if (newState.get(CharacterInput.DROP) && this.isGrounded()) {
         dropping = true;
-        this.dispatchEvent(new CaptainDropEvent(true));
+        this.dispatchEvent(new CharacterDropEvent(true));
       } else if (dropping) {
         dropping = false;
-        this.dispatchEvent(new CaptainDropEvent(false));
+        this.dispatchEvent(new CharacterDropEvent(false));
       }
 
       if (newState.get(CharacterInput.GRAB) && this.isGrounded()) {
-        this.dispatchEvent(new CaptainGrabEvent());
+        this.dispatchEvent(new CharacterGrabEvent());
       }
     });
 
