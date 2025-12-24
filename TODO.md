@@ -8,7 +8,7 @@
 [x] sprite mash and editor
 [x] ghosts/outlines
 [ ] GUI: (1) start game -> pick level -> win screen, (2) in-game exit 
-[ ] more levels
+[x] more levels
 [ ] save progression somewhere
 [ ] use Dust Particles aseprite for character animations
 [ ] level designer

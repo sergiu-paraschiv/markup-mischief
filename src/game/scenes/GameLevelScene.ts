@@ -13,13 +13,25 @@ import {
   Wall,
 } from '@game/entities';
 import { TickEvent } from '@engine/renderer';
+import { LevelData, LevelsData, positionToVector } from './LevelData';
+import LEVELS_DATA from './levels.json';
 
 type AssetPaths = Record<string, string>;
 
 export default class GameLevelScene extends Scene {
-  constructor(assetPaths: AssetPaths) {
+  private currentLevel: LevelData;
+
+  constructor(assetPaths: AssetPaths, levelId = 4) {
     super();
 
+    const levelsData = LEVELS_DATA as LevelsData;
+    const level = levelsData.levels.find(l => l.id === levelId);
+
+    if (!level) {
+      throw new Error(`Level with id ${levelId} not found`);
+    }
+
+    this.currentLevel = level;
     this.run(assetPaths);
   }
 
@@ -108,14 +120,20 @@ export default class GameLevelScene extends Scene {
       makePlatformWall(new Vector(32 * 6 + 24, 2 + 32 * 4), new Vector(22, 1))
     );
 
-    const player = new PinkStar(new Vector(32 * 2, 32 * 2));
+    // Spawn player from level data
+    const player = new PinkStar(
+      positionToVector(this.currentLevel.playerStart)
+    );
     this.addChild(player);
     // Add ghost at a higher depth so it renders on top of tags
     this.addChild(player.ghost, 1000);
 
-    this.addChild(makeTagTile(new Vector(50, 32), '<em>'));
-    this.addChild(makeTagTile(new Vector(130, 32), '</em>'));
-    this.addChild(makeTagTile(new Vector(180, 32), 'text'));
+    // Spawn tags from level data
+    this.currentLevel.tags.forEach(tagData => {
+      this.addChild(
+        makeTagTile(positionToVector(tagData.position), tagData.text)
+      );
+    });
 
     this.on(CharacterDropEvent, event => {
       dropping = event.start;
@@ -161,8 +179,11 @@ export default class GameLevelScene extends Scene {
         });
 
         const html = tags.map(tag => tag.text).join(' ');
-        if (html === '<em> text </em>') {
+        if (html === this.currentLevel.solution) {
           // TODO: WIN!
+          console.log(
+            `Level ${this.currentLevel.id} (${this.currentLevel.name}) completed!`
+          );
         }
       }
 

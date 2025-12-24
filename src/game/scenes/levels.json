@@ -1,0 +1,160 @@
+{
+  "levels": [
+    {
+      "id": 1,
+      "name": "Level 1 - Emphasis",
+      "playerStart": {
+        "x": 64,
+        "y": 64
+      },
+      "tags": [
+        {
+          "position": {
+            "x": 50,
+            "y": 32
+          },
+          "text": "<em>"
+        },
+        {
+          "position": {
+            "x": 130,
+            "y": 32
+          },
+          "text": "</em>"
+        },
+        {
+          "position": {
+            "x": 180,
+            "y": 32
+          },
+          "text": "text"
+        }
+      ],
+      "solution": "<em> text </em>"
+    },
+    {
+      "id": 2,
+      "name": "Level 2 - Strong Tag",
+      "playerStart": {
+        "x": 96,
+        "y": 64
+      },
+      "tags": [
+        {
+          "position": {
+            "x": 50,
+            "y": 96
+          },
+          "text": "<strong>"
+        },
+        {
+          "position": {
+            "x": 200,
+            "y": 160
+          },
+          "text": "bold"
+        },
+        {
+          "position": {
+            "x": 280,
+            "y": 224
+          },
+          "text": "text"
+        },
+        {
+          "position": {
+            "x": 150,
+            "y": 288
+          },
+          "text": "</strong>"
+        }
+      ],
+      "solution": "<strong> bold text </strong>"
+    },
+    {
+      "id": 3,
+      "name": "Level 3 - Nested Tags",
+      "playerStart": {
+        "x": 128,
+        "y": 64
+      },
+      "tags": [
+        {
+          "position": {
+            "x": 80,
+            "y": 128
+          },
+          "text": "<p>"
+        },
+        {
+          "position": {
+            "x": 160,
+            "y": 96
+          },
+          "text": "<em>"
+        },
+        {
+          "position": {
+            "x": 240,
+            "y": 192
+          },
+          "text": "nested"
+        },
+        {
+          "position": {
+            "x": 320,
+            "y": 160
+          },
+          "text": "</em>"
+        },
+        {
+          "position": {
+            "x": 400,
+            "y": 224
+          },
+          "text": "</p>"
+        }
+      ],
+      "solution": "<p> <em> nested </em> </p>"
+    },
+    {
+      "id": 4,
+      "name": "Level 4 - Link Tag",
+      "playerStart": {
+        "x": 64,
+        "y": 96
+      },
+      "tags": [
+        {
+          "position": {
+            "x": 100,
+            "y": 160
+          },
+          "text": "<a>"
+        },
+        {
+          "position": {
+            "x": 180,
+            "y": 224
+          },
+          "text": "click"
+        },
+        {
+          "position": {
+            "x": 260,
+            "y": 192
+          },
+          "text": "here"
+        },
+        {
+          "position": {
+            "x": 340,
+            "y": 256
+          },
+          "text": "</a>"
+        }
+      ],
+      "solution": "<a> click here </a>"
+    }
+  ]
+}
