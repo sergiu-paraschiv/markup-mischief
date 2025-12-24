@@ -72,7 +72,11 @@ export default class CanvasRenderer implements IRenderer {
 
     this.rootElement.dispatchEvent(new TickEvent(currentTime));
 
-    for (const item of Query.childrenByType(CanvasItem, this.rootElement)) {
+    for (const item of Query.childrenByType(
+      CanvasItem,
+      this.rootElement,
+      true
+    )) {
       item.draw(this.context);
     }
   }

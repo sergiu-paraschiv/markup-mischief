@@ -1,9 +1,14 @@
 import Element from './Element';
 
-function traverseChildren(node: Element, action: (childNode: Element) => void) {
-  for (const childNode of node.children) {
+function traverseChildren(
+  node: Element,
+  action: (childNode: Element) => void,
+  depthSorted = false
+) {
+  const children = depthSorted ? node.depthSortedChildren : node.children;
+  for (const childNode of children) {
     action(childNode);
-    traverseChildren(childNode, action);
+    traverseChildren(childNode, action, depthSorted);
   }
 }
 
@@ -11,15 +16,20 @@ function traverseChildren(node: Element, action: (childNode: Element) => void) {
 export default class Query {
   static childrenByType<T extends Element>(
     type: new (...args: never[]) => T,
-    node: Element
+    node: Element,
+    depthSorted = false
   ): T[] {
     const foundNodes: T[] = [];
 
-    traverseChildren(node, child => {
-      if (child instanceof type) {
-        foundNodes.push(child);
-      }
-    });
+    traverseChildren(
+      node,
+      child => {
+        if (child instanceof type) {
+          foundNodes.push(child);
+        }
+      },
+      depthSorted
+    );
 
     return foundNodes;
   }

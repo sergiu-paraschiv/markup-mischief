@@ -11,27 +11,39 @@ enum Stance {
   RUNNING = 'Run',
 }
 
-enum Pointing {
+export enum Pointing {
   LEFT = 0,
   RIGHT = 1,
 }
-
-const ASSET_NAME = 'Captain Clown Nose';
 
 export default class Character extends CharacterController {
   private readonly gfx: Node2D;
   private activeStance: Stance | undefined;
   private activeStanceStartTime = 0;
-  private pointing = Pointing.RIGHT;
+  private _pointing = Pointing.RIGHT;
 
-  constructor(initialPosition: Vector) {
+  constructor(
+    initialPosition: Vector,
+    private assetName: string,
+    private spritePointing: Pointing = Pointing.LEFT,
+    private spriteOffset = new Vector(0, 0)
+  ) {
     super(initialPosition);
 
     this.gfx = new Node2D();
     this.addChild(this.gfx);
-    this.setColliderOffset(new Vector(8, 4));
-    this.setColliderDimensions(new Vector(16, 28));
+    this.setColliderOffset(new Vector(38, 4));
+    this.setColliderDimensions(new Vector(20, 28));
     this.switchStance(0);
+    this._pointing = Pointing.RIGHT;
+  }
+
+  get pointing() {
+    return this._pointing;
+  }
+
+  get pointingDefault() {
+    return this._pointing === this.spritePointing;
   }
 
   protected override switchStance(currentTime: number) {
@@ -48,9 +60,9 @@ export default class Character extends CharacterController {
     }
 
     if (velocity.x > 0.1) {
-      this.pointing = Pointing.RIGHT;
+      this._pointing = Pointing.RIGHT;
     } else if (velocity.x < -0.1) {
-      this.pointing = Pointing.LEFT;
+      this._pointing = Pointing.LEFT;
     }
 
     const activeStanceDuration = currentTime - this.activeStanceStartTime;
@@ -60,7 +72,7 @@ export default class Character extends CharacterController {
     } else if (
       this.activeStance === Stance.GROUND &&
       activeStanceDuration <=
-        assets[ASSET_NAME].animations[Stance.GROUND].duration
+        assets[this.assetName].animations[Stance.GROUND].duration
     ) {
       newStance = Stance.GROUND;
     }
@@ -79,17 +91,17 @@ export default class Character extends CharacterController {
 
       this.gfx.removeAllChildren();
       this.gfx.addChild(
-        new AnimatedSprite(assets[ASSET_NAME].animations[newStance])
+        new AnimatedSprite(assets[this.assetName].animations[newStance])
       );
     }
 
     if (this.gfx.children.length === 1) {
       const sp = this.gfx?.children[0] as AnimatedSprite;
-      sp.flipH = this.pointing === Pointing.LEFT;
+      sp.flipH = this._pointing !== this.spritePointing;
       if (sp.flipH) {
-        sp.translation = new Vector(-40, -32);
+        sp.translation = new Vector(0, -32).add(this.spriteOffset);
       } else {
-        sp.translation = new Vector(-22, -32);
+        sp.translation = new Vector(0, -32).sub(this.spriteOffset);
       }
     }
   }

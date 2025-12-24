@@ -1,13 +1,15 @@
-import { Query, Scene, Vector, GlobalContext } from '@engine/core';
+import { GlobalContext, Query, Scene, Vector } from '@engine/core';
 import { SpriteMash } from '@engine/elements';
 import { StaticBody } from '@engine/physics';
 import { AssetsLoader } from '@engine/loaders';
 import {
+  BOARD_DATA,
+  PinkStar,
   Character,
   CharacterDropEvent,
   CharacterGrabEvent,
+  Pointing,
   Tag,
-  BOARD_DATA,
   Wall,
 } from '@game/entities';
 import { TickEvent } from '@engine/renderer';
@@ -106,8 +108,8 @@ export default class GameLevelScene extends Scene {
       makePlatformWall(new Vector(32 * 6 + 24, 2 + 32 * 4), new Vector(22, 1))
     );
 
-    const captain = new Character(new Vector(32 * 3, 32 * 2));
-    this.addChild(captain);
+    const player = new PinkStar(new Vector(32 * 3, 32 * 2));
+    this.addChild(player);
 
     this.addChild(makeTagTile(new Vector(50, 32), '<em>'));
     this.addChild(makeTagTile(new Vector(130, 32), '</em>'));
@@ -121,7 +123,7 @@ export default class GameLevelScene extends Scene {
       if (grabbedTag) {
         grabbedTag = undefined;
       } else {
-        const tag = captain.checkFutureIntersection(
+        const tag = player.checkFutureIntersection(
           new Vector(0, 1),
           collider => collider instanceof Tag
         );
@@ -135,7 +137,9 @@ export default class GameLevelScene extends Scene {
 
     this.on(TickEvent, () => {
       if (grabbedTag) {
-        grabbedTag.position = captain.position.add(new Vector(10, 18));
+        grabbedTag.position = player.position.add(
+          new Vector(player.pointing === Pointing.LEFT ? 24 : 38, 8)
+        );
       } else {
         const tags = Query.childrenByType(Tag, this);
         tags.sort((a, b) => {

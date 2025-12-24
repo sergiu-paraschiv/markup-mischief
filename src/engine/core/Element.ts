@@ -3,9 +3,14 @@ import ElementAddedEvent from './ElementAddedEvent';
 import ElementRemovedEvent from './ElementRemovedEvent';
 import EventEmitter from './EventEmitter';
 
+interface ZSortedElement {
+  element: Element;
+  depth: number;
+}
+
 export default class Element extends EventEmitter {
   private _parent?: Element;
-  private _children: Element[] = [];
+  private _children: ZSortedElement[] = [];
 
   constructor(children?: Element[]) {
     super();
@@ -16,7 +21,13 @@ export default class Element extends EventEmitter {
   }
 
   get children() {
-    return this._children;
+    return this._children.map(child => child.element);
+  }
+
+  get depthSortedChildren() {
+    return this._children
+      .sort((a, b) => a.depth - b.depth)
+      .map(child => child.element);
   }
 
   get parent(): Element | undefined {
@@ -44,15 +55,18 @@ export default class Element extends EventEmitter {
     this._parent = undefined;
   }
 
-  addChild(child: Element): void {
-    this._children.push(child);
+  addChild(child: Element, depth = 0): void {
+    this._children.push({
+      element: child,
+      depth,
+    });
     child.parent = this;
     child.dispatchEvent(new ElementAddedEvent());
   }
 
   removeChild(child: Element): void {
     this._children = this._children.filter(
-      searchedChild => searchedChild !== child
+      searchedChild => searchedChild.element !== child
     );
     child.dispatchEvent(new ElementRemovedEvent());
     child.clearParent();
@@ -60,9 +74,9 @@ export default class Element extends EventEmitter {
 
   removeAllChildren(): void {
     this._children.forEach(child => {
-      child.dispatchEvent(new ElementRemovedEvent());
-      child.removeAllChildren();
-      child.clearParent();
+      child.element.dispatchEvent(new ElementRemovedEvent());
+      child.element.removeAllChildren();
+      child.element.clearParent();
     });
     this._children = [];
   }
@@ -101,7 +115,7 @@ export default class Element extends EventEmitter {
         event.destroy();
       }
       for (const child of this._children) {
-        child.dispatchEvent(event);
+        child.element.dispatchEvent(event);
         if (event.propagationStopped) {
           return;
         }
