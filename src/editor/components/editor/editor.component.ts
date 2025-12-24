@@ -85,7 +85,6 @@ export class EditorComponent implements OnInit {
 
     this.handleGridStepChange();
     this.handleSelectedToolChange();
-    this.handleSelectedLayerChange();
 
     this.ee.subscribe(async event => {
       if (event instanceof TexturePickEvent) {
@@ -154,6 +153,8 @@ export class EditorComponent implements OnInit {
         this.redoFn = event.history.getRedo();
         this.hasRedo = !!this.redoFn;
         this.data = JSON.stringify(event.history.getCurrentData());
+      } else if (event instanceof SelectedLayerChangeEvent) {
+        this.selectedLayer = event.layer;
       }
     });
   }
@@ -310,8 +311,7 @@ export class EditorComponent implements OnInit {
   onSelectLayer(event: MouseEvent, layer: number) {
     event.preventDefault();
 
-    this.selectedLayer = layer;
-    this.handleSelectedLayerChange();
+    this.handleSelectedLayerChange(layer);
   }
 
   onUndo(event: MouseEvent) {
@@ -376,8 +376,8 @@ export class EditorComponent implements OnInit {
     this.ee.emit(new SelectedToolChangeEvent(this.selectedTool));
   }
 
-  private handleSelectedLayerChange() {
-    this.ee.emit(new SelectedLayerChangeEvent(this.selectedLayer));
+  private handleSelectedLayerChange(layer: number) {
+    this.ee.emit(new SelectedLayerChangeEvent(layer));
   }
 
   onSelectData() {

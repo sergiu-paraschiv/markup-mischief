@@ -138,25 +138,62 @@ export default class Editor extends Element {
       ) {
         const tileUnderPointer = this.getTileAt(event.point);
 
-        if (this.selectedTool === 'paint' || this.selectedTool === 'erase') {
+        if (this.selectedTool === 'paint') {
           if (
             tileUnderPointer &&
             (tileUnderPointer instanceof Sprite ||
               tileUnderPointer instanceof AnimatedSprite)
           ) {
             tileUnderPointer.remove();
+          }
+        } else if (this.selectedTool === 'erase') {
+          // First try the selected layer
+          let tileResult = tileUnderPointer
+            ? { tile: tileUnderPointer, layerIndex: this.selectedLayer }
+            : undefined;
 
-            if (this.selectedTool === 'erase') {
-              this.handleChange();
+          // If nothing found on selected layer, search all layers
+          if (!tileResult) {
+            tileResult = this.getTileAtAnyLayer(event.point);
+          }
+
+          if (tileResult) {
+            // Switch to the layer where the tile was found
+            if (tileResult.layerIndex !== this.selectedLayer) {
+              this.gui?.ee.emit(
+                new SelectedLayerChangeEvent(tileResult.layerIndex)
+              );
             }
+
+            // Remove the tile
+            tileResult.tile.remove();
+            this.handleChange();
           }
         } else if (this.selectedTool === 'pick') {
-          if (tileUnderPointer && tileUnderPointer instanceof AnimatedSprite) {
-            this.gui?.ee.emit(
-              new AnimationPickEvent(tileUnderPointer.animation)
-            );
-          } else if (tileUnderPointer && tileUnderPointer instanceof Sprite) {
-            this.gui?.ee.emit(new TexturePickEvent(tileUnderPointer.texture));
+          // First try the selected layer
+          let tileResult = tileUnderPointer
+            ? { tile: tileUnderPointer, layerIndex: this.selectedLayer }
+            : undefined;
+
+          // If nothing found on selected layer, search all layers
+          if (!tileResult) {
+            tileResult = this.getTileAtAnyLayer(event.point);
+          }
+
+          if (tileResult) {
+            // Switch to the layer where the tile was found
+            if (tileResult.layerIndex !== this.selectedLayer) {
+              this.gui?.ee.emit(
+                new SelectedLayerChangeEvent(tileResult.layerIndex)
+              );
+            }
+
+            const tile = tileResult.tile;
+            if (tile instanceof AnimatedSprite) {
+              this.gui?.ee.emit(new AnimationPickEvent(tile.animation));
+            } else if (tile instanceof Sprite) {
+              this.gui?.ee.emit(new TexturePickEvent(tile.texture));
+            }
           } else {
             this.gui?.ee.emit(new TexturePickEvent(undefined));
             this.gui?.ee.emit(new AnimationPickEvent(undefined));
@@ -310,6 +347,45 @@ export default class Editor extends Element {
         return element;
       }
     }
+    return undefined;
+  }
+
+  private getTileAtAnyLayer(
+    point: Vector
+  ): { tile: Node2D; layerIndex: number } | undefined {
+    if (!this.sm) {
+      return undefined;
+    }
+
+    // Search from top layer to bottom layer
+    for (
+      let layerIndex = this.sm.numLayers - 1;
+      layerIndex >= 0;
+      layerIndex--
+    ) {
+      const layer = this.getLayer(layerIndex);
+      if (!layer) {
+        continue;
+      }
+
+      const elements = Query.childrenByType(Node2D, layer);
+      for (const element of elements) {
+        const left = element.position.left;
+        const right = element.position.left + element.width;
+        const top = element.position.top;
+        const bottom = element.position.top + element.height;
+
+        if (
+          left <= point.x &&
+          point.x <= right &&
+          top <= point.y &&
+          point.y <= bottom
+        ) {
+          return { tile: element, layerIndex };
+        }
+      }
+    }
+
     return undefined;
   }
 
