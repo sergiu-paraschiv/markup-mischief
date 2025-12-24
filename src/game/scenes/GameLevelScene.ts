@@ -21,7 +21,7 @@ type AssetPaths = Record<string, string>;
 export default class GameLevelScene extends Scene {
   private currentLevel: LevelData;
 
-  constructor(assetPaths: AssetPaths, levelId = 4) {
+  constructor(assetPaths: AssetPaths, levelId = 2) {
     super();
 
     const levelsData = LEVELS_DATA as LevelsData;
