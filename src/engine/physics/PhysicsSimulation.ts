@@ -26,6 +26,8 @@ export default class PhysicsSimulation {
     x: { position: Vector; dimensions: Vector }[];
     y: { position: Vector; dimensions: Vector }[];
   } = { x: [], y: [] };
+  private wakeUpInterval = 250; // Wake up sleeping objects every 250ms
+  private timeSinceLastWakeUp = 0;
 
   constructor(public readonly gravity = new Vector(0, 1024)) {
     this.workLoop = new WorkLoop(this.step.bind(this));
@@ -367,6 +369,20 @@ export default class PhysicsSimulation {
   private step(currentTime: number, deltaTime: number) {
     if (!this.rootElement) {
       return;
+    }
+
+    // Periodically wake up all sleeping objects
+    this.timeSinceLastWakeUp += deltaTime;
+    if (this.timeSinceLastWakeUp >= this.wakeUpInterval) {
+      this.timeSinceLastWakeUp = 0;
+
+      const dynamicBodies = Query.childrenByType(DynamicBody, this.rootElement);
+
+      for (const body of dynamicBodies) {
+        if (body.sleeping) {
+          body.wakeUp();
+        }
+      }
     }
 
     this.rootElement.dispatchEvent(
