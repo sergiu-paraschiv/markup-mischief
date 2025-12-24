@@ -2,6 +2,7 @@ import InputDevice from './InputDevice';
 import Keyboard, { KeyboardInputEvent, KeyAction } from './Keyboard';
 import Mouse, {
   MouseInputEvent,
+  MouseMoveEvent,
   MouseButton,
   MouseButtonAction,
 } from './Mouse';
@@ -14,6 +15,7 @@ export {
   Keyboard,
   Mouse,
   MouseInputEvent,
+  MouseMoveEvent,
   MouseButton,
   MouseButtonAction,
   KeyboardInputEvent,

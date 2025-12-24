@@ -9,7 +9,12 @@ import {
   AssetsMap,
   Texture,
 } from '@engine/loaders';
-import { MouseButton, MouseButtonAction, MouseInputEvent } from '@engine/input';
+import {
+  MouseButton,
+  MouseButtonAction,
+  MouseInputEvent,
+  MouseMoveEvent,
+} from '@engine/input';
 import {
   Node2D,
   Sprite,
@@ -56,6 +61,8 @@ export default class Editor extends Element {
   private selectedLayer = 0;
   private gridStep = new Vector(0, 0);
   private history: History<SpriteMashData> | undefined;
+  private ghostSprite: Sprite | AnimatedSprite | undefined;
+  private lastMousePosition: Vector | undefined;
 
   constructor(
     container: HTMLElement,
@@ -82,6 +89,7 @@ export default class Editor extends Element {
           event.tileset,
           event.tileId
         );
+        this.updateGhostSprite();
       } else if (event instanceof AnimationSelectEvent) {
         this.selectedAnimation =
           this.assetsLoader?.assets[event.asset].animations[
@@ -91,21 +99,31 @@ export default class Editor extends Element {
           event.asset,
           event.animationName
         );
+        this.updateGhostSprite();
       } else if (event instanceof TileUnselectEvent) {
         this.selectedTile = undefined;
         this.selectedTileMeta = undefined;
         this.selectedAnimation = undefined;
         this.selectedAnimationMeta = undefined;
+        this.updateGhostSprite();
       } else if (event instanceof GridStepChangeEvent) {
         this.gridStep = event.step;
+        this.updateGhostSprite();
       } else if (event instanceof SelectedToolChangeEvent) {
         this.selectedTool = event.tool;
+        this.updateGhostSprite();
       } else if (event instanceof SelectedLayerChangeEvent) {
         this.selectedLayer = event.layer;
       } else if (event instanceof DataPasteEvent) {
         this.loadData(event.data);
         this.handleChange();
       }
+    });
+
+    this.on(MouseMoveEvent, event => {
+      // Update ghost sprite position on mouse move
+      this.lastMousePosition = event.point;
+      this.updateGhostSprite();
     });
 
     this.on(MouseInputEvent, event => {
@@ -325,5 +343,38 @@ export default class Editor extends Element {
     this.previousData = data;
     this.history.add(rawData);
     this.gui?.ee.emit(new DataChangeEvent(this.history));
+  }
+
+  private updateGhostSprite() {
+    // Remove existing ghost if any
+    if (this.ghostSprite) {
+      this.ghostSprite.remove();
+      this.ghostSprite = undefined;
+    }
+
+    // Only show ghost when paint tool is selected and something is selected
+    if (this.selectedTool !== 'paint') {
+      return;
+    }
+
+    if (!this.lastMousePosition) {
+      return;
+    }
+
+    const gridPosition = this.getGridPoint(this.lastMousePosition);
+
+    // Create ghost sprite for static tile
+    if (this.selectedTile) {
+      this.ghostSprite = new Sprite(this.selectedTile, gridPosition);
+      this.addChild(this.ghostSprite, 900);
+    }
+    // Create ghost sprite for animation
+    else if (this.selectedAnimation) {
+      this.ghostSprite = new AnimatedSprite(
+        this.selectedAnimation,
+        gridPosition
+      );
+      this.addChild(this.ghostSprite);
+    }
   }
 }

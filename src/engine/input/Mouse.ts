@@ -24,6 +24,12 @@ export class MouseInputEvent extends InputEvent {
   }
 }
 
+export class MouseMoveEvent extends InputEvent {
+  constructor(public readonly point: Vector) {
+    super();
+  }
+}
+
 export default class Mouse extends InputDevice {
   constructor(
     container: HTMLElement,
@@ -35,11 +41,12 @@ export default class Mouse extends InputDevice {
     //   event.preventDefault();
     // });
 
-    container.addEventListener('mousedown', this.eventHandler.bind(this));
-    container.addEventListener('mouseup', this.eventHandler.bind(this));
+    container.addEventListener('mousedown', this.inputEventHandler.bind(this));
+    container.addEventListener('mouseup', this.inputEventHandler.bind(this));
+    container.addEventListener('mousemove', this.moveEventHandler.bind(this));
   }
 
-  private eventHandler(event: MouseEvent) {
+  private inputEventHandler(event: MouseEvent) {
     for (const buttonIndex of BUTTONS) {
       if (event.button === buttonIndex) {
         this.dispatchEvent(
@@ -53,5 +60,11 @@ export default class Mouse extends InputDevice {
         );
       }
     }
+  }
+
+  private moveEventHandler(event: MouseEvent) {
+    this.dispatchEvent(
+      new MouseMoveEvent(this.getLocalPoint(new Vector(event.x, event.y)))
+    );
   }
 }
