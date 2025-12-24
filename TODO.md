@@ -7,7 +7,8 @@
 [x] game logic
 [x] sprite mash and editor
 [x] ghosts/outlines
-[ ] GUI: (1) start game -> pick level -> win screen, (2) in-game exit 
+[x] publish to GH Pages
+[ ] GUI: (1) start game -> pick level -> win screen, (2) in-game exit, (3) rendered view / rendered solution view
 [x] more levels
 [ ] save progression somewhere
 [ ] use Dust Particles aseprite for character animations
