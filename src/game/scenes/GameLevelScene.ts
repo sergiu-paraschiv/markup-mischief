@@ -3,7 +3,7 @@ import { SpriteMash, SpriteMashData } from '@engine/elements';
 import { StaticBody } from '@engine/physics';
 import { AssetsLoader } from '@engine/loaders';
 import {
-  BOARD2_DATA,
+  BOARD_DATA,
   PinkStar,
   Character,
   CharacterDropEvent,
@@ -76,7 +76,7 @@ export default class GameLevelScene extends Scene {
     let dropping = false;
     let grabbedTag: Tag | undefined;
 
-    const board = SpriteMash.fromData(BOARD2_DATA as SpriteMashData);
+    const board = SpriteMash.fromData(BOARD_DATA as SpriteMashData);
     this.addChild(board);
     this.addChild(makeEdgeWall(new Vector(0, 0), new Vector(32, 32 * 12)));
     this.addChild(

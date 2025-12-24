@@ -8,9 +8,8 @@ import { PhysicsSimulation } from '@engine/physics';
 import { Debugger } from '@debugger';
 import { SpriteMash } from '@engine/elements';
 import { Editor } from '@editor';
-import { GameLevelScene } from '@game/scenes';
 
-import ASSETS from './assets.json';
+import ASSETS from '../assets.json';
 
 @Component({
   selector: 'app-root',

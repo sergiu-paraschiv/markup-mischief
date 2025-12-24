@@ -147,38 +147,18 @@ export default class Editor extends Element {
             tileUnderPointer.remove();
           }
         } else if (this.selectedTool === 'erase') {
-          // First try the selected layer
-          let tileResult = tileUnderPointer
-            ? { tile: tileUnderPointer, layerIndex: this.selectedLayer }
-            : undefined;
-
-          // If nothing found on selected layer, search all layers
-          if (!tileResult) {
-            tileResult = this.getTileAtAnyLayer(event.point);
-          }
-
-          if (tileResult) {
-            // Switch to the layer where the tile was found
-            if (tileResult.layerIndex !== this.selectedLayer) {
-              this.gui?.ee.emit(
-                new SelectedLayerChangeEvent(tileResult.layerIndex)
-              );
-            }
-
-            // Remove the tile
-            tileResult.tile.remove();
+          // Erase only from the selected layer
+          if (
+            tileUnderPointer &&
+            (tileUnderPointer instanceof Sprite ||
+              tileUnderPointer instanceof AnimatedSprite)
+          ) {
+            tileUnderPointer.remove();
             this.handleChange();
           }
         } else if (this.selectedTool === 'pick') {
-          // First try the selected layer
-          let tileResult = tileUnderPointer
-            ? { tile: tileUnderPointer, layerIndex: this.selectedLayer }
-            : undefined;
-
-          // If nothing found on selected layer, search all layers
-          if (!tileResult) {
-            tileResult = this.getTileAtAnyLayer(event.point);
-          }
+          // Search all layers from top to bottom
+          const tileResult = this.getTileAtAnyLayer(event.point);
 
           if (tileResult) {
             // Switch to the layer where the tile was found
