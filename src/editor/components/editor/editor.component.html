@@ -4,6 +4,16 @@
   <input type="number" [ngModel]="gridStep.y" (ngModelChange)="onGridStepYChange($event)" />
 </div>
 
+@if (selectedItemPosition) {
+  <div class="nudge-settings">
+    <span>Nudge:</span>
+    <button (click)="onNudge($event, -1, 0)">X-</button>
+    <button (click)="onNudge($event, 1, 0)">X+</button>
+    <button (click)="onNudge($event, 0, -1)">Y-</button>
+    <button (click)="onNudge($event, 0, 1)">Y+</button>
+  </div>
+}
+
 <div class="tools">
   <button [class.selected]="selectedTool === 'paint'" (click)="onSelectTool($event, 'paint')">paint</button>
   <button [class.selected]="selectedTool === 'erase'" (click)="onSelectTool($event, 'erase')">erase</button>

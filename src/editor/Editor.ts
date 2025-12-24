@@ -31,6 +31,8 @@ import GridStepChangeEvent from './GridStepChangeEvent';
 import SelectedToolChangeEvent from './SelectedToolChangeEvent';
 import TexturePickEvent from './TexturePickEvent';
 import AnimationPickEvent from './AnimationPickEvent';
+import ItemSelectEvent from './ItemSelectEvent';
+import ItemNudgeEvent from './ItemNudgeEvent';
 import SelectedLayerChangeEvent from './SelectedLayerChangeEvent';
 import DataChangeEvent from './DataChangeEvent';
 import History from './History';
@@ -63,6 +65,7 @@ export default class Editor extends Element {
   private history: History<SpriteMashData> | undefined;
   private ghostSprite: Sprite | AnimatedSprite | undefined;
   private lastMousePosition: Vector | undefined;
+  private selectedItem: Node2D | undefined;
 
   constructor(
     container: HTMLElement,
@@ -117,6 +120,14 @@ export default class Editor extends Element {
       } else if (event instanceof DataPasteEvent) {
         this.loadData(event.data);
         this.handleChange();
+      } else if (event instanceof ItemNudgeEvent) {
+        if (this.selectedItem) {
+          this.selectedItem.position = new Vector(
+            this.selectedItem.position.x + event.offsetX,
+            this.selectedItem.position.y + event.offsetY
+          );
+          this.handleChange();
+        }
       }
     });
 
@@ -157,24 +168,35 @@ export default class Editor extends Element {
             this.handleChange();
           }
         } else if (this.selectedTool === 'pick') {
-          // Search all layers from top to bottom
-          const tileResult = this.getTileAtAnyLayer(event.point);
+          let tile = tileUnderPointer;
+          if (!tile) {
+            // Search all layers from top to bottom
+            const tileResult = this.getTileAtAnyLayer(event.point);
 
-          if (tileResult) {
-            // Switch to the layer where the tile was found
-            if (tileResult.layerIndex !== this.selectedLayer) {
-              this.gui?.ee.emit(
-                new SelectedLayerChangeEvent(tileResult.layerIndex)
-              );
+            if (tileResult) {
+              // Switch to the layer where the tile was found
+              if (tileResult.layerIndex !== this.selectedLayer) {
+                this.gui?.ee.emit(
+                  new SelectedLayerChangeEvent(tileResult.layerIndex)
+                );
+              }
+
+              tile = tileResult.tile;
             }
+          }
 
-            const tile = tileResult.tile;
+          if (tile) {
+            this.selectedItem = tile;
+            this.gui?.ee.emit(new ItemSelectEvent(tile));
+
             if (tile instanceof AnimatedSprite) {
               this.gui?.ee.emit(new AnimationPickEvent(tile.animation));
             } else if (tile instanceof Sprite) {
               this.gui?.ee.emit(new TexturePickEvent(tile.texture));
             }
           } else {
+            this.selectedItem = undefined;
+            this.gui?.ee.emit(new ItemSelectEvent(undefined));
             this.gui?.ee.emit(new TexturePickEvent(undefined));
             this.gui?.ee.emit(new AnimationPickEvent(undefined));
           }
@@ -189,6 +211,8 @@ export default class Editor extends Element {
             sprite.withMeta(this.selectedTileMeta);
             layer.addChild(sprite);
 
+            this.selectedItem = sprite;
+            this.gui?.ee.emit(new ItemSelectEvent(sprite));
             this.handleChange();
           } else if (this.selectedAnimation && this.selectedAnimationMeta) {
             const animatedSprite = new AnimatedSprite(
@@ -198,6 +222,8 @@ export default class Editor extends Element {
             animatedSprite.withMeta(this.selectedAnimationMeta);
             layer.addChild(animatedSprite);
 
+            this.selectedItem = animatedSprite;
+            this.gui?.ee.emit(new ItemSelectEvent(animatedSprite));
             this.handleChange();
           }
         }

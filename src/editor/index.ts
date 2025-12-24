@@ -7,6 +7,8 @@ import SelectedLayerChangeEvent from './SelectedLayerChangeEvent';
 import SelectedToolChangeEvent from './SelectedToolChangeEvent';
 import TexturePickEvent from './TexturePickEvent';
 import AnimationPickEvent from './AnimationPickEvent';
+import ItemSelectEvent from './ItemSelectEvent';
+import ItemNudgeEvent from './ItemNudgeEvent';
 import DataChangeEvent from './DataChangeEvent';
 import DataPasteEvent from './DataPasteEvent';
 
@@ -20,6 +22,8 @@ export {
   SelectedToolChangeEvent,
   TexturePickEvent,
   AnimationPickEvent,
+  ItemSelectEvent,
+  ItemNudgeEvent,
   DataChangeEvent,
   DataPasteEvent,
 };

@@ -10,6 +10,8 @@ import {
   SelectedToolChangeEvent,
   TexturePickEvent,
   AnimationPickEvent,
+  ItemSelectEvent,
+  ItemNudgeEvent,
   SelectedLayerChangeEvent,
   DataChangeEvent,
   DataPasteEvent,
@@ -64,6 +66,8 @@ export class EditorComponent implements OnInit {
 
   selectedLayer = 0;
 
+  selectedItemPosition: Vector | undefined;
+
   undoFn: (() => void) | undefined;
   redoFn: (() => void) | undefined;
   hasUndo = false;
@@ -78,6 +82,11 @@ export class EditorComponent implements OnInit {
   onGridStepYChange(y: number) {
     this.gridStep = new Vector(this.gridStep.x, y);
     this.handleGridStepChange();
+  }
+
+  onNudge(event: MouseEvent, offsetX: number, offsetY: number) {
+    event.preventDefault();
+    this.ee.emit(new ItemNudgeEvent(offsetX, offsetY));
   }
 
   async ngOnInit(): Promise<void> {
@@ -155,6 +164,12 @@ export class EditorComponent implements OnInit {
         this.data = JSON.stringify(event.history.getCurrentData());
       } else if (event instanceof SelectedLayerChangeEvent) {
         this.selectedLayer = event.layer;
+      } else if (event instanceof ItemSelectEvent) {
+        if (event.item) {
+          this.selectedItemPosition = event.item.position;
+        } else {
+          this.selectedItemPosition = undefined;
+        }
       }
     });
   }
