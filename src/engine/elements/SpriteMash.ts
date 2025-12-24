@@ -1,13 +1,33 @@
 import { Element, GlobalContext, Vector } from '@engine/core';
 import Sprite from './Sprite';
-import { AsepriteTextureMeta, AsepriteTextureMetaData } from '@engine/loaders';
+import AnimatedSprite from './AnimatedSprite';
+import {
+  AsepriteTextureMeta,
+  AsepriteTextureMetaData,
+  AsepriteAnimationMeta,
+  AsepriteAnimationMetaData,
+} from '@engine/loaders';
+
+export enum SpriteMashItemType {
+  Static = 'static',
+  Animated = 'animated',
+}
+
+type SpriteMashItem =
+  | {
+      type: SpriteMashItemType.Static;
+      position: { x: number; y: number };
+      texture: AsepriteTextureMetaData;
+    }
+  | {
+      type: SpriteMashItemType.Animated;
+      position: { x: number; y: number };
+      animation: AsepriteAnimationMetaData;
+    };
 
 export interface SpriteMashData {
   numLayers: number;
-  layers: {
-    position: { x: number; y: number };
-    texture: AsepriteTextureMetaData;
-  }[][];
+  layers: SpriteMashItem[][];
 }
 
 export default class SpriteMash extends Element {
@@ -34,13 +54,26 @@ export default class SpriteMash extends Element {
     };
 
     for (let i = 0; i < this._numLayers; i += 1) {
-      const layerItems = [];
+      const layerItems: SpriteMashItem[] = [];
 
       for (const child of this.children[i].children) {
-        if (child instanceof Sprite) {
+        if (child instanceof AnimatedSprite) {
+          const animationMeta = child.getMeta();
+          if (animationMeta instanceof AsepriteAnimationMeta) {
+            layerItems.push({
+              type: SpriteMashItemType.Animated,
+              position: {
+                x: child.position.x,
+                y: child.position.y,
+              },
+              animation: animationMeta.toObject(),
+            });
+          }
+        } else if (child instanceof Sprite) {
           const textureMeta = child.getMeta();
           if (textureMeta instanceof AsepriteTextureMeta) {
             layerItems.push({
+              type: SpriteMashItemType.Static,
               position: {
                 x: child.position.x,
                 y: child.position.y,
@@ -73,21 +106,39 @@ export default class SpriteMash extends Element {
     for (let layerIndex = 0; layerIndex < data.layers.length; layerIndex += 1) {
       const items = data.layers[layerIndex];
       for (const item of items) {
-        const tile = assets[item.texture.asset].tilemaps[
-          item.texture.tileset
-        ].get(item.texture.tileId);
-        const sprite = new Sprite(
-          tile,
-          new Vector(item.position.x, item.position.y)
-        );
-        sprite.withMeta(
-          new AsepriteTextureMeta(
-            item.texture.asset,
-            item.texture.tileset,
-            item.texture.tileId
-          )
-        );
-        sm.getLayer(layerIndex)?.addChild(sprite);
+        if (item.type === SpriteMashItemType.Animated) {
+          const animation =
+            assets[item.animation.asset].animations[
+              item.animation.animationName
+            ];
+          const animatedSprite = new AnimatedSprite(
+            animation,
+            new Vector(item.position.x, item.position.y)
+          );
+          animatedSprite.withMeta(
+            new AsepriteAnimationMeta(
+              item.animation.asset,
+              item.animation.animationName
+            )
+          );
+          sm.getLayer(layerIndex)?.addChild(animatedSprite);
+        } else if (item.type === SpriteMashItemType.Static) {
+          const tile = assets[item.texture.asset].tilemaps[
+            item.texture.tileset
+          ].get(item.texture.tileId);
+          const sprite = new Sprite(
+            tile,
+            new Vector(item.position.x, item.position.y)
+          );
+          sprite.withMeta(
+            new AsepriteTextureMeta(
+              item.texture.asset,
+              item.texture.tileset,
+              item.texture.tileId
+            )
+          );
+          sm.getLayer(layerIndex)?.addChild(sprite);
+        }
       }
     }
 

@@ -31,6 +31,7 @@ export interface Animation {
 }
 
 export default class AnimatedSprite extends Node2D {
+  private _meta: object | undefined;
   public flipH = false;
   public flipV = false;
   private _frames: AnimationFrame[] = [];
@@ -40,7 +41,7 @@ export default class AnimatedSprite extends Node2D {
   private previousTime: number;
 
   constructor(
-    private animation: Animation,
+    private _animation: Animation,
     position?: Vector,
     children: Element[] = []
   ) {
@@ -49,15 +50,19 @@ export default class AnimatedSprite extends Node2D {
     this.frameIndex = 0;
     this.previousTime = 0;
 
-    this._frames = animation.frames;
-    if (animation.direction === AnimationDirection.Reverse) {
+    this._frames = _animation.frames;
+    if (_animation.direction === AnimationDirection.Reverse) {
       this._frames = this._frames.reverse();
     }
     // TODO: handle AnimationDirection.PingPong and AnimationDirection.PingPongReverse
 
-    this.animationRepeatIndex = animation.repeatTimes;
+    this.animationRepeatIndex = _animation.repeatTimes;
 
     this.on(TickEvent, this.onTick.bind(this));
+  }
+
+  get animation() {
+    return this._animation;
   }
 
   static empty() {
@@ -107,11 +112,11 @@ export default class AnimatedSprite extends Node2D {
   play() {
     this.stopped = false;
 
-    if (this.animation.repeat === AnimationRepeat.Default) {
+    if (this._animation.repeat === AnimationRepeat.Default) {
       this.frameIndex = 0;
-    } else if (this.animation.repeat === AnimationRepeat.Fixed) {
+    } else if (this._animation.repeat === AnimationRepeat.Fixed) {
       this.frameIndex = 0;
-      this.animationRepeatIndex = this.animation.repeatTimes;
+      this.animationRepeatIndex = this._animation.repeatTimes;
     }
   }
 
@@ -123,9 +128,9 @@ export default class AnimatedSprite extends Node2D {
   private advanceFrame() {
     this.frameIndex += 1;
     if (this.frameIndex >= this._frames.length) {
-      if (this.animation.repeat === AnimationRepeat.Default) {
+      if (this._animation.repeat === AnimationRepeat.Default) {
         this.frameIndex = 0;
-      } else if (this.animation.repeat === AnimationRepeat.Fixed) {
+      } else if (this._animation.repeat === AnimationRepeat.Fixed) {
         this.frameIndex = 0;
         this.animationRepeatIndex -= 1;
         if (this.animationRepeatIndex === 0) {
@@ -177,6 +182,14 @@ export default class AnimatedSprite extends Node2D {
   }
 
   get animationDuration() {
-    return this.animation.duration;
+    return this._animation.duration;
+  }
+
+  withMeta(meta: object | undefined) {
+    this._meta = meta;
+  }
+
+  getMeta() {
+    return this._meta;
   }
 }

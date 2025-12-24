@@ -1,9 +1,3 @@
-<grid
-  [step]="localGridStep"
-  [position]="canvasPosition"
-  [size]="canvasSize"
-/>
-
 <div class="grid-settings">
   <input type="number" [ngModel]="gridStep.x" (ngModelChange)="onGridStepXChange($event)" />
   <span>x</span>
@@ -64,13 +58,13 @@
 
     @if (selectedAsset.animations.length > 0) {
       <div>Animations:</div>
-      <ul>
-        @for (animation of selectedAsset.animations; track animation) {
-          <li>
-            <a href="" (click)="onSelectAnimation($event, animation)">{{ animation }}</a>
-          </li>
+      <div class="tilemap">
+        @for (animation of selectedAsset.animations; track animation.name) {
+          <a href="" (click)="onSelectAnimation($event, animation.name)" [class.selected]="animation.name === selectedAnimation">
+            <img src="{{ animation.image }}" alt="{{ animation.name }}" title="{{ animation.name }}" />
+          </a>
         }
-      </ul>
+      </div>
     }
   </div>
 }

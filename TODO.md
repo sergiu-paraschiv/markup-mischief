@@ -4,8 +4,10 @@
 [x] implement a GPU renderer - did, not faster
 [x] Physics system
 [x] Events might need to propagate up through parents too
-[-] sprite mash and editor
-[ ] level designer
 [x] game logic
-[ ] GUI
-[?] more levels
+[-] sprite mash and editor
+[ ] GUI: (1) start game -> pick level -> win screen, (2) in-game exit 
+[ ] more levels
+[ ] save progression somewhere
+[ ] use Dust Particles aseprite for character animations
+[ ] level designer

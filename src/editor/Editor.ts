@@ -4,17 +4,28 @@ import { Engine, SceneLoadedEvent } from '@engine';
 import { Element, Query, Vector } from '@engine/core';
 import {
   AsepriteTextureMeta,
+  AsepriteAnimationMeta,
   AssetsLoader,
   AssetsMap,
   Texture,
 } from '@engine/loaders';
 import { MouseButton, MouseButtonAction, MouseInputEvent } from '@engine/input';
-import { Node2D, Sprite, SpriteMash, SpriteMashData } from '@engine/elements';
+import {
+  Node2D,
+  Sprite,
+  AnimatedSprite,
+  SpriteMash,
+  SpriteMashData,
+  SpriteMashItemType,
+  Animation,
+} from '@engine/elements';
 import TileSelectEvent from './TileSelectEvent';
 import TileUnselectEvent from './TileUnselectEvent';
+import AnimationSelectEvent from './AnimationSelectEvent';
 import GridStepChangeEvent from './GridStepChangeEvent';
 import SelectedToolChangeEvent from './SelectedToolChangeEvent';
 import TexturePickEvent from './TexturePickEvent';
+import AnimationPickEvent from './AnimationPickEvent';
 import SelectedLayerChangeEvent from './SelectedLayerChangeEvent';
 import DataChangeEvent from './DataChangeEvent';
 import History from './History';
@@ -39,6 +50,8 @@ export default class Editor extends Element {
   private previousScene: Element | undefined;
   private selectedTile: Texture | undefined;
   private selectedTileMeta: AsepriteTextureMeta | undefined;
+  private selectedAnimation: Animation | undefined;
+  private selectedAnimationMeta: AsepriteAnimationMeta | undefined;
   private selectedTool: string | undefined;
   private selectedLayer = 0;
   private gridStep = new Vector(0, 0);
@@ -69,9 +82,20 @@ export default class Editor extends Element {
           event.tileset,
           event.tileId
         );
+      } else if (event instanceof AnimationSelectEvent) {
+        this.selectedAnimation =
+          this.assetsLoader?.assets[event.asset].animations[
+            event.animationName
+          ];
+        this.selectedAnimationMeta = new AsepriteAnimationMeta(
+          event.asset,
+          event.animationName
+        );
       } else if (event instanceof TileUnselectEvent) {
         this.selectedTile = undefined;
         this.selectedTileMeta = undefined;
+        this.selectedAnimation = undefined;
+        this.selectedAnimationMeta = undefined;
       } else if (event instanceof GridStepChangeEvent) {
         this.gridStep = event.step;
       } else if (event instanceof SelectedToolChangeEvent) {
@@ -97,7 +121,11 @@ export default class Editor extends Element {
         const tileUnderPointer = this.getTileAt(event.point);
 
         if (this.selectedTool === 'paint' || this.selectedTool === 'erase') {
-          if (tileUnderPointer && tileUnderPointer instanceof Sprite) {
+          if (
+            tileUnderPointer &&
+            (tileUnderPointer instanceof Sprite ||
+              tileUnderPointer instanceof AnimatedSprite)
+          ) {
             tileUnderPointer.remove();
 
             if (this.selectedTool === 'erase') {
@@ -105,22 +133,38 @@ export default class Editor extends Element {
             }
           }
         } else if (this.selectedTool === 'pick') {
-          if (tileUnderPointer && tileUnderPointer instanceof Sprite) {
+          if (tileUnderPointer && tileUnderPointer instanceof AnimatedSprite) {
+            this.gui?.ee.emit(
+              new AnimationPickEvent(tileUnderPointer.animation)
+            );
+          } else if (tileUnderPointer && tileUnderPointer instanceof Sprite) {
             this.gui?.ee.emit(new TexturePickEvent(tileUnderPointer.texture));
           } else {
             this.gui?.ee.emit(new TexturePickEvent(undefined));
+            this.gui?.ee.emit(new AnimationPickEvent(undefined));
           }
         }
 
-        if (this.selectedTool === 'paint' && this.selectedTile) {
-          const sprite = new Sprite(
-            this.selectedTile,
-            this.getGridPoint(event.point)
-          );
-          sprite.withMeta(this.selectedTileMeta);
-          layer.addChild(sprite);
+        if (this.selectedTool === 'paint') {
+          if (this.selectedTile && this.selectedTileMeta) {
+            const sprite = new Sprite(
+              this.selectedTile,
+              this.getGridPoint(event.point)
+            );
+            sprite.withMeta(this.selectedTileMeta);
+            layer.addChild(sprite);
 
-          this.handleChange();
+            this.handleChange();
+          } else if (this.selectedAnimation && this.selectedAnimationMeta) {
+            const animatedSprite = new AnimatedSprite(
+              this.selectedAnimation,
+              this.getGridPoint(event.point)
+            );
+            animatedSprite.withMeta(this.selectedAnimationMeta);
+            layer.addChild(animatedSprite);
+
+            this.handleChange();
+          }
         }
       }
     });
@@ -183,21 +227,41 @@ export default class Editor extends Element {
     for (let layerIndex = 0; layerIndex < data.layers.length; layerIndex += 1) {
       const items = data.layers[layerIndex];
       for (const item of items) {
-        const tile = this.assetsLoader?.assets[item.texture.asset].tilemaps[
-          item.texture.tileset
-        ].get(item.texture.tileId);
-        const sprite = new Sprite(
-          tile,
-          new Vector(item.position.x, item.position.y)
-        );
-        sprite.withMeta(
-          new AsepriteTextureMeta(
-            item.texture.asset,
-            item.texture.tileset,
-            item.texture.tileId
-          )
-        );
-        this.getLayer(layerIndex)?.addChild(sprite);
+        if (item.type === SpriteMashItemType.Animated) {
+          const animation =
+            this.assetsLoader?.assets[item.animation.asset].animations[
+              item.animation.animationName
+            ];
+          if (animation) {
+            const animatedSprite = new AnimatedSprite(
+              animation,
+              new Vector(item.position.x, item.position.y)
+            );
+            animatedSprite.withMeta(
+              new AsepriteAnimationMeta(
+                item.animation.asset,
+                item.animation.animationName
+              )
+            );
+            this.getLayer(layerIndex)?.addChild(animatedSprite);
+          }
+        } else if (item.type === SpriteMashItemType.Static) {
+          const tile = this.assetsLoader?.assets[item.texture.asset].tilemaps[
+            item.texture.tileset
+          ].get(item.texture.tileId);
+          const sprite = new Sprite(
+            tile,
+            new Vector(item.position.x, item.position.y)
+          );
+          sprite.withMeta(
+            new AsepriteTextureMeta(
+              item.texture.asset,
+              item.texture.tileset,
+              item.texture.tileId
+            )
+          );
+          this.getLayer(layerIndex)?.addChild(sprite);
+        }
       }
     }
 

@@ -1,24 +1,25 @@
 import { OnInit, Component, EventEmitter, Input } from '@angular/core';
 import { Vector } from '@engine/core';
 import { FormsModule } from '@angular/forms';
-import { AssetsMap, TileMap } from '@engine/loaders';
+import { AssetsMap, TileMap, Texture } from '@engine/loaders';
 import {
   TileSelectEvent,
   TileUnselectEvent,
+  AnimationSelectEvent,
   GridStepChangeEvent,
   SelectedToolChangeEvent,
   TexturePickEvent,
+  AnimationPickEvent,
   SelectedLayerChangeEvent,
   DataChangeEvent,
   DataPasteEvent,
 } from '@editor';
-import { GridComponent } from '../grid/grid.component';
 import { SpriteMashData } from '@engine/elements';
 
 @Component({
   selector: 'editor',
   standalone: true,
-  imports: [FormsModule, GridComponent],
+  imports: [FormsModule],
   templateUrl: './editor.component.html',
   styleUrl: './editor.component.css',
 })
@@ -35,7 +36,10 @@ export class EditorComponent implements OnInit {
     | {
         name: string;
         tilemaps: string[];
-        animations: string[];
+        animations: {
+          name: string;
+          image: string;
+        }[];
       }
     | undefined;
 
@@ -50,6 +54,8 @@ export class EditorComponent implements OnInit {
     | undefined;
 
   selectedTileId: number | undefined;
+
+  selectedAnimation: string | undefined;
 
   gridStep = new Vector(32, 32);
   localGridStep = new Vector(32, 32);
@@ -117,6 +123,31 @@ export class EditorComponent implements OnInit {
         }
 
         this.selectAsset(undefined);
+      } else if (event instanceof AnimationPickEvent) {
+        if (event.animation) {
+          for (const assetName of this.assetNames) {
+            const asset = this.assets[assetName];
+
+            for (const animationName of Object.keys(asset.animations)) {
+              const animation = asset.animations[animationName];
+
+              if (animation === event.animation) {
+                let forceReload = false;
+                if (this.selectedAsset?.name !== assetName) {
+                  this.selectAsset(assetName);
+                  forceReload = true;
+                }
+
+                if (forceReload || this.selectedAnimation !== animationName) {
+                  this.selectAnimation(animationName);
+                }
+
+                return;
+              }
+            }
+          }
+        }
+        this.selectAsset(undefined);
       } else if (event instanceof DataChangeEvent) {
         this.undoFn = event.history.getUndo();
         this.hasUndo = !!this.undoFn;
@@ -133,16 +164,32 @@ export class EditorComponent implements OnInit {
     this.selectAsset(asset);
   }
 
-  private selectAsset(asset: string | undefined) {
+  private async selectAsset(asset: string | undefined) {
     this.selectedTilemap = undefined;
     this.selectedTileId = undefined;
     this.ee.emit(new TileUnselectEvent());
 
     if (asset) {
+      const animationNames = Object.keys(this.assets[asset].animations);
+      const animations: { name: string; image: string }[] = [];
+
+      for (const animationName of animationNames) {
+        const animation = this.assets[asset].animations[animationName];
+        const firstFrame = animation.frames[0];
+
+        if (firstFrame) {
+          const url = await this.getTextureImgUrl(firstFrame.texture);
+          animations.push({
+            name: animationName,
+            image: url,
+          });
+        }
+      }
+
       this.selectedAsset = {
         name: asset,
         tilemaps: Object.keys(this.assets[asset].tilemaps),
-        animations: Object.keys(this.assets[asset].animations),
+        animations,
       };
     }
   }
@@ -185,11 +232,16 @@ export class EditorComponent implements OnInit {
   onSelectAnimation(event: MouseEvent, animation: string) {
     event.preventDefault();
 
+    if (!this.selectedAsset) {
+      throw new Error('No selected asset');
+    }
+
     this.selectedTilemap = undefined;
     this.selectedTileId = undefined;
-    this.ee.emit(new TileUnselectEvent());
+    this.selectedAnimation = animation;
 
-    console.log('animation', animation);
+    this.ee.emit(new TileUnselectEvent());
+    this.ee.emit(new AnimationSelectEvent(this.selectedAsset.name, animation));
   }
 
   onSelectTile(event: MouseEvent, tileId: number) {
@@ -215,6 +267,18 @@ export class EditorComponent implements OnInit {
         this.selectedTilemap.name,
         tileId
       )
+    );
+  }
+
+  private selectAnimation(animationName: string) {
+    if (!this.selectedAsset) {
+      throw new Error('No selected asset');
+    }
+
+    this.selectedAnimation = animationName;
+
+    this.ee.emit(
+      new AnimationSelectEvent(this.selectedAsset.name, this.selectedAnimation)
     );
   }
 
@@ -276,10 +340,14 @@ export class EditorComponent implements OnInit {
       throw new Error(`Tile with ID ${tileId} does not exist`);
     }
 
-    const canvas = new OffscreenCanvas(tile.width, tile.height);
+    return this.getTextureImgUrl(tile);
+  }
+
+  private async getTextureImgUrl(texture: Texture): Promise<string> {
+    const canvas = new OffscreenCanvas(texture.width, texture.height);
     const context = canvas.getContext('2d');
     if (context) {
-      context.drawImage(tile.data, 0, 0);
+      context.drawImage(texture.data, 0, 0);
 
       let blob: Blob | undefined;
 

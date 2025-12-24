@@ -1,13 +1,13 @@
 import { Component, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { Engine } from '@engine';
 import { Vector } from '@engine/core';
-// import { Scene } from '@engine/core';
+import { Scene } from '@engine/core';
 import { Keyboard, Mouse } from '@engine/input';
 import { CanvasRenderer } from '@engine/renderer';
 import { PhysicsSimulation } from '@engine/physics';
 import { Debugger } from '@debugger';
-// import { SpriteMash } from '@engine/elements';
-// import { Editor } from '@editor';
+import { SpriteMash } from '@engine/elements';
+import { Editor } from '@editor';
 import { GameLevelScene } from '@game/scenes';
 
 import ASSETS from './assets.json';
@@ -47,19 +47,21 @@ export class AppComponent implements AfterViewInit {
     const dbgr = new Debugger(gameElement);
     dbgr.attachTo(engine);
     dbgr.enableFps = true;
-    // dbgr.enableGridLines = true;
+    dbgr.enableGridLines = true;
     dbgr.enablePhysicsDebugLines = true;
 
-    // const editor = new Editor(
-    //   gameElement,
-    //   canvasElement,
-    //   ASSETS,
-    //   renderer.localToGlobalPoint.bind(renderer)
-    // );
-    // editor.attachTo(engine);
+    const editor = new Editor(
+      gameElement,
+      canvasElement,
+      ASSETS,
+      renderer.localToGlobalPoint.bind(renderer)
+    );
+    editor.attachTo(engine);
 
-    // engine.loadScene(new Scene([new SpriteMash(5)]));
-    engine.loadScene(new GameLevelScene(ASSETS));
+    engine.loadScene(new Scene([new SpriteMash(5)]));
+
+    // engine.loadScene(new GameLevelScene(ASSETS));
+
     engine.start(200, 200);
   }
 }
