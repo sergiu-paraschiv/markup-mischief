@@ -1,7 +1,8 @@
-import { Vector, GlobalContext } from '@engine/core';
-import { AnimatedSprite, Node2D } from '@engine/elements';
+import { Vector, GlobalContext, Query } from '@engine/core';
+import { AnimatedSprite, Node2D, SpriteMash, Sprite } from '@engine/elements';
 import CharacterController from './CharacterController';
 import { AssetsMap } from '@engine/loaders';
+import { TickEvent } from '@engine/renderer';
 
 enum Stance {
   IDLE = 'Idle',
@@ -18,6 +19,7 @@ export enum Pointing {
 
 export default class Character extends CharacterController {
   private readonly gfx: Node2D;
+  public readonly ghost: Node2D;
   private activeStance: Stance | undefined;
   private activeStanceStartTime = 0;
   private _pointing = Pointing.RIGHT;
@@ -32,6 +34,11 @@ export default class Character extends CharacterController {
 
     this.gfx = new Node2D();
     this.addChild(this.gfx);
+
+    // Ghost is created but not added as child - it will be added to the scene separately
+    this.ghost = new Node2D();
+    this.ghost.isVisible = false;
+
     this.setColliderOffset(new Vector(38, 4));
     this.setColliderDimensions(new Vector(20, 28));
     this.switchStance(0);
@@ -44,6 +51,14 @@ export default class Character extends CharacterController {
 
   get pointingDefault() {
     return this._pointing === this.spritePointing;
+  }
+
+  get ghostGraphics() {
+    return this.ghost;
+  }
+
+  public updateGhostPosition() {
+    this.ghost.position = this.position;
   }
 
   protected override switchStance(currentTime: number) {
@@ -93,6 +108,15 @@ export default class Character extends CharacterController {
       this.gfx.addChild(
         new AnimatedSprite(assets[this.assetName].animations[newStance])
       );
+
+      this.ghost.removeAllChildren();
+
+      const ghostSprite = new AnimatedSprite(
+        assets[this.assetName].animations[newStance]
+      );
+      ghostSprite.opacity = 0.5;
+      ghostSprite.fillColor = 'rgba(0, 0, 0, 1)';
+      this.ghost.addChild(ghostSprite);
     }
 
     if (this.gfx.children.length === 1) {
@@ -102,6 +126,17 @@ export default class Character extends CharacterController {
         sp.translation = new Vector(0, -32).add(this.spriteOffset);
       } else {
         sp.translation = new Vector(0, -32).sub(this.spriteOffset);
+      }
+    }
+
+    if (this.ghost.children.length === 1) {
+      const ghostSp = this.ghost?.children[0] as AnimatedSprite;
+      ghostSp.clipRegion = this.ghostGraphics.clipRegion;
+      ghostSp.flipH = this._pointing !== this.spritePointing;
+      if (ghostSp.flipH) {
+        ghostSp.translation = new Vector(0, -32).add(this.spriteOffset);
+      } else {
+        ghostSp.translation = new Vector(0, -32).sub(this.spriteOffset);
       }
     }
   }

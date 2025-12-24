@@ -77,6 +77,9 @@ export default class CanvasRenderer implements IRenderer {
       this.rootElement,
       true
     )) {
+      if (!item.isVisible) {
+        continue;
+      }
       item.draw(this.context);
     }
   }

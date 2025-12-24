@@ -1,7 +1,7 @@
 import { GlobalContext, Query, Scene, Vector } from '@engine/core';
-import { SpriteMash, SpriteMashData } from '@engine/elements';
+import { SpriteMash, SpriteMashData, Sprite } from '@engine/elements';
 import { StaticBody } from '@engine/physics';
-import { AssetsLoader } from '@engine/loaders';
+import { AssetsLoader, Texture } from '@engine/loaders';
 import {
   BOARD_DATA,
   PinkStar,
@@ -108,8 +108,10 @@ export default class GameLevelScene extends Scene {
       makePlatformWall(new Vector(32 * 6 + 24, 2 + 32 * 4), new Vector(22, 1))
     );
 
-    const player = new PinkStar(new Vector(32 * 3, 32 * 2));
+    const player = new PinkStar(new Vector(32 * 2, 32 * 2));
     this.addChild(player);
+    // Add ghost at a higher depth so it renders on top of tags
+    this.addChild(player.ghost, 1000);
 
     this.addChild(makeTagTile(new Vector(50, 32), '<em>'));
     this.addChild(makeTagTile(new Vector(130, 32), '</em>'));
@@ -162,6 +164,54 @@ export default class GameLevelScene extends Scene {
         if (html === '<em> text </em>') {
           // TODO: WIN!
         }
+      }
+
+      // Update ghost position to follow player
+      player.updateGhostPosition();
+
+      // Check if player is behind any tags
+      const overlappingTags = player.checkAllCurrentIntersections(
+        collider => collider instanceof Tag
+      );
+
+      if (overlappingTags.length > 0) {
+        // Create texture masks from overlapping tags
+        player.ghostGraphics.clipRegion = overlappingTags.map(tag => {
+          const tagBox = tag.collider;
+
+          // Render the tag to a texture
+          const rendered = tag.renderToTexture(
+            tagBox.dimensions.x,
+            tagBox.dimensions.y
+          );
+
+          if (!rendered) {
+            // Fallback to rectangle clip if rendering fails
+            return {
+              x: tagBox.position.x,
+              y: tagBox.position.y,
+              width: tagBox.dimensions.x,
+              height: tagBox.dimensions.y,
+            };
+          }
+
+          // Create texture from the rendered canvas
+          const maskTexture = Texture.fromImageBitmap(
+            rendered.canvas as unknown as ImageBitmap
+          );
+          maskTexture.width = tagBox.dimensions.x;
+          maskTexture.height = tagBox.dimensions.y;
+          maskTexture.data = rendered.canvas;
+
+          return {
+            mask: maskTexture,
+            position: new Vector(tagBox.position.x, tagBox.position.y),
+          };
+        });
+        player.ghostGraphics.isVisible = true;
+      } else {
+        player.ghostGraphics.clipRegion = undefined;
+        player.ghostGraphics.isVisible = false;
       }
     });
   }

@@ -151,26 +151,100 @@ export default class AnimatedSprite extends Node2D {
   override draw(context: CanvasRenderingContext2D) {
     if (this._frames.length > this.frameIndex) {
       const texture = this._frames[this.frameIndex].texture;
+      const needsTempCanvas = this.hasTextureClipMask();
 
-      if (this.flipH || this.flipV) {
-        const scaleX = this.flipH ? -1 : 1;
-        const scaleY = this.flipV ? -1 : 1;
-        context.save();
-        context.scale(scaleX, scaleY);
-        context.drawImage(
+      if (needsTempCanvas) {
+        // Draw to temporary canvas for texture mask clipping
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = texture.width;
+        tempCanvas.height = texture.height;
+        const tempContext = tempCanvas.getContext('2d');
+
+        if (!tempContext) return;
+
+        const filledTexture = this.applyFillColorToTexture(
           texture.data,
-          scaleX * Math.floor(this.position.x),
-          Math.floor(this.position.y),
-          scaleX * texture.width,
+          texture.width,
           texture.height
         );
-        context.restore();
-      } else {
+
+        const imageSource = filledTexture || texture.data;
+
+        if (this.flipH || this.flipV) {
+          const scaleX = this.flipH ? -1 : 1;
+          const scaleY = this.flipV ? -1 : 1;
+          tempContext.scale(scaleX, scaleY);
+          tempContext.drawImage(
+            imageSource,
+            scaleX * 0,
+            0,
+            scaleX * texture.width,
+            texture.height
+          );
+        } else {
+          tempContext.drawImage(imageSource, 0, 0);
+        }
+
+        // Apply texture masks
+        const maskedCanvas = this.applyTextureClipMasks(tempCanvas, {
+          x: Math.floor(this.position.x),
+          y: Math.floor(this.position.y),
+          width: texture.width,
+          height: texture.height,
+        });
+
+        context.save();
+        this.applyRectangleClips(context);
+
+        if (this.opacity < 1.0) {
+          context.globalAlpha = this.opacity;
+        }
+
         context.drawImage(
-          texture.data,
+          maskedCanvas,
           Math.floor(this.position.x),
           Math.floor(this.position.y)
         );
+
+        context.restore();
+      } else {
+        // Original path with rectangle clipping only
+        context.save();
+
+        this.applyRectangleClips(context);
+
+        if (this.opacity < 1.0) {
+          context.globalAlpha = this.opacity;
+        }
+
+        const filledTexture = this.applyFillColorToTexture(
+          texture.data,
+          texture.width,
+          texture.height
+        );
+
+        const imageSource = filledTexture || texture.data;
+
+        if (this.flipH || this.flipV) {
+          const scaleX = this.flipH ? -1 : 1;
+          const scaleY = this.flipV ? -1 : 1;
+          context.scale(scaleX, scaleY);
+          context.drawImage(
+            imageSource,
+            scaleX * Math.floor(this.position.x),
+            Math.floor(this.position.y),
+            scaleX * texture.width,
+            texture.height
+          );
+        } else {
+          context.drawImage(
+            imageSource,
+            Math.floor(this.position.x),
+            Math.floor(this.position.y)
+          );
+        }
+
+        context.restore();
       }
     }
   }

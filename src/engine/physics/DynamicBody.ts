@@ -180,8 +180,40 @@ export default class DynamicBody extends CollisionObject {
     return undefined;
   }
 
+  checkAllFutureIntersections(velocity: Vector, colliderCheckFn?: ColliderCheckFn) {
+    const collisionObjects = Query.childrenByType(
+      CollisionObject,
+      this.rootElement
+    );
+
+    const results: CollisionObject[] = [];
+
+    for (const collisionObject of collisionObjects) {
+      if (colliderCheckFn && !colliderCheckFn(collisionObject)) {
+        continue;
+      }
+
+      const intersects = this.sim?.checkFutureIntersection(
+        this.collider.position,
+        velocity,
+        this.collider.dimensions,
+        collisionObject
+      );
+
+      if (intersects) {
+        results.push(intersects);
+      }
+    }
+
+    return results;
+  }
+
   checkCurrentIntersection(colliderCheckFn?: ColliderCheckFn) {
     return this.checkFutureIntersection(new Vector(0, 0), colliderCheckFn);
+  }
+
+  checkAllCurrentIntersections(colliderCheckFn?: ColliderCheckFn) {
+    return this.checkAllFutureIntersections(new Vector(0, 0), colliderCheckFn);
   }
 
   isGrounded() {

@@ -455,7 +455,6 @@ export default class Editor extends Element {
     // Create ghost sprite for static tile
     if (this.selectedTile) {
       this.ghostSprite = new Sprite(this.selectedTile, gridPosition);
-      this.addChild(this.ghostSprite, 900);
     }
     // Create ghost sprite for animation
     else if (this.selectedAnimation) {
@@ -463,7 +462,10 @@ export default class Editor extends Element {
         this.selectedAnimation,
         gridPosition
       );
-      this.addChild(this.ghostSprite);
+    }
+    if (this.ghostSprite) {
+      this.ghostSprite.opacity = 0.5;
+      this.addChild(this.ghostSprite, 900);
     }
   }
 }
