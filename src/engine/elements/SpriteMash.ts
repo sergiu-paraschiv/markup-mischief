@@ -23,6 +23,7 @@ type SpriteMashItem =
       type: SpriteMashItemType.Animated;
       position: { x: number; y: number };
       animation: AsepriteAnimationMetaData;
+      animationSpeed?: number;
     };
 
 export interface SpriteMashData {
@@ -67,6 +68,7 @@ export default class SpriteMash extends Element {
                 y: child.position.y,
               },
               animation: animationMeta.toObject(),
+              animationSpeed: child.animationSpeed,
             });
           }
         } else if (child instanceof Sprite) {
@@ -115,6 +117,7 @@ export default class SpriteMash extends Element {
             animation,
             new Vector(item.position.x, item.position.y)
           );
+          animatedSprite.animationSpeed = item.animationSpeed ?? 1.0;
           animatedSprite.withMeta(
             new AsepriteAnimationMeta(
               item.animation.asset,

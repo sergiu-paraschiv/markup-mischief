@@ -33,6 +33,7 @@ import TexturePickEvent from './TexturePickEvent';
 import AnimationPickEvent from './AnimationPickEvent';
 import ItemSelectEvent from './ItemSelectEvent';
 import ItemNudgeEvent from './ItemNudgeEvent';
+import AnimationSpeedChangeEvent from './AnimationSpeedChangeEvent';
 import SelectedLayerChangeEvent from './SelectedLayerChangeEvent';
 import DataChangeEvent from './DataChangeEvent';
 import History from './History';
@@ -126,6 +127,11 @@ export default class Editor extends Element {
             this.selectedItem.position.x + event.offsetX,
             this.selectedItem.position.y + event.offsetY
           );
+          this.handleChange();
+        }
+      } else if (event instanceof AnimationSpeedChangeEvent) {
+        if (this.selectedItem && this.selectedItem instanceof AnimatedSprite) {
+          this.selectedItem.animationSpeed = event.speed;
           this.handleChange();
         }
       }
@@ -298,6 +304,7 @@ export default class Editor extends Element {
               animation,
               new Vector(item.position.x, item.position.y)
             );
+            animatedSprite.animationSpeed = item.animationSpeed ?? 1.0;
             animatedSprite.withMeta(
               new AsepriteAnimationMeta(
                 item.animation.asset,

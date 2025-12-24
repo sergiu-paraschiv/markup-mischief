@@ -39,6 +39,7 @@ export default class AnimatedSprite extends Node2D {
   private animationRepeatIndex: number;
   private stopped = false;
   private previousTime: number;
+  public animationSpeed = 1.0;
 
   constructor(
     private _animation: Animation,
@@ -84,7 +85,8 @@ export default class AnimatedSprite extends Node2D {
       this.previousTime = event.currentTime;
     }
 
-    let deltaTime = event.currentTime - this.previousTime;
+    let deltaTime =
+      (event.currentTime - this.previousTime) * this.animationSpeed;
     let currentFrame = this._frames[this.frameIndex];
     if (!currentFrame) {
       return;

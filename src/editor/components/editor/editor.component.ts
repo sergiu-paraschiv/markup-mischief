@@ -2,6 +2,7 @@ import { OnInit, Component, EventEmitter, Input } from '@angular/core';
 import { Vector } from '@engine/core';
 import { FormsModule } from '@angular/forms';
 import { AssetsMap, TileMap, Texture } from '@engine/loaders';
+import { AnimatedSprite } from '@engine/elements';
 import {
   TileSelectEvent,
   TileUnselectEvent,
@@ -12,6 +13,7 @@ import {
   AnimationPickEvent,
   ItemSelectEvent,
   ItemNudgeEvent,
+  AnimationSpeedChangeEvent,
   SelectedLayerChangeEvent,
   DataChangeEvent,
   DataPasteEvent,
@@ -67,6 +69,8 @@ export class EditorComponent implements OnInit {
   selectedLayer = 0;
 
   selectedItemPosition: Vector | undefined;
+  selectedItemIsAnimated = false;
+  animationSpeed = 1.0;
 
   undoFn: (() => void) | undefined;
   redoFn: (() => void) | undefined;
@@ -87,6 +91,11 @@ export class EditorComponent implements OnInit {
   onNudge(event: MouseEvent, offsetX: number, offsetY: number) {
     event.preventDefault();
     this.ee.emit(new ItemNudgeEvent(offsetX, offsetY));
+  }
+
+  onAnimationSpeedChange(speed: number) {
+    this.animationSpeed = speed;
+    this.ee.emit(new AnimationSpeedChangeEvent(speed));
   }
 
   async ngOnInit(): Promise<void> {
@@ -167,8 +176,14 @@ export class EditorComponent implements OnInit {
       } else if (event instanceof ItemSelectEvent) {
         if (event.item) {
           this.selectedItemPosition = event.item.position;
+          this.selectedItemIsAnimated = event.item instanceof AnimatedSprite;
+          if (this.selectedItemIsAnimated) {
+            this.animationSpeed = (event.item as AnimatedSprite).animationSpeed;
+          }
         } else {
           this.selectedItemPosition = undefined;
+          this.selectedItemIsAnimated = false;
+          this.animationSpeed = 1.0;
         }
       }
     });

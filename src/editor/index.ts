@@ -9,6 +9,7 @@ import TexturePickEvent from './TexturePickEvent';
 import AnimationPickEvent from './AnimationPickEvent';
 import ItemSelectEvent from './ItemSelectEvent';
 import ItemNudgeEvent from './ItemNudgeEvent';
+import AnimationSpeedChangeEvent from './AnimationSpeedChangeEvent';
 import DataChangeEvent from './DataChangeEvent';
 import DataPasteEvent from './DataPasteEvent';
 
@@ -24,6 +25,7 @@ export {
   AnimationPickEvent,
   ItemSelectEvent,
   ItemNudgeEvent,
+  AnimationSpeedChangeEvent,
   DataChangeEvent,
   DataPasteEvent,
 };
