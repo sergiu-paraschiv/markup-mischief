@@ -49,6 +49,7 @@ export class AppComponent implements AfterViewInit {
     dbgr.enableFps = true;
     dbgr.enableGridLines = true;
     dbgr.enablePhysicsDebugLines = true;
+    dbgr.enableHoverHighlight = true;
 
     const editor = new Editor(
       gameElement,

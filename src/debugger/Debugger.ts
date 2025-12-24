@@ -1,8 +1,9 @@
 import { Engine, SceneLoadedEvent } from '@engine';
-import { Element } from '@engine/core';
-import { CanvasItem } from '@engine/elements';
+import { Element, Query, Vector } from '@engine/core';
+import { CanvasItem, Node2D } from '@engine/elements';
 import { TickEvent } from '@engine/renderer';
 import { DebugLine, PhysicsTickEvent } from '@engine/physics';
+import { MouseMoveEvent } from '@engine/input';
 import FpsCounter from './FpsCounter';
 
 export default class Debugger extends CanvasItem {
@@ -15,6 +16,8 @@ export default class Debugger extends CanvasItem {
   private _enablePhysicsDebugLines = false;
   private _enableGridLines = false;
   private _enableFps = false;
+  private _enableHoverHighlight = false;
+  private hoveredObject: Node2D | undefined;
 
   constructor(container: HTMLElement) {
     super();
@@ -29,6 +32,7 @@ export default class Debugger extends CanvasItem {
 
     this.on(TickEvent, this.onTick.bind(this));
     this.on(PhysicsTickEvent, this.onPhysicsTick.bind(this));
+    this.on(MouseMoveEvent, this.onMouseMove.bind(this));
   }
 
   set enablePhysicsDebugLines(enable: boolean) {
@@ -41,6 +45,10 @@ export default class Debugger extends CanvasItem {
 
   set enableFps(enable: boolean) {
     this._enableFps = enable;
+  }
+
+  set enableHoverHighlight(enable: boolean) {
+    this._enableHoverHighlight = enable;
   }
 
   attachTo(engine: Engine) {
@@ -73,6 +81,43 @@ export default class Debugger extends CanvasItem {
     if (this._enablePhysicsDebugLines) {
       this.debugLines = event.simulation.getDebugInformation();
     }
+  }
+
+  private onMouseMove(event: MouseMoveEvent) {
+    if (!this._enableHoverHighlight || !this.previousScene) {
+      this.hoveredObject = undefined;
+      return;
+    }
+
+    this.hoveredObject = this.getObjectAt(event.point);
+  }
+
+  private getObjectAt(point: Vector): Node2D | undefined {
+    if (!this.previousScene) {
+      return undefined;
+    }
+
+    const objects = Query.childrenByType(Node2D, this.previousScene);
+
+    // Search from top to bottom (reverse order for z-index)
+    for (let i = objects.length - 1; i >= 0; i--) {
+      const obj = objects[i];
+      const left = obj.position.left;
+      const right = obj.position.left + obj.width;
+      const top = obj.position.top;
+      const bottom = obj.position.top + obj.height;
+
+      if (
+        left <= point.x &&
+        point.x <= right &&
+        top <= point.y &&
+        point.y <= bottom
+      ) {
+        return obj;
+      }
+    }
+
+    return undefined;
   }
 
   override draw(context: CanvasRenderingContext2D) {
@@ -118,6 +163,16 @@ export default class Debugger extends CanvasItem {
         context.lineTo(line.to.x, line.to.y);
         context.stroke();
       }
+    }
+
+    if (this._enableHoverHighlight && this.hoveredObject) {
+      const obj = this.hoveredObject;
+      context.beginPath();
+      context.strokeStyle = '#00ff00';
+      context.lineWidth = 2;
+      context.rect(obj.position.left, obj.position.top, obj.width, obj.height);
+      context.stroke();
+      context.lineWidth = 1;
     }
   }
 }
