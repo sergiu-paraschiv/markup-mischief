@@ -5,7 +5,8 @@
 [x] Physics system
 [x] Events might need to propagate up through parents too
 [x] game logic
-[-] sprite mash and editor
+[x] sprite mash and editor
+[x] ghosts/outlines
 [ ] GUI: (1) start game -> pick level -> win screen, (2) in-game exit 
 [ ] more levels
 [ ] save progression somewhere
