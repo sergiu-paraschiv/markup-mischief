@@ -1,3 +1,4 @@
+import LoadingScene from './LoadingScene';
 import GameLevelScene from './GameLevelScene';
 
-export { GameLevelScene };
+export { LoadingScene, GameLevelScene };

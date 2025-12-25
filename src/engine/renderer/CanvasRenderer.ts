@@ -19,7 +19,7 @@ export default class CanvasRenderer implements IRenderer {
 
   constructor(
     canvas: HTMLCanvasElement,
-    private readonly zoom: number
+    private zoom: number
   ) {
     this.workLoop = new WorkLoop(this.render.bind(this));
 
@@ -41,6 +41,10 @@ export default class CanvasRenderer implements IRenderer {
     this.canvas.height = viewport.height;
     this.canvas.style.width = viewport.width * this.zoom + 'px';
     this.canvas.style.height = viewport.height * this.zoom + 'px';
+  }
+
+  setZoom(zoom: number): void {
+    this.zoom = zoom;
   }
 
   getElement(): HTMLElement {

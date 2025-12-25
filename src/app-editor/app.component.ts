@@ -60,8 +60,6 @@ export class AppComponent implements AfterViewInit {
 
     engine.loadScene(new Scene([new SpriteMash(5)]));
 
-    // engine.loadScene(new GameLevelScene(ASSETS));
-
     engine.start(200, 200);
   }
 }

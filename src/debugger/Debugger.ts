@@ -24,8 +24,8 @@ export default class Debugger extends CanvasItem {
 
     this.debugLayer = document.createElement('div');
     this.debugLayer.style.position = 'absolute';
-    this.debugLayer.style.top = '0';
-    this.debugLayer.style.left = '0';
+    this.debugLayer.style.top = '20px';
+    this.debugLayer.style.left = '20px';
     this.debugLayer.style.padding = '4px';
     this.debugLayer.style.background = 'red';
     container.appendChild(this.debugLayer);

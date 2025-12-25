@@ -1,4 +1,10 @@
-import { Component, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import {
+  Component,
+  AfterViewInit,
+  ViewChild,
+  ElementRef,
+  OnDestroy,
+} from '@angular/core';
 import { Engine } from '@engine';
 import { Vector } from '@engine/core';
 import { Keyboard, Mouse } from '@engine/input';
@@ -15,9 +21,13 @@ import ASSETS from '../assets.json';
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })
-export class AppComponent implements AfterViewInit {
+export class AppComponent implements AfterViewInit, OnDestroy {
   @ViewChild('game') gameElement: ElementRef<HTMLElement> | undefined;
   @ViewChild('canvas') canvasElement: ElementRef<HTMLCanvasElement> | undefined;
+
+  private renderer?: CanvasRenderer;
+  private viewport = new Vector(512, 384);
+  private resizeListener?: () => void;
 
   async ngAfterViewInit(): Promise<void> {
     const gameElement = this.gameElement?.nativeElement;
@@ -29,15 +39,24 @@ export class AppComponent implements AfterViewInit {
       throw new Error('Game canvas not found!');
     }
 
-    const renderer = new CanvasRenderer(canvasElement, 2);
+    this.resizeListener = () => this.onResize(gameElement);
+    window.addEventListener('resize', this.resizeListener);
+
+    // Calculate initial zoom
+    const zoom = this.calculateZoom(gameElement);
+
+    this.renderer = new CanvasRenderer(canvasElement, zoom);
 
     const engine = new Engine(
-      new Vector(512, 384),
-      renderer,
+      this.viewport,
+      this.renderer,
       new PhysicsSimulation(),
       [
         new Keyboard(document.documentElement),
-        new Mouse(canvasElement, renderer.globalToLocalPoint.bind(renderer)),
+        new Mouse(
+          canvasElement,
+          this.renderer.globalToLocalPoint.bind(this.renderer)
+        ),
       ]
     );
 
@@ -48,8 +67,35 @@ export class AppComponent implements AfterViewInit {
     dbgr.enablePhysicsDebugLines = true;
     // dbgr.enableHoverHighlight = true;
 
+    // engine.loadScene(new LoadingScene(ASSETS.loading));
+
     engine.loadScene(new GameLevelScene(ASSETS.dynamic, ASSETS.chars));
 
     engine.start(200, 200);
+  }
+
+  ngOnDestroy(): void {
+    if (this.resizeListener) {
+      window.removeEventListener('resize', this.resizeListener);
+    }
+  }
+
+  private calculateZoom(gameElement: HTMLElement): number {
+    const containerWidth = gameElement.clientWidth;
+    const containerHeight = gameElement.clientHeight;
+
+    const zoomX = containerWidth / this.viewport.width;
+    const zoomY = containerHeight / this.viewport.height;
+
+    return Math.min(zoomX, zoomY);
+  }
+
+  private onResize(gameElement: HTMLElement): void {
+    if (!this.renderer) return;
+
+    const newZoom = this.calculateZoom(gameElement);
+
+    this.renderer.setZoom(newZoom);
+    this.renderer.setViewport(this.viewport);
   }
 }
