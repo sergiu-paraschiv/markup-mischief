@@ -1,7 +1,7 @@
 import { GlobalContext, Query, Scene, Vector } from '@engine/core';
-import { SpriteMash, SpriteMashData, Sprite } from '@engine/elements';
+import { SpriteMash, SpriteMashData } from '@engine/elements';
 import { StaticBody } from '@engine/physics';
-import { AssetsLoader, Texture } from '@engine/loaders';
+import { AssetsLoader } from '@engine/loaders';
 import {
   BOARD_DATA,
   PinkStar,
@@ -21,7 +21,7 @@ type AssetPaths = Record<string, string>;
 export default class GameLevelScene extends Scene {
   private currentLevel: LevelData;
 
-  constructor(assetPaths: AssetPaths, levelId = 2) {
+  constructor(assetPaths: AssetPaths, levelId = 1) {
     super();
 
     const levelsData = LEVELS_DATA as LevelsData;
@@ -196,36 +196,12 @@ export default class GameLevelScene extends Scene {
       );
 
       if (overlappingTags.length > 0) {
-        // Create texture masks from overlapping tags
+        // Create CanvasItem clip masks from overlapping tags
         player.ghostGraphics.clipRegion = overlappingTags.map(tag => {
           const tagBox = tag.collider;
 
-          // Render the tag to a texture
-          const rendered = tag.renderToTexture(
-            tagBox.dimensions.x,
-            tagBox.dimensions.y
-          );
-
-          if (!rendered) {
-            // Fallback to rectangle clip if rendering fails
-            return {
-              x: tagBox.position.x,
-              y: tagBox.position.y,
-              width: tagBox.dimensions.x,
-              height: tagBox.dimensions.y,
-            };
-          }
-
-          // Create texture from the rendered canvas
-          const maskTexture = Texture.fromImageBitmap(
-            rendered.canvas as unknown as ImageBitmap
-          );
-          maskTexture.width = tagBox.dimensions.x;
-          maskTexture.height = tagBox.dimensions.y;
-          maskTexture.data = rendered.canvas;
-
           return {
-            mask: maskTexture,
+            item: tag,
             position: new Vector(tagBox.position.x, tagBox.position.y),
           };
         });

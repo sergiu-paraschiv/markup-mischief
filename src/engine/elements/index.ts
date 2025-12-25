@@ -1,5 +1,10 @@
 import CanvasItem from '../renderer/CanvasItem';
-import Node2D from './Node2D';
+import Node2D, {
+  isCanvasItemClipMask,
+  CanvasItemClipMask,
+  ClipMask,
+  ClipRegion,
+} from './Node2D';
 import Sprite from './Sprite';
 import AnimatedSprite, {
   AnimationFrame,
@@ -12,6 +17,7 @@ import SpriteMash, { SpriteMashData, SpriteMashItemType } from './SpriteMash';
 export {
   CanvasItem,
   Node2D,
+  isCanvasItemClipMask,
   Sprite,
   AnimatedSprite,
   AnimationDirection,
@@ -19,4 +25,11 @@ export {
   SpriteMash,
   SpriteMashItemType,
 };
-export type { AnimationFrame, Animation, SpriteMashData };
+export type {
+  AnimationFrame,
+  Animation,
+  SpriteMashData,
+  CanvasItemClipMask,
+  ClipMask,
+  ClipRegion,
+};

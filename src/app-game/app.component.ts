@@ -45,7 +45,7 @@ export class AppComponent implements AfterViewInit {
     dbgr.attachTo(engine);
     dbgr.enableFps = true;
     // dbgr.enableGridLines = true;
-    // dbgr.enablePhysicsDebugLines = true;
+    dbgr.enablePhysicsDebugLines = true;
     // dbgr.enableHoverHighlight = true;
 
     engine.loadScene(new GameLevelScene(ASSETS));

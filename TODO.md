@@ -14,4 +14,4 @@
 [ ] mobile on-screen buttons
 [ ] "CSS mode"
 [ ] use Dust Particles aseprite for character animations
-
+[ ] sound
