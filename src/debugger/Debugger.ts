@@ -1,6 +1,7 @@
 import { Engine, SceneLoadedEvent } from '@engine';
 import { Element, Query, Vector } from '@engine/core';
 import { CanvasItem, Node2D } from '@engine/elements';
+import { LayoutFlex } from '@game/entities';
 import { TickEvent } from '@engine/renderer';
 import { DebugLine, PhysicsTickEvent } from '@engine/physics';
 import { MouseMoveEvent } from '@engine/input';
@@ -17,6 +18,7 @@ export default class Debugger extends CanvasItem {
   private _enableGridLines = false;
   private _enableFps = false;
   private _enableHoverHighlight = false;
+  private _enableFlexDebugLines = false;
   private hoveredObject: Node2D | undefined;
   public gridSize = new Vector(32, 32);
 
@@ -50,6 +52,10 @@ export default class Debugger extends CanvasItem {
 
   set enableHoverHighlight(enable: boolean) {
     this._enableHoverHighlight = enable;
+  }
+
+  set enableFlexDebugLines(enable: boolean) {
+    this._enableFlexDebugLines = enable;
   }
 
   attachTo(engine: Engine) {
@@ -180,6 +186,103 @@ export default class Debugger extends CanvasItem {
       context.lineWidth = 2;
       context.rect(obj.position.left, obj.position.top, obj.width, obj.height);
       context.stroke();
+      context.lineWidth = 1;
+    }
+
+    if (this._enableFlexDebugLines && this.previousScene) {
+      this.drawFlexDebugLines(context);
+    }
+  }
+
+  private drawFlexDebugLines(context: CanvasRenderingContext2D) {
+    if (!this.previousScene) return;
+
+    const flexContainers = Query.childrenByType(LayoutFlex, this.previousScene);
+
+    for (const container of flexContainers) {
+      const containerPos = container.position;
+      const containerX = containerPos.x;
+      const containerY = containerPos.y;
+      const containerWidth = container.width;
+      const containerHeight = container.height;
+
+      // Draw container boundary in blue
+      context.beginPath();
+      context.strokeStyle = '#0088ff';
+      context.lineWidth = 2;
+      context.rect(containerX, containerY, containerWidth, containerHeight);
+      context.stroke();
+
+      // Draw flex direction indicator
+      context.fillStyle = '#0088ff';
+      context.font = '10px monospace';
+      const directionText = `${container.flexDirection} | ${container.justifyContent} | ${container.alignItems}`;
+      context.fillText(directionText, containerX + 4, containerY + 12);
+
+      // Draw children boundaries in orange
+      const children = container.children.filter(
+        child => child instanceof Node2D
+      ) as Node2D[];
+
+      for (const child of children) {
+        const childPos = child.position;
+        const childX = childPos.x;
+        const childY = childPos.y;
+
+        context.beginPath();
+        context.strokeStyle = '#ff8800';
+        context.lineWidth = 1;
+        context.rect(childX, childY, child.width, child.height);
+        context.stroke();
+
+        // Draw cross indicating the origin/position point
+        context.beginPath();
+        context.strokeStyle = '#ff0000';
+        context.lineWidth = 1;
+        context.moveTo(childX - 3, childY);
+        context.lineTo(childX + 3, childY);
+        context.moveTo(childX, childY - 3);
+        context.lineTo(childX, childY + 3);
+        context.stroke();
+      }
+
+      // Draw gap indicators if gap > 0
+      if (container.gap > 0 && children.length > 1) {
+        const isRow = container.flexDirection === 'row';
+        context.strokeStyle = '#ff00ff';
+        context.lineWidth = 1;
+        context.setLineDash([2, 2]);
+
+        for (let i = 0; i < children.length - 1; i++) {
+          const child = children[i];
+          const nextChild = children[i + 1];
+          const childPos = child.position;
+          const nextChildPos = nextChild.position;
+
+          if (isRow) {
+            const gapStart = childPos.x + child.width;
+            const gapEnd = nextChildPos.x;
+            const gapY = containerY + containerHeight / 2;
+
+            context.beginPath();
+            context.moveTo(gapStart, gapY);
+            context.lineTo(gapEnd, gapY);
+            context.stroke();
+          } else {
+            const gapStart = childPos.y + child.height;
+            const gapEnd = nextChildPos.y;
+            const gapX = containerX + containerWidth / 2;
+
+            context.beginPath();
+            context.moveTo(gapX, gapStart);
+            context.lineTo(gapX, gapEnd);
+            context.stroke();
+          }
+        }
+
+        context.setLineDash([]);
+      }
+
       context.lineWidth = 1;
     }
   }

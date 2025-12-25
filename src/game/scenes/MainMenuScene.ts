@@ -8,6 +8,9 @@ export default class MainMenuScene extends Scene {
   constructor() {
     super();
 
+    const board = SpriteMash.fromData(MainMenuBoardData as SpriteMashData);
+    console.log('x', board.width);
+
     // Create main layout to center everything
     const mainLayout = new LayoutFlex(
       new Vector(0, 0),
@@ -15,9 +18,7 @@ export default class MainMenuScene extends Scene {
     );
     mainLayout.justifyContent = 'center';
     mainLayout.alignItems = 'center';
-    mainLayout.addChild(
-      SpriteMash.fromData(MainMenuBoardData as SpriteMashData)
-    );
+    mainLayout.addChild(board);
 
     this.addChild(mainLayout);
   }

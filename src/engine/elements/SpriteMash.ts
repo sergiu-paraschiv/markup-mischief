@@ -49,6 +49,54 @@ export default class SpriteMash extends Node2D {
     return this._numLayers;
   }
 
+  override get width(): number {
+    let maxRight = 0;
+    const mashGlobalPos = this.position;
+
+    for (let i = 0; i < this._numLayers; i += 1) {
+      const layer = this.children[i];
+      if (!layer) continue;
+
+      for (const child of layer.children) {
+        if (child instanceof Node2D) {
+          // Get child's global position and convert to local position relative to SpriteMash
+          const childGlobalPos = child.position;
+          const localX = childGlobalPos.x - mashGlobalPos.x;
+          const right = localX + child.width;
+          if (right > maxRight) {
+            maxRight = right;
+          }
+        }
+      }
+    }
+
+    return maxRight;
+  }
+
+  override get height(): number {
+    let maxBottom = 0;
+    const mashGlobalPos = this.position;
+
+    for (let i = 0; i < this._numLayers; i += 1) {
+      const layer = this.children[i];
+      if (!layer) continue;
+
+      for (const child of layer.children) {
+        if (child instanceof Node2D) {
+          // Get child's global position and convert to local position relative to SpriteMash
+          const childGlobalPos = child.position;
+          const localY = childGlobalPos.y - mashGlobalPos.y;
+          const bottom = localY + child.height;
+          if (bottom > maxBottom) {
+            maxBottom = bottom;
+          }
+        }
+      }
+    }
+
+    return maxBottom;
+  }
+
   toObject(): SpriteMashData {
     const data: SpriteMashData = {
       numLayers: this._numLayers,
