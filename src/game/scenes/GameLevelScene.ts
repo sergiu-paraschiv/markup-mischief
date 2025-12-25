@@ -302,20 +302,18 @@ export default class GameLevelScene extends Scene {
         );
       } else if (!this.hasWon) {
         const tags = Query.childrenByType(Tag, this);
+        // Sort with tolerance for Y positions (within 16 pixels = same row)
+        const rowTolerance = 16;
         tags.sort((a, b) => {
-          if (a.position.y > b.position.y) {
-            return 1;
-          } else if (a.position.y < b.position.y) {
-            return -1;
+          const yDiff = Math.abs(a.position.y - b.position.y);
+
+          // If Y positions are within tolerance, consider them same row - sort by X
+          if (yDiff < rowTolerance) {
+            return a.position.x - b.position.x;
           }
 
-          if (a.position.x > b.position.x) {
-            return 1;
-          } else if (a.position.x < b.position.x) {
-            return -1;
-          }
-
-          return 0;
+          // Different rows - sort by Y
+          return a.position.y - b.position.y;
         });
 
         const html = tags.map(tag => tag.text).join(' ');
