@@ -9,6 +9,13 @@ import Mouse, {
 import InputMapper, { MappedInputEvent } from './InputMapper';
 import InputState from './InputState';
 import InputEvent from './InputEvent';
+import MouseInteractionManager from './MouseInteractionManager';
+import {
+  MouseEnterEvent,
+  MouseLeaveEvent,
+  MouseClickEvent,
+} from './MouseInteractionEvent';
+import CursorManager, { CursorStyle } from './CursorManager';
 
 export {
   InputDevice,
@@ -24,4 +31,11 @@ export {
   MappedInputEvent,
   InputState,
   InputEvent,
+  MouseInteractionManager,
+  MouseEnterEvent,
+  MouseLeaveEvent,
+  MouseClickEvent,
+  CursorManager,
 };
+
+export type { CursorStyle };

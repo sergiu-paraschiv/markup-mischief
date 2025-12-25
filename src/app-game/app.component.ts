@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { Engine } from '@engine';
 import { GlobalContext, Vector } from '@engine/core';
-import { Keyboard, Mouse } from '@engine/input';
+import { Keyboard, Mouse, CursorManager } from '@engine/input';
 import { CanvasRenderer } from '@engine/renderer';
 import { PhysicsSimulation } from '@engine/physics';
 import { Debugger } from '@debugger';
@@ -50,6 +50,10 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     const zoom = this.calculateZoom(gameElement);
 
     this.renderer = new CanvasRenderer(canvasElement, zoom);
+
+    // Create and store cursor manager
+    const cursorManager = new CursorManager(canvasElement);
+    GlobalContext.set('cursorManager', cursorManager);
 
     const engine = new Engine(
       this.viewport,
