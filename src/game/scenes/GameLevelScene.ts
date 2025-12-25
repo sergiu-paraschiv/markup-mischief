@@ -84,7 +84,7 @@ export default class GameLevelScene extends Scene {
     // Create pause menu
     const menu = new MainMenu(new Vector(0, 0), [
       {
-        label: 'Next level',
+        label: 'Continue',
         action: () => {
           this.hidePauseMenu();
         },
@@ -141,10 +141,10 @@ export default class GameLevelScene extends Scene {
 
     const buttons: MenuItem[] = [];
 
-    // Add Continue button to trigger onWin callback
+    // Add Next level button to trigger onWin callback
     if (this.onWin) {
       buttons.push({
-        label: 'Continue',
+        label: 'Next level',
         action: () => {
           if (this.onWin) {
             this.onWin();

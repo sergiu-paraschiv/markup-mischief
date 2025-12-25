@@ -113,10 +113,47 @@ export default class CanvasRenderer implements IRenderer {
     if (rectangles.length > 0) {
       context.beginPath();
       for (const region of rectangles) {
+        // Treat clipRegion as relative to sprite position (0,0 = top-left of sprite)
         context.rect(region.x, region.y, region.width, region.height);
       }
       context.clip();
     }
+  }
+
+  private applyRectangleClipsToCanvas(
+    canvas: CanvasImageSource,
+    clipRegion: ClipMask | ClipMask[] | undefined,
+    width: number,
+    height: number
+  ): CanvasImageSource {
+    if (!clipRegion) return canvas;
+
+    const masks = Array.isArray(clipRegion) ? clipRegion : [clipRegion];
+    const rectangles = masks.filter(
+      (mask): mask is ClipRegion => !isCanvasItemClipMask(mask)
+    );
+
+    if (rectangles.length === 0) return canvas;
+
+    // Create temp canvas and apply rectangle clip
+    const { canvas: tempCanvas, context: tempContext } = this.createTempCanvas(
+      width,
+      height
+    );
+
+    tempContext.save();
+    tempContext.beginPath();
+    for (const region of rectangles) {
+      // Clip regions are relative to sprite (0,0 = top-left of sprite)
+      tempContext.rect(region.x, region.y, region.width, region.height);
+    }
+    tempContext.clip();
+
+    // Draw the source canvas with clipping applied
+    tempContext.drawImage(canvas, 0, 0);
+    tempContext.restore();
+
+    return tempCanvas;
   }
 
   private applyCanvasItemClipMasks(
@@ -293,45 +330,103 @@ export default class CanvasRenderer implements IRenderer {
 
       context.restore();
     } else {
-      // Fast path with rectangle clipping only
-      context.save();
-
-      this.applyRectangleClips(context, clipRegion);
-
-      if (opacity < 1.0) {
-        context.globalAlpha = opacity;
-      }
-
-      // Apply fill color
-      const filledTexture = this.applyFillColorToTexture(
-        textureData,
-        width,
-        height,
-        fillColor
+      // Check if we actually have rectangle clipping to apply
+      const masks = clipRegion ? (Array.isArray(clipRegion) ? clipRegion : [clipRegion]) : [];
+      const rectangles = masks.filter(
+        (mask): mask is ClipRegion => !isCanvasItemClipMask(mask)
       );
-      const imageSource = filledTexture || textureData;
+      const hasRectangleClip = rectangles.length > 0;
 
-      // Apply flip transforms and draw
-      if (flipH || flipV) {
-        const scaleX = flipH ? -1 : 1;
-        const scaleY = flipV ? -1 : 1;
-        context.scale(scaleX, scaleY);
-        context.drawImage(
-          imageSource,
-          scaleX * Math.floor(position.x),
-          Math.floor(position.y),
-          scaleX * width,
+      if (hasRectangleClip) {
+        // Path with rectangle clipping: render to temp canvas, apply clip, then draw result
+        const { canvas: tempCanvas, context: tempContext } =
+          this.createTempCanvas(width, height);
+
+        // Apply fill color
+        const filledTexture = this.applyFillColorToTexture(
+          textureData,
+          width,
+          height,
+          fillColor
+        );
+        const imageSource = filledTexture || textureData;
+
+        // Apply flip transforms if needed
+        if (flipH || flipV) {
+          const scaleX = flipH ? -1 : 1;
+          const scaleY = flipV ? -1 : 1;
+          tempContext.scale(scaleX, scaleY);
+          tempContext.drawImage(
+            imageSource,
+            scaleX * 0,
+            0,
+            scaleX * width,
+            height
+          );
+        } else {
+          tempContext.drawImage(imageSource, 0, 0);
+        }
+
+        // Apply rectangle clips to the temp canvas
+        const clippedCanvas = this.applyRectangleClipsToCanvas(
+          tempCanvas,
+          clipRegion,
+          width,
           height
         );
-      } else {
+
+        // Draw final result with opacity
+        context.save();
+        if (opacity < 1.0) {
+          context.globalAlpha = opacity;
+        }
+
         context.drawImage(
-          imageSource,
+          clippedCanvas,
           Math.floor(position.x),
           Math.floor(position.y)
         );
-      }
 
-      context.restore();
+        context.restore();
+      } else {
+        // Fast path with no clipping - draw directly
+        context.save();
+
+        if (opacity < 1.0) {
+          context.globalAlpha = opacity;
+        }
+
+        // Apply fill color
+        const filledTexture = this.applyFillColorToTexture(
+          textureData,
+          width,
+          height,
+          fillColor
+        );
+        const imageSource = filledTexture || textureData;
+
+        // Apply flip transforms and draw
+        if (flipH || flipV) {
+          const scaleX = flipH ? -1 : 1;
+          const scaleY = flipV ? -1 : 1;
+          context.scale(scaleX, scaleY);
+          context.drawImage(
+            imageSource,
+            scaleX * Math.floor(position.x),
+            Math.floor(position.y),
+            scaleX * width,
+            height
+          );
+        } else {
+          context.drawImage(
+            imageSource,
+            Math.floor(position.x),
+            Math.floor(position.y)
+          );
+        }
+
+        context.restore();
+      }
     }
   }
 
