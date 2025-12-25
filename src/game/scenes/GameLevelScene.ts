@@ -38,8 +38,12 @@ export default class GameLevelScene extends Scene {
   private uiLayout?: LayoutFlex;
   private htmlPreview?: HtmlPreview;
   private targetLayout?: LayoutFlex;
+  private solutionToggleButton?: Button;
+  private solutionToggleButtonText?: Text;
   private isPaused = false;
   private hasWon = false;
+  private isCtrlPressed = false;
+  private showSolutionToggle = false;
 
   constructor(levelId = 1, onExit?: () => void, onWin?: () => void) {
     super();
@@ -199,6 +203,18 @@ export default class GameLevelScene extends Scene {
         });
 
         const html = tags.map(tag => tag.text).join(' ');
+
+        // Update HTML preview based on Ctrl key state or toggle button
+        if (this.htmlPreview) {
+          if (this.isCtrlPressed || this.showSolutionToggle) {
+            // Show solution when Ctrl is pressed or toggle is on
+            this.htmlPreview.setHtml(this.currentLevel.solution);
+          } else {
+            // Show current output by default
+            this.htmlPreview.setHtml(html);
+          }
+        }
+
         if (html === this.currentLevel.solution) {
           this.showWinMenu();
         }
@@ -259,11 +275,25 @@ export default class GameLevelScene extends Scene {
 
     this.addChild(this.uiLayout);
 
-    // Create HTML preview for target solution in top-right corner
-    this.htmlPreview = new HtmlPreview(
+    // Create HTML preview for current output in top-right corner
+    // Initially empty, will be updated in TickEvent
+    this.htmlPreview = new HtmlPreview(new Vector(0, 0), '');
+
+    // Create solution toggle button
+    this.solutionToggleButtonText = new Text('Show Solution');
+    this.solutionToggleButton = new Button(
       new Vector(0, 0),
-      this.currentLevel.solution
+      this.solutionToggleButtonText
     );
+    this.solutionToggleButton.action = () => {
+      this.showSolutionToggle = !this.showSolutionToggle;
+      // Update button text based on toggle state
+      if (this.solutionToggleButtonText) {
+        this.solutionToggleButtonText.setText(
+          this.showSolutionToggle ? 'Hide Solution' : 'Show Solution'
+        );
+      }
+    };
 
     // Create layout for target preview in top-right
     this.targetLayout = new LayoutFlex(new Vector(0, 0), viewport);
@@ -271,14 +301,33 @@ export default class GameLevelScene extends Scene {
     this.targetLayout.justifyContent = 'flex-start';
     this.targetLayout.alignItems = 'flex-end';
     this.targetLayout.padding = new Vector(8, 8);
+    this.targetLayout.gap = 4;
 
     this.targetLayout.addChild(this.htmlPreview);
+    this.targetLayout.addChild(this.solutionToggleButton);
 
     this.addChild(this.targetLayout);
   }
 
   private handleKeyboardInput(event: Event): void {
     if (!(event instanceof KeyboardInputEvent)) return;
+
+    // Handle Ctrl key press/release
+    if (event.key === 'Control') {
+      this.isCtrlPressed = event.action === KeyAction.DOWN;
+
+      // Update button text to reflect Ctrl state
+      if (this.solutionToggleButtonText) {
+        if (this.isCtrlPressed) {
+          this.solutionToggleButtonText.setText('Hide Solution');
+        } else {
+          // Reset to appropriate text based on toggle state
+          this.solutionToggleButtonText.setText(
+            this.showSolutionToggle ? 'Hide Solution' : 'Show Solution'
+          );
+        }
+      }
+    }
 
     if (event.action === KeyAction.DOWN && event.key === 'Escape') {
       if (this.isPaused) {
