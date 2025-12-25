@@ -74,4 +74,8 @@ export default class Node2D extends CanvasItem {
   get height() {
     return 0;
   }
+
+  get size() {
+    return new Vector(this.width, this.height);
+  }
 }

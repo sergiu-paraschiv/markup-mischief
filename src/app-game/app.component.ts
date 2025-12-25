@@ -83,7 +83,13 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     await loadingScene.run();
     await loadingScene.loadAssets(ASSETS.dynamic, ASSETS.chars);
 
-    engine.loadScene(new MainMenuScene());
+    engine.loadScene(
+      new MainMenuScene([
+        { label: 'HTML Mode' },
+        { label: 'CSS Mode' },
+        { label: 'Settings' },
+      ])
+    );
 
     // engine.loadScene(new GameLevelScene(1));
   }

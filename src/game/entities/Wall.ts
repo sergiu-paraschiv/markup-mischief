@@ -4,16 +4,16 @@ import { Node2D } from '@engine/elements';
 export default class Wall extends Node2D {
   constructor(
     position?: Vector,
-    private readonly size?: Vector
+    private readonly _size?: Vector
   ) {
     super(position);
   }
 
   override get width() {
-    return this.size?.width || 0;
+    return this._size?.width || 0;
   }
 
   override get height() {
-    return this.size?.height || 0;
+    return this._size?.height || 0;
   }
 }

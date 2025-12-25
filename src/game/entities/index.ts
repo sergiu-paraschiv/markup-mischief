@@ -9,6 +9,7 @@ import {
 } from './characters';
 import Text from './Text';
 import Tag from './Tag';
+import Button from './Button';
 import Wall from './Wall';
 import BOARD_DATA from './Board.json';
 
@@ -21,6 +22,7 @@ export {
   CharacterGrabEvent,
   CaptainClownNose,
   PinkStar,
+  Button,
   Tag,
   Wall,
   BOARD_DATA,
