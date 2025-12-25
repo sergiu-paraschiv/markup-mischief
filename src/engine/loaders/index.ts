@@ -7,9 +7,16 @@ import AsepriteTextureMeta, {
 import AsepriteAnimationMeta, {
   AsepriteAnimationMetaData,
 } from './aseprite/AsepriteAnimationMeta';
-import AssetsLoader, { AssetsMap } from './AssetsLoader';
+import AssetsLoader, {
+  AssetsMap,
+  CharsMap,
+  Char,
+  AssetsInfo,
+  CharsInfo,
+} from './AssetsLoader';
 
 export {
+  Char,
   Texture,
   Aseprite,
   AssetsLoader,
@@ -18,7 +25,10 @@ export {
 };
 export type {
   TileMap,
+  AssetsInfo,
   AssetsMap,
+  CharsInfo,
+  CharsMap,
   AsepriteTextureMetaData,
   AsepriteAnimationMetaData,
 };

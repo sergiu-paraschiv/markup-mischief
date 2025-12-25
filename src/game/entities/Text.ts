@@ -1,6 +1,6 @@
 import { Vector, GlobalContext } from '@engine/core';
 import { Node2D, Sprite } from '@engine/elements';
-import { AssetsMap } from '@engine/loaders';
+import { CharsMap, Char } from '@engine/loaders';
 
 export default class Text extends Node2D {
   private _width = 0;
@@ -8,14 +8,13 @@ export default class Text extends Node2D {
 
   constructor(text: string, letterSpacing = 1) {
     super();
-    const assets = GlobalContext.get<AssetsMap>('assets');
+    const charsMap = GlobalContext.get<CharsMap>('chars');
 
     const chars = text.toLowerCase().split('');
     for (let i = 0; i < chars.length; i += 1) {
       const char = chars[i];
       const texture =
-        assets['Chars'].charmaps['Chars'][char] ||
-        assets['Chars'].tilemaps['Chars'].get(78);
+        charsMap['Chars'][char] || charsMap['Chars'][Char.UNKNOWN];
       const charSprite = new Sprite(texture);
       charSprite.position = new Vector(this._width, 0);
       this.addChild(charSprite);

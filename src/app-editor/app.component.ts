@@ -53,7 +53,7 @@ export class AppComponent implements AfterViewInit {
     const editor = new Editor(
       gameElement,
       canvasElement,
-      ASSETS,
+      ASSETS.dynamic,
       renderer.localToGlobalPoint.bind(renderer)
     );
     editor.attachTo(engine);

@@ -6,6 +6,7 @@ import {
   AsepriteTextureMeta,
   AsepriteAnimationMeta,
   AssetsLoader,
+  AssetsInfo,
   AssetsMap,
   Texture,
 } from '@engine/loaders';
@@ -71,7 +72,7 @@ export default class Editor extends Element {
   constructor(
     container: HTMLElement,
     canvas: HTMLCanvasElement,
-    assetPaths: Record<string, string>,
+    assetsInfo: AssetsInfo,
     localToGlobalPoint: (point: Vector) => Vector
   ) {
     super();
@@ -241,7 +242,7 @@ export default class Editor extends Element {
         return;
       }
 
-      await this.assetsLoader?.init(assetPaths);
+      await this.assetsLoader?.init(assetsInfo);
 
       const canvasBox = canvas.getBoundingClientRect();
       this.gui.canvasPosition = new Vector(canvasBox.left, canvasBox.top);
