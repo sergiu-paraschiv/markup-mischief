@@ -72,6 +72,12 @@ export default class Button extends Node2D {
 
   private handleMouseClick(event: Event): void {
     if (!(event instanceof MouseClickEvent)) return;
+
+    // Reset cursor to default to prevent it from staying as pointer
+    // if the button action causes scene changes or removes the button
+    const cursorManager = GlobalContext.get<CursorManager>('cursorManager');
+    cursorManager.setCursor('default');
+
     if (this.action) {
       this.action();
     }
