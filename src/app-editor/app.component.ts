@@ -7,7 +7,7 @@ import { CanvasRenderer } from '@engine/renderer';
 import { PhysicsSimulation } from '@engine/physics';
 import { Debugger } from '@debugger';
 import { SpriteMash } from '@engine/elements';
-import { Editor } from '@editor';
+import { Editor, GridStepChangeEvent } from '@editor';
 
 import ASSETS from '../assets.json';
 
@@ -57,6 +57,12 @@ export class AppComponent implements AfterViewInit {
       renderer.localToGlobalPoint.bind(renderer)
     );
     editor.attachTo(engine);
+
+    editor.gui?.ee.subscribe(event => {
+      if (event instanceof GridStepChangeEvent) {
+        dbgr.gridSize = event.step;
+      }
+    });
 
     engine.loadScene(new Scene([new SpriteMash(5)]));
 

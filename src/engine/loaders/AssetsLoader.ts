@@ -1,7 +1,16 @@
 import { Aseprite, TileMap, Texture } from '@engine/loaders';
 import { Animation } from '@engine/elements';
 
-export type AssetsInfo = Record<string, string>;
+export type AssetsInfo = Record<
+  string,
+  {
+    path: string;
+    tileCrop?: {
+      width: number;
+      height: number;
+    };
+  }
+>;
 export type AssetsMap = Record<
   string,
   {
@@ -47,7 +56,7 @@ export default class AssetsLoader {
     let currentFile = 0;
 
     for (const fileName in assetsInfo) {
-      const filePath = assetsInfo[fileName];
+      const assetInfo = assetsInfo[fileName];
 
       currentFile++;
       onProgress?.({
@@ -57,7 +66,7 @@ export default class AssetsLoader {
         currentFile: fileName,
       });
 
-      const aseprite = await Aseprite.load(filePath);
+      const aseprite = await Aseprite.load(assetInfo.path);
       aseprite.ignoreLayers(['Grid']);
 
       this.assets[fileName] = {

@@ -18,6 +18,7 @@ export default class Debugger extends CanvasItem {
   private _enableFps = false;
   private _enableHoverHighlight = false;
   private hoveredObject: Node2D | undefined;
+  public gridSize = new Vector(32, 32);
 
   constructor(container: HTMLElement) {
     super();
@@ -125,8 +126,11 @@ export default class Debugger extends CanvasItem {
       const VIEWPORT_WIDTH = this.engine?.viewport.width || 0;
       const VIEWPORT_HEIGHT = this.engine?.viewport.height || 0;
 
-      const GRID_SIZE = 32;
-      for (let x = GRID_SIZE; x < VIEWPORT_WIDTH; x += GRID_SIZE) {
+      for (
+        let x = this.gridSize.width;
+        x < VIEWPORT_WIDTH;
+        x += this.gridSize.width
+      ) {
         context.beginPath();
         context.strokeStyle = 'rgba(0, 0, 0, 0.2';
         context.moveTo(x, 0);
@@ -134,7 +138,11 @@ export default class Debugger extends CanvasItem {
         context.stroke();
       }
 
-      for (let y = GRID_SIZE; y < VIEWPORT_HEIGHT; y += GRID_SIZE) {
+      for (
+        let y = this.gridSize.height;
+        y < VIEWPORT_HEIGHT;
+        y += this.gridSize.height
+      ) {
         context.beginPath();
         context.strokeStyle = 'rgba(0, 0, 0, 0.2';
         context.moveTo(0, y);

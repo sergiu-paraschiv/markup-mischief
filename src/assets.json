@@ -1,27 +1,80 @@
 {
   "dynamic": {
-    "Captain Clown Nose": "./sprites/Treasure Hunters/Captain Clown Nose/Aseprite/Captain Clown Nose.aseprite",
-    "Captain Clown Nose Dialogue": "./sprites/Treasure Hunters/Captain Clown Nose/Aseprite/Dialogue.aseprite",
-    "Captain Clown Nose Dust Particles": "./sprites/Treasure Hunters/Captain Clown Nose/Aseprite/Dust Particles.aseprite",
-    "Merchant Ship": "./sprites/Treasure Hunters/Merchant Ship/Aseprite/Merchant Ship.aseprite",
-    "Palm Tree Island": "./sprites/Treasure Hunters/Palm Tree Island/Aseprite/Palm Tree Island (ArtBoard).aseprite",
-    "Palm Tree Island Chest": "./sprites/Treasure Hunters/Palm Tree Island/Aseprite/Chest.aseprite",
-    "Palm Tree Island Flag": "./sprites/Treasure Hunters/Palm Tree Island/Aseprite/Flag.aseprite",
-    "Palm Tree Island Palm Tree": "./sprites/Treasure Hunters/Palm Tree Island/Aseprite/Palm Tree.aseprite",
-    "Palm Tree Island Ship Helm": "./sprites/Treasure Hunters/Palm Tree Island/Aseprite/Ship Helm.aseprite",
-    "Palm Tree Island Water Reflect": "./sprites/Treasure Hunters/Palm Tree Island/Aseprite/Water Reflect.aseprite",
-    "Pirate Ship": "./sprites/Treasure Hunters/Pirate Ship/Aseprite/TileSets.aseprite",
-    "Pirate Ship Decorations": "./sprites/Treasure Hunters/Pirate Ship/Aseprite/Decorations.aseprite",
-    "Pirate Treasure": "./sprites/Treasure Hunters/Pirate Treasure/Aseprite/Pirate Treasure.aseprite",
-    "Shooter Traps": "./sprites/Treasure Hunters/Shooter Traps/Aseprite/Shooter Traps.aseprite",
-    "The Crusty Crew Crabby": "./sprites/Treasure Hunters/The Crusty Crew/Aseprite/Crabby.aseprite",
-    "The Crusty Crew Dialogue": "./sprites/Treasure Hunters/The Crusty Crew/Aseprite/Dialogue.aseprite",
-    "The Crusty Crew Dust Particles": "./sprites/Treasure Hunters/The Crusty Crew/Aseprite/Dust Particles.aseprite",
-    "The Crusty Crew Fierce Tooth": "./sprites/Treasure Hunters/The Crusty Crew/Aseprite/Fierce Tooth.aseprite",
-    "The Crusty Crew Pink Star": "./sprites/Treasure Hunters/The Crusty Crew/Aseprite/Pink Star.aseprite",
-    "Wood and Paper UI": "./sprites/Treasure Hunters/Wood and Paper UI/Aseprite/Wood and Paper.aseprite",
-    "Wood and Paper UI Button Cooldown": "./sprites/Treasure Hunters/Wood and Paper UI/Aseprite/Button Cooldown.aseprite",
-    "Paper": "./sprites/Treasure Hunters/Wood and Paper UI/Aseprite/Paper.aseprite"
+    "Captain Clown Nose": {
+      "path": "./sprites/Treasure Hunters/Captain Clown Nose/Aseprite/Captain Clown Nose.aseprite"
+    },
+    "Captain Clown Nose Dialogue": {
+      "path": "./sprites/Treasure Hunters/Captain Clown Nose/Aseprite/Dialogue.aseprite"
+    },
+    "Captain Clown Nose Dust Particles": {
+      "path": "./sprites/Treasure Hunters/Captain Clown Nose/Aseprite/Dust Particles.aseprite"
+    },
+    "Merchant Ship": {
+      "path": "./sprites/Treasure Hunters/Merchant Ship/Aseprite/Merchant Ship.aseprite"
+    },
+    "Palm Tree Island": {
+      "path": "./sprites/Treasure Hunters/Palm Tree Island/Aseprite/Palm Tree Island (ArtBoard).aseprite"
+    },
+    "Palm Tree Island Chest": {
+      "path": "./sprites/Treasure Hunters/Palm Tree Island/Aseprite/Chest.aseprite"
+    },
+    "Palm Tree Island Flag": {
+      "path": "./sprites/Treasure Hunters/Palm Tree Island/Aseprite/Flag.aseprite"
+    },
+    "Palm Tree Island Palm Tree": {
+      "path": "./sprites/Treasure Hunters/Palm Tree Island/Aseprite/Palm Tree.aseprite"
+    },
+    "Palm Tree Island Ship Helm": {
+      "path": "./sprites/Treasure Hunters/Palm Tree Island/Aseprite/Ship Helm.aseprite"
+    },
+    "Palm Tree Island Water Reflect": {
+      "path": "./sprites/Treasure Hunters/Palm Tree Island/Aseprite/Water Reflect.aseprite"
+    },
+    "Pirate Ship": {
+      "path": "./sprites/Treasure Hunters/Pirate Ship/Aseprite/TileSets.aseprite"
+    },
+    "Pirate Ship Decorations": {
+      "path": "./sprites/Treasure Hunters/Pirate Ship/Aseprite/Decorations.aseprite"
+    },
+    "Pirate Treasure": {
+      "path": "./sprites/Treasure Hunters/Pirate Treasure/Aseprite/Pirate Treasure.aseprite"
+    },
+    "Shooter Traps": {
+      "path": "./sprites/Treasure Hunters/Shooter Traps/Aseprite/Shooter Traps.aseprite"
+    },
+    "The Crusty Crew Crabby": {
+      "path": "./sprites/Treasure Hunters/The Crusty Crew/Aseprite/Crabby.aseprite"
+    },
+    "The Crusty Crew Dialogue": {
+      "path": "./sprites/Treasure Hunters/The Crusty Crew/Aseprite/Dialogue.aseprite"
+    },
+    "The Crusty Crew Dust Particles": {
+      "path": "./sprites/Treasure Hunters/The Crusty Crew/Aseprite/Dust Particles.aseprite"
+    },
+    "The Crusty Crew Fierce Tooth": {
+      "path": "./sprites/Treasure Hunters/The Crusty Crew/Aseprite/Fierce Tooth.aseprite"
+    },
+    "The Crusty Crew Pink Star": {
+      "path": "./sprites/Treasure Hunters/The Crusty Crew/Aseprite/Pink Star.aseprite"
+    },
+    "Wood and Paper UI": {
+      "path": "./sprites/Treasure Hunters/Wood and Paper UI/Aseprite/Wood and Paper.aseprite"
+    },
+    "Wood and Paper UI - Boards": {
+      "path": "./sprites/Treasure Hunters/Wood and Paper UI/Aseprite/Wood and Paper Boards.aseprite"
+    },
+    "Wood and Paper UI - Buttons Large": {
+      "path": "./sprites/Treasure Hunters/Wood and Paper UI/Aseprite/Wood and Paper Buttons Large.aseprite"
+    },
+    "Wood and Paper UI - Buttons": {
+      "path": "./sprites/Treasure Hunters/Wood and Paper UI/Aseprite/Wood and Paper Buttons.aseprite"
+    },
+    "Wood and Paper UI Button Cooldown": {
+      "path": "./sprites/Treasure Hunters/Wood and Paper UI/Aseprite/Button Cooldown.aseprite"
+    },
+    "Paper": {
+      "path": "./sprites/Treasure Hunters/Wood and Paper UI/Aseprite/Paper.aseprite"
+    }
   },
   "chars": {
     "Chars": {

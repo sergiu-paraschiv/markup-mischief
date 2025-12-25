@@ -11,7 +11,7 @@ import { Keyboard, Mouse } from '@engine/input';
 import { CanvasRenderer } from '@engine/renderer';
 import { PhysicsSimulation } from '@engine/physics';
 import { Debugger } from '@debugger';
-import { GameLevelScene, LoadingScene } from '@game/scenes';
+import { LoadingScene, MainMenuScene } from '@game/scenes';
 
 import ASSETS from '../assets.json';
 
@@ -82,7 +82,9 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     await loadingScene.run();
     await loadingScene.loadAssets(ASSETS.dynamic, ASSETS.chars);
 
-    engine.loadScene(new GameLevelScene(1));
+    engine.loadScene(new MainMenuScene());
+
+    // engine.loadScene(new GameLevelScene(1));
   }
 
   ngOnDestroy(): void {

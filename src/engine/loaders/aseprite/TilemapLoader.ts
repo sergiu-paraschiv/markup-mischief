@@ -1,4 +1,5 @@
 import { inflate } from 'pako';
+
 import Texture from '../Texture';
 import AsepriteCache from './AsepriteCache';
 import AsepriteLoader from './AsepriteLoader';

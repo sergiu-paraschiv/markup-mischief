@@ -1,4 +1,5 @@
-import { Element, GlobalContext, Vector } from '@engine/core';
+import { GlobalContext, Vector } from '@engine/core';
+import { Node2D } from '@engine/elements';
 import Sprite from './Sprite';
 import AnimatedSprite from './AnimatedSprite';
 import {
@@ -31,12 +32,12 @@ export interface SpriteMashData {
   layers: SpriteMashItem[][];
 }
 
-export default class SpriteMash extends Element {
+export default class SpriteMash extends Node2D {
   constructor(private _numLayers: number) {
     super();
 
     for (let i = 0; i < _numLayers; i += 1) {
-      this.addChild(new Element());
+      this.addChild(new Node2D());
     }
   }
 
@@ -97,7 +98,7 @@ export default class SpriteMash extends Element {
     this._numLayers = newNumLayers;
 
     for (let i = 0; i < this._numLayers; i += 1) {
-      this.addChild(new Element());
+      this.addChild(new Node2D());
     }
   }
 

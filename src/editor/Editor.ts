@@ -53,7 +53,7 @@ type GUI = NgElement &
 export default class Editor extends Element {
   private engine: Engine | undefined;
   private assetsLoader: AssetsLoader | undefined;
-  private gui: GUI | undefined;
+  public readonly gui: GUI | undefined;
   private sm: SpriteMash | undefined;
   private previousData: string | undefined;
   private previousScene: Element | undefined;

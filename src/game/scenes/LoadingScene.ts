@@ -18,7 +18,11 @@ export default class Loading extends Scene {
   public async run() {
     const assetsLoader = new AssetsLoader();
     await assetsLoader.init(
-      { Loading: this.loadingAssetPath },
+      {
+        Loading: {
+          path: this.loadingAssetPath,
+        },
+      },
       { Chars: this.charsAssetInfo }
     );
 
@@ -69,7 +73,6 @@ export default class Loading extends Scene {
   }
 
   private updateProgress(percentage: number) {
-    console.log(percentage);
     // Update the text dynamically
     if (this.progressText) {
       const percentText = Math.floor(percentage).toString() + '%';

@@ -1,0 +1,393 @@
+{
+  "numLayers": 2,
+  "layers": [
+    [
+      {
+        "type": "static",
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "texture": {
+          "asset": "Wood and Paper UI - Boards",
+          "tileset": "Wood and Paper",
+          "tileId": 1
+        }
+      },
+      {
+        "type": "static",
+        "position": {
+          "x": 32,
+          "y": 0
+        },
+        "texture": {
+          "asset": "Wood and Paper UI - Boards",
+          "tileset": "Wood and Paper",
+          "tileId": 2
+        }
+      },
+      {
+        "type": "static",
+        "position": {
+          "x": 64,
+          "y": 0
+        },
+        "texture": {
+          "asset": "Wood and Paper UI - Boards",
+          "tileset": "Wood and Paper",
+          "tileId": 2
+        }
+      },
+      {
+        "type": "static",
+        "position": {
+          "x": 96,
+          "y": 0
+        },
+        "texture": {
+          "asset": "Wood and Paper UI - Boards",
+          "tileset": "Wood and Paper",
+          "tileId": 3
+        }
+      },
+      {
+        "type": "static",
+        "position": {
+          "x": 32,
+          "y": 32
+        },
+        "texture": {
+          "asset": "Wood and Paper UI - Boards",
+          "tileset": "Wood and Paper",
+          "tileId": 10
+        }
+      },
+      {
+        "type": "static",
+        "position": {
+          "x": 64,
+          "y": 32
+        },
+        "texture": {
+          "asset": "Wood and Paper UI - Boards",
+          "tileset": "Wood and Paper",
+          "tileId": 10
+        }
+      },
+      {
+        "type": "static",
+        "position": {
+          "x": 0,
+          "y": 32
+        },
+        "texture": {
+          "asset": "Wood and Paper UI - Boards",
+          "tileset": "Wood and Paper",
+          "tileId": 9
+        }
+      },
+      {
+        "type": "static",
+        "position": {
+          "x": 96,
+          "y": 32
+        },
+        "texture": {
+          "asset": "Wood and Paper UI - Boards",
+          "tileset": "Wood and Paper",
+          "tileId": 11
+        }
+      },
+      {
+        "type": "static",
+        "position": {
+          "x": 32,
+          "y": 64
+        },
+        "texture": {
+          "asset": "Wood and Paper UI - Boards",
+          "tileset": "Wood and Paper",
+          "tileId": 10
+        }
+      },
+      {
+        "type": "static",
+        "position": {
+          "x": 64,
+          "y": 64
+        },
+        "texture": {
+          "asset": "Wood and Paper UI - Boards",
+          "tileset": "Wood and Paper",
+          "tileId": 10
+        }
+      },
+      {
+        "type": "static",
+        "position": {
+          "x": 0,
+          "y": 64
+        },
+        "texture": {
+          "asset": "Wood and Paper UI - Boards",
+          "tileset": "Wood and Paper",
+          "tileId": 9
+        }
+      },
+      {
+        "type": "static",
+        "position": {
+          "x": 96,
+          "y": 64
+        },
+        "texture": {
+          "asset": "Wood and Paper UI - Boards",
+          "tileset": "Wood and Paper",
+          "tileId": 11
+        }
+      },
+      {
+        "type": "static",
+        "position": {
+          "x": 0,
+          "y": 96
+        },
+        "texture": {
+          "asset": "Wood and Paper UI - Boards",
+          "tileset": "Wood and Paper",
+          "tileId": 17
+        }
+      },
+      {
+        "type": "static",
+        "position": {
+          "x": 32,
+          "y": 96
+        },
+        "texture": {
+          "asset": "Wood and Paper UI - Boards",
+          "tileset": "Wood and Paper",
+          "tileId": 18
+        }
+      },
+      {
+        "type": "static",
+        "position": {
+          "x": 96,
+          "y": 96
+        },
+        "texture": {
+          "asset": "Wood and Paper UI - Boards",
+          "tileset": "Wood and Paper",
+          "tileId": 19
+        }
+      },
+      {
+        "type": "static",
+        "position": {
+          "x": 64,
+          "y": 96
+        },
+        "texture": {
+          "asset": "Wood and Paper UI - Boards",
+          "tileset": "Wood and Paper",
+          "tileId": 18
+        }
+      }
+    ],
+    [
+      {
+        "type": "static",
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "texture": {
+          "asset": "Wood and Paper UI - Boards",
+          "tileset": "Wood and Paper",
+          "tileId": 33
+        }
+      },
+      {
+        "type": "static",
+        "position": {
+          "x": 32,
+          "y": 0
+        },
+        "texture": {
+          "asset": "Wood and Paper UI - Boards",
+          "tileset": "Wood and Paper",
+          "tileId": 34
+        }
+      },
+      {
+        "type": "static",
+        "position": {
+          "x": 64,
+          "y": 0
+        },
+        "texture": {
+          "asset": "Wood and Paper UI - Boards",
+          "tileset": "Wood and Paper",
+          "tileId": 34
+        }
+      },
+      {
+        "type": "static",
+        "position": {
+          "x": 96,
+          "y": 0
+        },
+        "texture": {
+          "asset": "Wood and Paper UI - Boards",
+          "tileset": "Wood and Paper",
+          "tileId": 35
+        }
+      },
+      {
+        "type": "static",
+        "position": {
+          "x": 0,
+          "y": 32
+        },
+        "texture": {
+          "asset": "Wood and Paper UI - Boards",
+          "tileset": "Wood and Paper",
+          "tileId": 41
+        }
+      },
+      {
+        "type": "static",
+        "position": {
+          "x": 0,
+          "y": 64
+        },
+        "texture": {
+          "asset": "Wood and Paper UI - Boards",
+          "tileset": "Wood and Paper",
+          "tileId": 41
+        }
+      },
+      {
+        "type": "static",
+        "position": {
+          "x": 32,
+          "y": 32
+        },
+        "texture": {
+          "asset": "Wood and Paper UI - Boards",
+          "tileset": "Wood and Paper",
+          "tileId": 42
+        }
+      },
+      {
+        "type": "static",
+        "position": {
+          "x": 32,
+          "y": 64
+        },
+        "texture": {
+          "asset": "Wood and Paper UI - Boards",
+          "tileset": "Wood and Paper",
+          "tileId": 42
+        }
+      },
+      {
+        "type": "static",
+        "position": {
+          "x": 64,
+          "y": 32
+        },
+        "texture": {
+          "asset": "Wood and Paper UI - Boards",
+          "tileset": "Wood and Paper",
+          "tileId": 42
+        }
+      },
+      {
+        "type": "static",
+        "position": {
+          "x": 64,
+          "y": 64
+        },
+        "texture": {
+          "asset": "Wood and Paper UI - Boards",
+          "tileset": "Wood and Paper",
+          "tileId": 42
+        }
+      },
+      {
+        "type": "static",
+        "position": {
+          "x": 96,
+          "y": 32
+        },
+        "texture": {
+          "asset": "Wood and Paper UI - Boards",
+          "tileset": "Wood and Paper",
+          "tileId": 43
+        }
+      },
+      {
+        "type": "static",
+        "position": {
+          "x": 96,
+          "y": 64
+        },
+        "texture": {
+          "asset": "Wood and Paper UI - Boards",
+          "tileset": "Wood and Paper",
+          "tileId": 43
+        }
+      },
+      {
+        "type": "static",
+        "position": {
+          "x": 0,
+          "y": 96
+        },
+        "texture": {
+          "asset": "Wood and Paper UI - Boards",
+          "tileset": "Wood and Paper",
+          "tileId": 49
+        }
+      },
+      {
+        "type": "static",
+        "position": {
+          "x": 32,
+          "y": 96
+        },
+        "texture": {
+          "asset": "Wood and Paper UI - Boards",
+          "tileset": "Wood and Paper",
+          "tileId": 50
+        }
+      },
+      {
+        "type": "static",
+        "position": {
+          "x": 64,
+          "y": 96
+        },
+        "texture": {
+          "asset": "Wood and Paper UI - Boards",
+          "tileset": "Wood and Paper",
+          "tileId": 50
+        }
+      },
+      {
+        "type": "static",
+        "position": {
+          "x": 96,
+          "y": 96
+        },
+        "texture": {
+          "asset": "Wood and Paper UI - Boards",
+          "tileset": "Wood and Paper",
+          "tileId": 51
+        }
+      }
+    ]
+  ]
+}
