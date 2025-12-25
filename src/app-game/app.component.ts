@@ -11,7 +11,12 @@ import { Keyboard, Mouse, CursorManager } from '@engine/input';
 import { CanvasRenderer } from '@engine/renderer';
 import { PhysicsSimulation } from '@engine/physics';
 import { Debugger } from '@debugger';
-import { LoadingScene, MainMenuScene } from '@game/scenes';
+import {
+  LoadingScene,
+  MainMenuScene,
+  GameLevelScene,
+  LEVELS,
+} from '@game/scenes';
 
 import ASSETS from '../assets.json';
 
@@ -87,15 +92,34 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     await loadingScene.run();
     await loadingScene.loadAssets(ASSETS.dynamic, ASSETS.chars);
 
-    engine.loadScene(
-      new MainMenuScene([
-        { label: 'HTML Mode' },
-        { label: 'CSS Mode' },
-        { label: 'Settings' },
-      ])
-    );
+    // Create main menu scene
+    const mainMenuScene = new MainMenuScene([
+      {
+        label: 'HTML Mode',
+        action: () => {
+          // Create level selection menu items from levels.json
+          const levelMenuItems = LEVELS.levels.map(level => ({
+            label: level.name,
+            action: () => {
+              engine.loadScene(
+                new GameLevelScene(level.id, () => {
+                  // Exit level and return to level selector
+                  engine.loadScene(levelsScene);
+                })
+              );
+            },
+          }));
 
-    // engine.loadScene(new GameLevelScene(1));
+          const levelsScene = new MainMenuScene(levelMenuItems, () => {
+            engine.loadScene(mainMenuScene);
+          });
+
+          engine.loadScene(levelsScene);
+        },
+      },
+    ]);
+
+    engine.loadScene(mainMenuScene);
   }
 
   ngOnDestroy(): void {

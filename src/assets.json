@@ -74,6 +74,9 @@
     },
     "Paper": {
       "path": "./sprites/Treasure Hunters/Wood and Paper UI/Aseprite/Paper.aseprite"
+    },
+    "Chars": {
+      "path": "./sprites/Treasure Hunters/Wood and Paper UI/Aseprite/Chars.aseprite"
     }
   },
   "chars": {
@@ -118,6 +121,7 @@
         "8": 34,
         "9": 35,
         "0": 36,
+        "-": 37,
         "%": 78,
         "/": 40,
         "<": 85,

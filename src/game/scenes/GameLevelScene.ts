@@ -1,4 +1,4 @@
-import { Query, Scene, Vector } from '@engine/core';
+import { Query, Scene, Vector, Event } from '@engine/core';
 import { SpriteMash, SpriteMashData } from '@engine/elements';
 import { StaticBody } from '@engine/physics';
 import {
@@ -12,13 +12,15 @@ import {
   Wall,
 } from '@game/entities';
 import { TickEvent } from '@engine/renderer';
+import { KeyboardInputEvent, KeyAction } from '@engine/input';
 import { LevelData, LevelsData, positionToVector } from './LevelData';
 import LEVELS_DATA from './levels.json';
 
 export default class GameLevelScene extends Scene {
   private currentLevel: LevelData;
+  private onExit?: () => void;
 
-  constructor(levelId = 1) {
+  constructor(levelId = 1, onExit?: () => void) {
     super();
 
     const levelsData = LEVELS_DATA as LevelsData;
@@ -29,7 +31,22 @@ export default class GameLevelScene extends Scene {
     }
 
     this.currentLevel = level;
+    this.onExit = onExit;
+
+    // Listen for Escape key to exit level
+    this.on(KeyboardInputEvent, this.handleKeyboardInput.bind(this));
+
     this.run();
+  }
+
+  private handleKeyboardInput(event: Event): void {
+    if (!(event instanceof KeyboardInputEvent)) return;
+
+    if (event.action === KeyAction.DOWN && event.key === 'Escape') {
+      if (this.onExit) {
+        this.onExit();
+      }
+    }
   }
 
   private async run() {
