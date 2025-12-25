@@ -21,6 +21,11 @@ import { KeyboardInputEvent, KeyAction } from '@engine/input';
 import { LevelData, LevelsData, positionToVector } from './LevelData';
 import LEVELS_DATA from './levels.json';
 
+const PLAYER_DEPTH = 700;
+const TAG_DEPTH = 800;
+const PLAYER_OUTLINE_DEPTH = 900;
+const MENU_DEPTH = 1000;
+
 export default class GameLevelScene extends Scene {
   private currentLevel: LevelData;
   private onExit?: () => void;
@@ -51,129 +56,6 @@ export default class GameLevelScene extends Scene {
     this.on(KeyboardInputEvent, this.handleKeyboardInput.bind(this));
 
     this.run();
-  }
-
-  private handleKeyboardInput(event: Event): void {
-    if (!(event instanceof KeyboardInputEvent)) return;
-
-    if (event.action === KeyAction.DOWN && event.key === 'Escape') {
-      if (this.isPaused) {
-        this.hidePauseMenu();
-      } else {
-        this.showPauseMenu();
-      }
-    }
-  }
-
-  private showPauseMenu(): void {
-    if (this.isPaused) return;
-
-    this.isPaused = true;
-
-    // Hide UI layout
-    if (this.uiLayout) {
-      this.uiLayout.isVisible = false;
-    }
-
-    const viewport = GlobalContext.get<Vector>('viewport');
-
-    // Create semi-transparent overlay
-    const overlay = new Node2D();
-    overlay.fillColor = 'rgba(0, 0, 0, 0.5)';
-
-    // Create pause menu
-    const menu = new MainMenu(new Vector(0, 0), [
-      {
-        label: 'Continue',
-        action: () => {
-          this.hidePauseMenu();
-        },
-      },
-      {
-        label: 'Exit',
-        action: () => {
-          this.hidePauseMenu();
-          if (this.onExit) {
-            this.onExit();
-          }
-        },
-      },
-    ]);
-
-    // Create layout to center the menu
-    const menuLayout = new LayoutFlex(new Vector(0, 0), viewport);
-    menuLayout.justifyContent = 'center';
-    menuLayout.alignItems = 'center';
-    menuLayout.addChild(menu);
-
-    this.pauseMenu = menuLayout;
-    this.addChild(this.pauseMenu);
-  }
-
-  private hidePauseMenu(): void {
-    if (!this.isPaused || !this.pauseMenu) return;
-
-    this.isPaused = false;
-    this.removeChild(this.pauseMenu);
-    this.pauseMenu = undefined;
-
-    // Show UI layout again
-    if (this.uiLayout) {
-      this.uiLayout.isVisible = true;
-    }
-  }
-
-  private showWinMenu(): void {
-    if (this.hasWon) return;
-
-    this.hasWon = true;
-
-    // Hide UI layout
-    if (this.uiLayout) {
-      this.uiLayout.isVisible = false;
-    }
-
-    const viewport = GlobalContext.get<Vector>('viewport');
-
-    // Create semi-transparent overlay
-    const overlay = new Node2D();
-    overlay.fillColor = 'rgba(0, 0, 0, 0.5)';
-
-    const buttons: MenuItem[] = [];
-
-    // Add Next level button to trigger onWin callback
-    if (this.onWin) {
-      buttons.push({
-        label: 'Next level',
-        action: () => {
-          if (this.onWin) {
-            this.onWin();
-          }
-        },
-      });
-    }
-
-    // Add Exit button
-    buttons.push({
-      label: 'Exit',
-      action: () => {
-        if (this.onExit) {
-          this.onExit();
-        }
-      },
-    });
-
-    // Create win menu with celebration message
-    const menu = new MainMenu(new Vector(0, 0), buttons);
-
-    // Create layout to center the menu
-    const menuLayout = new LayoutFlex(new Vector(0, 0), viewport);
-    menuLayout.justifyContent = 'center';
-    menuLayout.alignItems = 'center';
-    menuLayout.addChild(menu);
-
-    this.winMenu = menuLayout;
-    this.addChild(this.winMenu);
   }
 
   private async run() {
@@ -260,24 +142,23 @@ export default class GameLevelScene extends Scene {
     const player = new PinkStar(
       positionToVector(this.currentLevel.playerStart)
     );
-    this.addChild(player);
+    this.addChild(player, PLAYER_DEPTH);
     // Add ghost at a higher depth so it renders on top of tags
-    this.addChild(player.ghost, 1000);
+    this.addChild(player.ghost, PLAYER_OUTLINE_DEPTH);
 
     // Spawn tags from level data
     this.currentLevel.tags.forEach(tagData => {
       this.addChild(
-        makeTagTile(positionToVector(tagData.position), tagData.text)
+        makeTagTile(positionToVector(tagData.position), tagData.text),
+        TAG_DEPTH
       );
     });
 
     this.on(CharacterDropEvent, event => {
-      if (this.isPaused || this.hasWon) return;
       dropping = event.start;
     });
 
     this.on(CharacterGrabEvent, () => {
-      if (this.isPaused || this.hasWon) return;
       if (grabbedTag) {
         grabbedTag = undefined;
       } else {
@@ -294,8 +175,6 @@ export default class GameLevelScene extends Scene {
     });
 
     this.on(TickEvent, () => {
-      if (this.isPaused) return;
-
       if (grabbedTag && !this.hasWon) {
         grabbedTag.position = player.position.add(
           new Vector(player.pointing === Pointing.LEFT ? 24 : 38, 8)
@@ -317,11 +196,7 @@ export default class GameLevelScene extends Scene {
         });
 
         const html = tags.map(tag => tag.text).join(' ');
-        console.log(html, this.currentLevel.solution);
         if (html === this.currentLevel.solution) {
-          console.log(
-            `Level ${this.currentLevel.id} (${this.currentLevel.name}) completed!`
-          );
           this.showWinMenu();
         }
       }
@@ -377,9 +252,132 @@ export default class GameLevelScene extends Scene {
     this.uiLayout.padding = new Vector(8, 8);
 
     // Add elements to layout
-    this.uiLayout.addChild(this.levelNameText);
     this.uiLayout.addChild(this.menuButton);
+    this.uiLayout.addChild(this.levelNameText);
 
     this.addChild(this.uiLayout);
+  }
+
+  private handleKeyboardInput(event: Event): void {
+    if (!(event instanceof KeyboardInputEvent)) return;
+
+    if (event.action === KeyAction.DOWN && event.key === 'Escape') {
+      if (this.isPaused) {
+        this.hidePauseMenu();
+      } else {
+        this.showPauseMenu();
+      }
+    }
+  }
+
+  private showPauseMenu(): void {
+    if (this.isPaused) return;
+
+    this.isPaused = true;
+
+    // Hide UI layout
+    if (this.uiLayout) {
+      this.uiLayout.isVisible = false;
+    }
+
+    const viewport = GlobalContext.get<Vector>('viewport');
+
+    // Create semi-transparent overlay
+    const overlay = new Node2D();
+    overlay.fillColor = 'rgba(0, 0, 0, 0.5)';
+
+    // Create pause menu
+    const menu = new MainMenu(new Vector(0, 0), [
+      {
+        label: 'Continue',
+        action: () => {
+          this.hidePauseMenu();
+        },
+      },
+      {
+        label: 'Exit',
+        action: () => {
+          this.hidePauseMenu();
+          if (this.onExit) {
+            this.onExit();
+          }
+        },
+      },
+    ]);
+
+    // Create layout to center the menu
+    const menuLayout = new LayoutFlex(new Vector(0, 0), viewport);
+    menuLayout.justifyContent = 'center';
+    menuLayout.alignItems = 'center';
+    menuLayout.addChild(menu);
+
+    this.pauseMenu = menuLayout;
+    this.addChild(this.pauseMenu, MENU_DEPTH);
+  }
+
+  private hidePauseMenu(): void {
+    if (!this.isPaused || !this.pauseMenu) return;
+
+    this.isPaused = false;
+    this.removeChild(this.pauseMenu);
+    this.pauseMenu = undefined;
+
+    // Show UI layout again
+    if (this.uiLayout) {
+      this.uiLayout.isVisible = true;
+    }
+  }
+
+  private showWinMenu(): void {
+    if (this.hasWon) return;
+
+    this.hasWon = true;
+
+    // Hide UI layout
+    if (this.uiLayout) {
+      this.uiLayout.isVisible = false;
+    }
+
+    const viewport = GlobalContext.get<Vector>('viewport');
+
+    // Create semi-transparent overlay
+    const overlay = new Node2D();
+    overlay.fillColor = 'rgba(0, 0, 0, 0.5)';
+
+    const buttons: MenuItem[] = [];
+
+    // Add Next level button to trigger onWin callback
+    if (this.onWin) {
+      buttons.push({
+        label: 'Next level',
+        action: () => {
+          if (this.onWin) {
+            this.onWin();
+          }
+        },
+      });
+    }
+
+    // Add Exit button
+    buttons.push({
+      label: 'Exit',
+      action: () => {
+        if (this.onExit) {
+          this.onExit();
+        }
+      },
+    });
+
+    // Create win menu with celebration message
+    const menu = new MainMenu(new Vector(0, 0), buttons);
+
+    // Create layout to center the menu
+    const menuLayout = new LayoutFlex(new Vector(0, 0), viewport);
+    menuLayout.justifyContent = 'center';
+    menuLayout.alignItems = 'center';
+    menuLayout.addChild(menu);
+
+    this.winMenu = menuLayout;
+    this.addChild(this.winMenu, MENU_DEPTH);
   }
 }

@@ -3,8 +3,8 @@ import ElementAddedEvent from './ElementAddedEvent';
 import ElementRemovedEvent from './ElementRemovedEvent';
 import EventEmitter from './EventEmitter';
 
-interface ZSortedElement {
-  element: Element;
+export interface ZSortedElement<T = Element> {
+  element: T;
   depth: number;
 }
 

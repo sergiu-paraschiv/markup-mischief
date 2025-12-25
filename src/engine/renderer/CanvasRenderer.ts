@@ -331,7 +331,11 @@ export default class CanvasRenderer implements IRenderer {
       context.restore();
     } else {
       // Check if we actually have rectangle clipping to apply
-      const masks = clipRegion ? (Array.isArray(clipRegion) ? clipRegion : [clipRegion]) : [];
+      const masks = clipRegion
+        ? Array.isArray(clipRegion)
+          ? clipRegion
+          : [clipRegion]
+        : [];
       const rectangles = masks.filter(
         (mask): mask is ClipRegion => !isCanvasItemClipMask(mask)
       );

@@ -109,7 +109,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
                 levelId,
                 () => {
                   // onExit: return to level selector
-                  engine.loadScene(levelsScene);
+                  engine.loadScene(mainMenuScene);
                 },
                 hasNextLevel
                   ? () => {

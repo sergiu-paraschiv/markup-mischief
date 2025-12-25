@@ -70,7 +70,7 @@ export default class Debugger extends CanvasItem {
       this.previousScene.removeChild(this);
     }
 
-    scene.addChild(this, 999);
+    scene.addChild(this, 99999);
     this.previousScene = scene;
   }
 

@@ -8,7 +8,7 @@ function traverseChildren(
   const children = depthSorted ? node.depthSortedChildren : node.children;
   for (const childNode of children) {
     action(childNode);
-    traverseChildren(childNode, action, depthSorted);
+    traverseChildren(childNode, action);
   }
 }
 
