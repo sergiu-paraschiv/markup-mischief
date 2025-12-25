@@ -78,8 +78,25 @@ export default class CanvasRenderer implements IRenderer {
     return masks.some(mask => isCanvasItemClipMask(mask));
   }
 
+  private createTempCanvas(
+    width: number,
+    height: number
+  ): {
+    canvas: OffscreenCanvas;
+    context: OffscreenCanvasRenderingContext2D;
+  } {
+    const canvas = new OffscreenCanvas(width, height);
+    const context = canvas.getContext('2d');
+
+    if (!context) {
+      throw new Error('Failed to get 2D context for temporary canvas');
+    }
+
+    return { canvas, context };
+  }
+
   private applyRectangleClips(
-    context: CanvasRenderingContext2D,
+    context: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
     clipRegion: ClipMask | ClipMask[] | undefined
   ) {
     if (!clipRegion) return;
@@ -99,10 +116,10 @@ export default class CanvasRenderer implements IRenderer {
   }
 
   private applyCanvasItemClipMasks(
-    canvas: HTMLCanvasElement,
+    canvas: CanvasImageSource,
     clipRegion: ClipMask | ClipMask[] | undefined,
     bounds: { x: number; y: number; width: number; height: number }
-  ): HTMLCanvasElement {
+  ): CanvasImageSource {
     if (!clipRegion || !this.hasCanvasItemClipMask(clipRegion)) {
       return canvas;
     }
@@ -115,14 +132,10 @@ export default class CanvasRenderer implements IRenderer {
     }
 
     // Create a mask canvas
-    const maskCanvas = document.createElement('canvas');
-    maskCanvas.width = bounds.width;
-    maskCanvas.height = bounds.height;
-    const maskContext = maskCanvas.getContext('2d');
-
-    if (!maskContext) {
-      return canvas;
-    }
+    const { canvas: maskCanvas, context: maskContext } = this.createTempCanvas(
+      bounds.width,
+      bounds.height
+    );
 
     // Render all CanvasItem masks onto the mask canvas
     // We need to translate the entire mask canvas to account for the bounds offset
@@ -140,14 +153,8 @@ export default class CanvasRenderer implements IRenderer {
     maskContext.restore();
 
     // Create result canvas
-    const resultCanvas = document.createElement('canvas');
-    resultCanvas.width = bounds.width;
-    resultCanvas.height = bounds.height;
-    const resultContext = resultCanvas.getContext('2d');
-
-    if (!resultContext) {
-      return canvas;
-    }
+    const { canvas: resultCanvas, context: resultContext } =
+      this.createTempCanvas(bounds.width, bounds.height);
 
     // Draw the original content
     resultContext.drawImage(canvas, 0, 0);
@@ -160,7 +167,7 @@ export default class CanvasRenderer implements IRenderer {
   }
 
   private renderCanvasItem(
-    context: CanvasRenderingContext2D,
+    context: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
     item: CanvasItem
   ): void {
     if (!item.isVisible) {
@@ -189,19 +196,15 @@ export default class CanvasRenderer implements IRenderer {
     width: number,
     height: number,
     fillColor: string | undefined
-  ): HTMLCanvasElement | null {
+  ): CanvasImageSource | null {
     if (!fillColor) {
       return null;
     }
 
-    const tempCanvas = document.createElement('canvas');
-    tempCanvas.width = width;
-    tempCanvas.height = height;
-    const tempContext = tempCanvas.getContext('2d');
-
-    if (!tempContext) {
-      return null;
-    }
+    const { canvas: tempCanvas, context: tempContext } = this.createTempCanvas(
+      width,
+      height
+    );
 
     // Draw the image
     tempContext.drawImage(imageSource, 0, 0);
@@ -214,121 +217,35 @@ export default class CanvasRenderer implements IRenderer {
     return tempCanvas;
   }
 
-  private drawSprite(context: CanvasRenderingContext2D, sprite: Sprite) {
-    const texture = sprite.texture;
-    const position = sprite.position;
-    const opacity = sprite.opacity;
-    const fillColor = sprite.fillColor;
-    const clipRegion = sprite.clipRegion;
-
-    const needsTempCanvas = this.hasCanvasItemClipMask(clipRegion);
-
-    if (needsTempCanvas) {
-      // Draw to temporary canvas for texture mask clipping
-      const tempCanvas = document.createElement('canvas');
-      tempCanvas.width = texture.width;
-      tempCanvas.height = texture.height;
-      const tempContext = tempCanvas.getContext('2d');
-
-      if (!tempContext) return;
-
-      const filledTexture = this.applyFillColorToTexture(
-        texture.data,
-        texture.width,
-        texture.height,
-        fillColor
-      );
-
-      tempContext.drawImage(filledTexture || texture.data, 0, 0);
-
-      // Apply CanvasItem masks
-      const maskedCanvas = this.applyCanvasItemClipMasks(
-        tempCanvas,
-        clipRegion,
-        {
-          x: Math.floor(position.x),
-          y: Math.floor(position.y),
-          width: texture.width,
-          height: texture.height,
-        }
-      );
-
-      context.save();
-      this.applyRectangleClips(context, clipRegion);
-
-      if (opacity < 1.0) {
-        context.globalAlpha = opacity;
-      }
-
-      context.drawImage(
-        maskedCanvas,
-        Math.floor(position.x),
-        Math.floor(position.y)
-      );
-
-      context.restore();
-    } else {
-      // Original path with rectangle clipping only
-      context.save();
-
-      this.applyRectangleClips(context, clipRegion);
-
-      if (opacity < 1.0) {
-        context.globalAlpha = opacity;
-      }
-
-      const filledTexture = this.applyFillColorToTexture(
-        texture.data,
-        texture.width,
-        texture.height,
-        fillColor
-      );
-
-      context.drawImage(
-        filledTexture || texture.data,
-        Math.floor(position.x),
-        Math.floor(position.y)
-      );
-
-      context.restore();
-    }
-  }
-
-  private drawAnimatedSprite(
-    context: CanvasRenderingContext2D,
-    sprite: AnimatedSprite
+  private drawTextureWithTransforms(
+    context: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
+    textureData: CanvasImageSource,
+    position: Vector,
+    width: number,
+    height: number,
+    opacity: number,
+    fillColor: string | undefined,
+    clipRegion: ClipMask | ClipMask[] | undefined,
+    flipH = false,
+    flipV = false
   ) {
-    const frame = sprite.currentFrame;
-    if (!frame) return;
+    const needsCanvasItemMask = this.hasCanvasItemClipMask(clipRegion);
 
-    const texture = frame.texture;
-    const position = sprite.position;
-    const opacity = sprite.opacity;
-    const fillColor = sprite.fillColor;
-    const clipRegion = sprite.clipRegion;
-    const flipH = sprite.flipH;
-    const flipV = sprite.flipV;
+    if (needsCanvasItemMask) {
+      // Path with CanvasItem mask clipping: render to temp canvas first
+      const { canvas: tempCanvas, context: tempContext } =
+        this.createTempCanvas(width, height);
 
-    const needsTempCanvas = this.hasCanvasItemClipMask(clipRegion);
-
-    if (needsTempCanvas) {
-      // Draw to temporary canvas for texture mask clipping
-      const tempCanvas = document.createElement('canvas');
-      tempCanvas.width = texture.width;
-      tempCanvas.height = texture.height;
-      const tempContext = tempCanvas.getContext('2d');
-
-      if (!tempContext) return;
-
+      // Apply fill color and draw to temp canvas
       const filledTexture = this.applyFillColorToTexture(
-        texture.data,
-        texture.width,
-        texture.height,
+        textureData,
+        width,
+        height,
         fillColor
       );
+      const imageSource = filledTexture || textureData;
 
-      const imageSource = filledTexture || texture.data;
-
+      // Apply flip transforms if needed
       if (flipH || flipV) {
         const scaleX = flipH ? -1 : 1;
         const scaleY = flipV ? -1 : 1;
@@ -337,8 +254,8 @@ export default class CanvasRenderer implements IRenderer {
           imageSource,
           scaleX * 0,
           0,
-          scaleX * texture.width,
-          texture.height
+          scaleX * width,
+          height
         );
       } else {
         tempContext.drawImage(imageSource, 0, 0);
@@ -351,11 +268,12 @@ export default class CanvasRenderer implements IRenderer {
         {
           x: Math.floor(position.x),
           y: Math.floor(position.y),
-          width: texture.width,
-          height: texture.height,
+          width,
+          height,
         }
       );
 
+      // Draw to final context with opacity and rectangle clips
       context.save();
       this.applyRectangleClips(context, clipRegion);
 
@@ -371,7 +289,7 @@ export default class CanvasRenderer implements IRenderer {
 
       context.restore();
     } else {
-      // Original path with rectangle clipping only
+      // Fast path with rectangle clipping only
       context.save();
 
       this.applyRectangleClips(context, clipRegion);
@@ -380,15 +298,16 @@ export default class CanvasRenderer implements IRenderer {
         context.globalAlpha = opacity;
       }
 
+      // Apply fill color
       const filledTexture = this.applyFillColorToTexture(
-        texture.data,
-        texture.width,
-        texture.height,
+        textureData,
+        width,
+        height,
         fillColor
       );
+      const imageSource = filledTexture || textureData;
 
-      const imageSource = filledTexture || texture.data;
-
+      // Apply flip transforms and draw
       if (flipH || flipV) {
         const scaleX = flipH ? -1 : 1;
         const scaleY = flipV ? -1 : 1;
@@ -397,8 +316,8 @@ export default class CanvasRenderer implements IRenderer {
           imageSource,
           scaleX * Math.floor(position.x),
           Math.floor(position.y),
-          scaleX * texture.width,
-          texture.height
+          scaleX * width,
+          height
         );
       } else {
         context.drawImage(
@@ -410,6 +329,45 @@ export default class CanvasRenderer implements IRenderer {
 
       context.restore();
     }
+  }
+
+  private drawSprite(
+    context: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
+    sprite: Sprite
+  ) {
+    const texture = sprite.texture;
+    this.drawTextureWithTransforms(
+      context,
+      texture.data,
+      sprite.position,
+      texture.width,
+      texture.height,
+      sprite.opacity,
+      sprite.fillColor,
+      sprite.clipRegion
+    );
+  }
+
+  private drawAnimatedSprite(
+    context: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
+    sprite: AnimatedSprite
+  ) {
+    const frame = sprite.currentFrame;
+    if (!frame) return;
+
+    const texture = frame.texture;
+    this.drawTextureWithTransforms(
+      context,
+      texture.data,
+      sprite.position,
+      texture.width,
+      texture.height,
+      sprite.opacity,
+      sprite.fillColor,
+      sprite.clipRegion,
+      sprite.flipH,
+      sprite.flipV
+    );
   }
 
   private render(currentTime: number) {

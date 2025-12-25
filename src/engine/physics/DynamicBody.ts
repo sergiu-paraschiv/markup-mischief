@@ -180,7 +180,10 @@ export default class DynamicBody extends CollisionObject {
     return undefined;
   }
 
-  checkAllFutureIntersections(velocity: Vector, colliderCheckFn?: ColliderCheckFn) {
+  checkAllFutureIntersections(
+    velocity: Vector,
+    colliderCheckFn?: ColliderCheckFn
+  ) {
     const collisionObjects = Query.childrenByType(
       CollisionObject,
       this.rootElement

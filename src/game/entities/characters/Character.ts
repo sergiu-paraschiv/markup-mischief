@@ -1,8 +1,7 @@
-import { Vector, GlobalContext, Query } from '@engine/core';
-import { AnimatedSprite, Node2D, SpriteMash, Sprite } from '@engine/elements';
+import { Vector, GlobalContext } from '@engine/core';
+import { AnimatedSprite, Node2D } from '@engine/elements';
 import CharacterController from './CharacterController';
 import { AssetsMap } from '@engine/loaders';
-import { TickEvent } from '@engine/renderer';
 
 enum Stance {
   IDLE = 'Idle',
