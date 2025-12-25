@@ -10,9 +10,13 @@ import {
 export default class MouseInteractionManager extends EventEmitter {
   private isHovered = false;
 
-  constructor(private readonly target: Node2D) {
+  constructor(private readonly _target: Node2D) {
     super();
     this.setupListeners();
+  }
+
+  get target(): Node2D {
+    return this._target;
   }
 
   private setupListeners(): void {

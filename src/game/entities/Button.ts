@@ -1,4 +1,4 @@
-import { Vector, GlobalContext, Event } from '@engine/core';
+import { Vector, GlobalContext } from '@engine/core';
 import { AssetsMap } from '@engine/loaders';
 import { Node2D, Sprite } from '@engine/elements';
 import {
@@ -6,7 +6,6 @@ import {
   MouseEnterEvent,
   MouseLeaveEvent,
   MouseClickEvent,
-  CursorManager,
 } from '@engine/input';
 import Text from './Text';
 import Layout3Slice from './Layout3Slice';
@@ -50,34 +49,15 @@ export default class Button extends Node2D {
     this.mouseInteraction.on(MouseClickEvent, this.handleMouseClick.bind(this));
   }
 
-  private handleMouseEnter(event: Event): void {
-    if (!(event instanceof MouseEnterEvent)) return;
-    // Visual feedback for hover - slightly increase opacity
+  private handleMouseEnter(): void {
     this.opacity = 0.8;
-
-    // Change cursor to pointer
-    const cursorManager = GlobalContext.get<CursorManager>('cursorManager');
-    cursorManager.setCursor('pointer');
   }
 
-  private handleMouseLeave(event: Event): void {
-    if (!(event instanceof MouseLeaveEvent)) return;
-    // Reset opacity
+  private handleMouseLeave(): void {
     this.opacity = 1.0;
-
-    // Reset cursor to default
-    const cursorManager = GlobalContext.get<CursorManager>('cursorManager');
-    cursorManager.setCursor('default');
   }
 
-  private handleMouseClick(event: Event): void {
-    if (!(event instanceof MouseClickEvent)) return;
-
-    // Reset cursor to default to prevent it from staying as pointer
-    // if the button action causes scene changes or removes the button
-    const cursorManager = GlobalContext.get<CursorManager>('cursorManager');
-    cursorManager.setCursor('default');
-
+  private handleMouseClick(): void {
     if (this.action) {
       this.action();
     }

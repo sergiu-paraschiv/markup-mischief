@@ -27,6 +27,11 @@ export default class EventEmitter {
   }
 
   handleEvent(event: Event): void {
+    // Set the source to the EventEmitter that is handling/dispatching this event
+    if (event.source === null) {
+      event.source = this;
+    }
+
     for (const [eventType, handlers] of this._eventHandlers) {
       if (event instanceof eventType) {
         for (const handler of handlers) {
