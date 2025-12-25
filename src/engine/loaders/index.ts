@@ -13,6 +13,8 @@ import AssetsLoader, {
   Char,
   AssetsInfo,
   CharsInfo,
+  LoadingProgress,
+  ProgressCallback,
 } from './AssetsLoader';
 
 export {
@@ -29,6 +31,8 @@ export type {
   AssetsMap,
   CharsInfo,
   CharsMap,
+  LoadingProgress,
+  ProgressCallback,
   AsepriteTextureMetaData,
   AsepriteAnimationMetaData,
 };

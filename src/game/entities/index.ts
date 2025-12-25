@@ -1,3 +1,4 @@
+import LayoutFlex from './LayoutFlex';
 import {
   Character,
   Pointing,
@@ -6,12 +7,14 @@ import {
   CharacterGrabEvent,
   CaptainClownNose,
 } from './characters';
+import Text from './Text';
 import Tag from './Tag';
 import Wall from './Wall';
 import BOARD_DATA from './Board.json';
-import BOARD2_DATA from './Board2.json';
 
 export {
+  LayoutFlex,
+  Text,
   Character,
   Pointing,
   CharacterDropEvent,
@@ -21,5 +24,4 @@ export {
   Tag,
   Wall,
   BOARD_DATA,
-  BOARD2_DATA,
 };

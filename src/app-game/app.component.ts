@@ -6,12 +6,12 @@ import {
   OnDestroy,
 } from '@angular/core';
 import { Engine } from '@engine';
-import { Vector } from '@engine/core';
+import { GlobalContext, Vector } from '@engine/core';
 import { Keyboard, Mouse } from '@engine/input';
 import { CanvasRenderer } from '@engine/renderer';
 import { PhysicsSimulation } from '@engine/physics';
 import { Debugger } from '@debugger';
-import { GameLevelScene } from '@game/scenes';
+import { GameLevelScene, LoadingScene } from '@game/scenes';
 
 import ASSETS from '../assets.json';
 
@@ -28,6 +28,10 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   private renderer?: CanvasRenderer;
   private viewport = new Vector(512, 384);
   private resizeListener?: () => void;
+
+  constructor() {
+    GlobalContext.set('viewport', this.viewport);
+  }
 
   async ngAfterViewInit(): Promise<void> {
     const gameElement = this.gameElement?.nativeElement;
@@ -64,14 +68,21 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     dbgr.attachTo(engine);
     dbgr.enableFps = true;
     // dbgr.enableGridLines = true;
-    dbgr.enablePhysicsDebugLines = true;
+    // dbgr.enablePhysicsDebugLines = true;
     // dbgr.enableHoverHighlight = true;
 
-    // engine.loadScene(new LoadingScene(ASSETS.loading));
-
-    engine.loadScene(new GameLevelScene(ASSETS.dynamic, ASSETS.chars));
-
     engine.start(200, 200);
+
+    const loadingScene = new LoadingScene(
+      ASSETS.loading,
+      ASSETS.chars['Chars']
+    );
+    engine.loadScene(loadingScene);
+
+    await loadingScene.run();
+    await loadingScene.loadAssets(ASSETS.dynamic, ASSETS.chars);
+
+    engine.loadScene(new GameLevelScene(1));
   }
 
   ngOnDestroy(): void {

@@ -23,13 +23,39 @@ export enum Char {
   UNKNOWN = '__unknown__',
 }
 
+export interface LoadingProgress {
+  current: number;
+  total: number;
+  percentage: number;
+  currentFile: string;
+}
+
+export type ProgressCallback = (progress: LoadingProgress) => void;
+
 export default class AssetsLoader {
   public assets: AssetsMap = {};
   public chars: CharsMap = {};
 
-  async init(assetsInfo: AssetsInfo, charsInfo?: CharsInfo) {
+  async init(
+    assetsInfo: AssetsInfo,
+    charsInfo?: CharsInfo,
+    onProgress?: ProgressCallback
+  ) {
+    const totalAssets = Object.keys(assetsInfo).length;
+    const totalChars = charsInfo ? Object.keys(charsInfo).length : 0;
+    const totalFiles = totalAssets + totalChars;
+    let currentFile = 0;
+
     for (const fileName in assetsInfo) {
       const filePath = assetsInfo[fileName];
+
+      currentFile++;
+      onProgress?.({
+        current: currentFile,
+        total: totalFiles,
+        percentage: (currentFile / totalFiles) * 100,
+        currentFile: fileName,
+      });
 
       const aseprite = await Aseprite.load(filePath);
       aseprite.ignoreLayers(['Grid']);
@@ -53,6 +79,14 @@ export default class AssetsLoader {
     if (charsInfo) {
       for (const fileName in charsInfo) {
         const filePath = charsInfo[fileName].path;
+
+        currentFile++;
+        onProgress?.({
+          current: currentFile,
+          total: totalFiles,
+          percentage: (currentFile / totalFiles) * 100,
+          currentFile: fileName,
+        });
 
         const aseprite = await Aseprite.load(filePath);
         aseprite.ignoreLayers(['Grid']);

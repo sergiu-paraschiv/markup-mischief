@@ -1,7 +1,6 @@
-import { GlobalContext, Query, Scene, Vector } from '@engine/core';
+import { Query, Scene, Vector } from '@engine/core';
 import { SpriteMash, SpriteMashData } from '@engine/elements';
 import { StaticBody } from '@engine/physics';
-import { AssetsLoader, AssetsInfo, CharsInfo } from '@engine/loaders';
 import {
   BOARD_DATA,
   PinkStar,
@@ -19,7 +18,7 @@ import LEVELS_DATA from './levels.json';
 export default class GameLevelScene extends Scene {
   private currentLevel: LevelData;
 
-  constructor(assetsInfo: AssetsInfo, charsInfo: CharsInfo, levelId = 1) {
+  constructor(levelId = 1) {
     super();
 
     const levelsData = LEVELS_DATA as LevelsData;
@@ -30,16 +29,10 @@ export default class GameLevelScene extends Scene {
     }
 
     this.currentLevel = level;
-    this.run(assetsInfo, charsInfo);
+    this.run();
   }
 
-  private async run(assetsInfo: AssetsInfo, charsInfo: CharsInfo) {
-    const assetsLoader = new AssetsLoader();
-    await assetsLoader.init(assetsInfo, charsInfo);
-
-    GlobalContext.set('assets', assetsLoader.assets);
-    GlobalContext.set('chars', assetsLoader.chars);
-
+  private async run() {
     function makeEdgeWall(position: Vector, size: Vector) {
       const body = new StaticBody(position);
       body.addChild(new Wall(position, size));
