@@ -16,6 +16,21 @@ export default class Text extends Node2D {
     }
   }
 
+  override get fillColor(): string | undefined {
+    return super.fillColor;
+  }
+
+  override set fillColor(color: string | undefined) {
+    super.fillColor = color;
+
+    // Apply color to all existing child sprites
+    for (const child of this.children) {
+      if (child instanceof Sprite) {
+        child.fillColor = color;
+      }
+    }
+  }
+
   private setTextFromTextures(textures: Texture[]): void {
     // Remove all existing children
     const children = [...this.children];

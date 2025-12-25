@@ -97,16 +97,39 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       {
         label: 'HTML Mode',
         action: () => {
+          // Helper function to load a level with proper callbacks
+          const loadLevel = (levelId: number) => {
+            const currentLevelIndex = LEVELS.levels.findIndex(
+              l => l.id === levelId
+            );
+            const hasNextLevel = currentLevelIndex < LEVELS.levels.length - 1;
+
+            engine.loadScene(
+              new GameLevelScene(
+                levelId,
+                () => {
+                  // onExit: return to level selector
+                  engine.loadScene(levelsScene);
+                },
+                hasNextLevel
+                  ? () => {
+                      // onWin: load next level
+                      const nextLevel = LEVELS.levels[currentLevelIndex + 1];
+                      loadLevel(nextLevel.id);
+                    }
+                  : () => {
+                      // onWin (last level): return to level selector
+                      engine.loadScene(levelsScene);
+                    }
+              )
+            );
+          };
+
           // Create level selection menu items from levels.json
           const levelMenuItems = LEVELS.levels.map(level => ({
             label: level.name,
             action: () => {
-              engine.loadScene(
-                new GameLevelScene(level.id, () => {
-                  // Exit level and return to level selector
-                  engine.loadScene(levelsScene);
-                })
-              );
+              loadLevel(level.id);
             },
           }));
 

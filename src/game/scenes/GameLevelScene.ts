@@ -11,7 +11,10 @@ import {
   Tag,
   Wall,
   MainMenu,
+  MenuItem,
   LayoutFlex,
+  Button,
+  Text,
 } from '@game/entities';
 import { TickEvent } from '@engine/renderer';
 import { KeyboardInputEvent, KeyAction } from '@engine/input';
@@ -21,10 +24,16 @@ import LEVELS_DATA from './levels.json';
 export default class GameLevelScene extends Scene {
   private currentLevel: LevelData;
   private onExit?: () => void;
+  private onWin?: () => void;
   private pauseMenu?: Node2D;
+  private winMenu?: Node2D;
+  private menuButton?: Button;
+  private levelNameText?: Text;
+  private uiLayout?: LayoutFlex;
   private isPaused = false;
+  private hasWon = false;
 
-  constructor(levelId = 1, onExit?: () => void) {
+  constructor(levelId = 1, onExit?: () => void, onWin?: () => void) {
     super();
 
     const levelsData = LEVELS_DATA as LevelsData;
@@ -36,6 +45,7 @@ export default class GameLevelScene extends Scene {
 
     this.currentLevel = level;
     this.onExit = onExit;
+    this.onWin = onWin;
 
     // Listen for Escape key to toggle pause menu
     this.on(KeyboardInputEvent, this.handleKeyboardInput.bind(this));
@@ -60,6 +70,11 @@ export default class GameLevelScene extends Scene {
 
     this.isPaused = true;
 
+    // Hide UI layout
+    if (this.uiLayout) {
+      this.uiLayout.isVisible = false;
+    }
+
     const viewport = GlobalContext.get<Vector>('viewport');
 
     // Create semi-transparent overlay
@@ -69,7 +84,7 @@ export default class GameLevelScene extends Scene {
     // Create pause menu
     const menu = new MainMenu(new Vector(0, 0), [
       {
-        label: 'Continue',
+        label: 'Next level',
         action: () => {
           this.hidePauseMenu();
         },
@@ -101,6 +116,64 @@ export default class GameLevelScene extends Scene {
     this.isPaused = false;
     this.removeChild(this.pauseMenu);
     this.pauseMenu = undefined;
+
+    // Show UI layout again
+    if (this.uiLayout) {
+      this.uiLayout.isVisible = true;
+    }
+  }
+
+  private showWinMenu(): void {
+    if (this.hasWon) return;
+
+    this.hasWon = true;
+
+    // Hide UI layout
+    if (this.uiLayout) {
+      this.uiLayout.isVisible = false;
+    }
+
+    const viewport = GlobalContext.get<Vector>('viewport');
+
+    // Create semi-transparent overlay
+    const overlay = new Node2D();
+    overlay.fillColor = 'rgba(0, 0, 0, 0.5)';
+
+    const buttons: MenuItem[] = [];
+
+    // Add Continue button to trigger onWin callback
+    if (this.onWin) {
+      buttons.push({
+        label: 'Continue',
+        action: () => {
+          if (this.onWin) {
+            this.onWin();
+          }
+        },
+      });
+    }
+
+    // Add Exit button
+    buttons.push({
+      label: 'Exit',
+      action: () => {
+        if (this.onExit) {
+          this.onExit();
+        }
+      },
+    });
+
+    // Create win menu with celebration message
+    const menu = new MainMenu(new Vector(0, 0), buttons);
+
+    // Create layout to center the menu
+    const menuLayout = new LayoutFlex(new Vector(0, 0), viewport);
+    menuLayout.justifyContent = 'center';
+    menuLayout.alignItems = 'center';
+    menuLayout.addChild(menu);
+
+    this.winMenu = menuLayout;
+    this.addChild(this.winMenu);
   }
 
   private async run() {
@@ -199,10 +272,12 @@ export default class GameLevelScene extends Scene {
     });
 
     this.on(CharacterDropEvent, event => {
+      if (this.isPaused || this.hasWon) return;
       dropping = event.start;
     });
 
     this.on(CharacterGrabEvent, () => {
+      if (this.isPaused || this.hasWon) return;
       if (grabbedTag) {
         grabbedTag = undefined;
       } else {
@@ -219,11 +294,13 @@ export default class GameLevelScene extends Scene {
     });
 
     this.on(TickEvent, () => {
-      if (grabbedTag) {
+      if (this.isPaused) return;
+
+      if (grabbedTag && !this.hasWon) {
         grabbedTag.position = player.position.add(
           new Vector(player.pointing === Pointing.LEFT ? 24 : 38, 8)
         );
-      } else {
+      } else if (!this.hasWon) {
         const tags = Query.childrenByType(Tag, this);
         tags.sort((a, b) => {
           if (a.position.y > b.position.y) {
@@ -242,11 +319,12 @@ export default class GameLevelScene extends Scene {
         });
 
         const html = tags.map(tag => tag.text).join(' ');
+        console.log(html, this.currentLevel.solution);
         if (html === this.currentLevel.solution) {
-          // TODO: WIN!
           console.log(
             `Level ${this.currentLevel.id} (${this.currentLevel.name}) completed!`
           );
+          this.showWinMenu();
         }
       }
 
@@ -274,5 +352,36 @@ export default class GameLevelScene extends Scene {
         player.ghostGraphics.isVisible = false;
       }
     });
+
+    // Create UI layout in bottom-right corner
+    const viewport = GlobalContext.get<Vector>('viewport');
+
+    // Create level name text
+    this.levelNameText = new Text(this.currentLevel.name);
+    this.levelNameText.fillColor = '#639d6d';
+
+    // Create menu button
+    const menuButtonText = new Text('Menu');
+    this.menuButton = new Button(new Vector(0, 0), menuButtonText);
+    this.menuButton.action = () => {
+      this.showPauseMenu();
+    };
+
+    // Create flex layout container
+    this.uiLayout = new LayoutFlex(
+      new Vector(0, viewport.height - 60),
+      new Vector(viewport.width, 60)
+    );
+    this.uiLayout.flexDirection = 'column';
+    this.uiLayout.justifyContent = 'flex-end';
+    this.uiLayout.alignItems = 'flex-end';
+    this.uiLayout.gap = 4;
+    this.uiLayout.padding = new Vector(8, 8);
+
+    // Add elements to layout
+    this.uiLayout.addChild(this.levelNameText);
+    this.uiLayout.addChild(this.menuButton);
+
+    this.addChild(this.uiLayout);
   }
 }

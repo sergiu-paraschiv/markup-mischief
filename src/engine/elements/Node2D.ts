@@ -25,7 +25,7 @@ export default class Node2D extends CanvasItem {
   private _position: Vector;
   private _translation: Vector;
   private _opacity = 1.0;
-  public fillColor: string | undefined = undefined;
+  private _fillColor: string | undefined = undefined;
   public clipRegion: ClipMask | ClipMask[] | undefined = undefined;
 
   constructor(position?: Vector, children?: Element[]) {
@@ -63,6 +63,14 @@ export default class Node2D extends CanvasItem {
 
   set translation(newTranslation: Vector) {
     this._translation = newTranslation;
+  }
+
+  get fillColor(): string | undefined {
+    return this._fillColor;
+  }
+
+  set fillColor(color: string | undefined) {
+    this._fillColor = color;
   }
 
   // eslint-disable-next-line @typescript-eslint/class-literal-property-style

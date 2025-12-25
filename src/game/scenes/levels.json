@@ -42,31 +42,31 @@
       "tags": [
         {
           "position": {
-            "x": 50,
+            "x": 280,
             "y": 96
           },
-          "text": "<strong>"
+          "text": "text"
+        },
+        {
+          "position": {
+            "x": 50,
+            "y": 160
+          },
+          "text": "</strong>"
         },
         {
           "position": {
             "x": 200,
-            "y": 160
-          },
-          "text": "bold"
-        },
-        {
-          "position": {
-            "x": 280,
             "y": 224
           },
-          "text": "text"
+          "text": "bold"
         },
         {
           "position": {
             "x": 150,
             "y": 288
           },
-          "text": "</strong>"
+          "text": "<strong>"
         }
       ],
       "solution": "<strong> bold text </strong>"
@@ -81,38 +81,38 @@
       "tags": [
         {
           "position": {
-            "x": 80,
-            "y": 128
+            "x": 400,
+            "y": 96
           },
-          "text": "<p>"
+          "text": "</p>"
         },
         {
           "position": {
             "x": 160,
-            "y": 96
-          },
-          "text": "<em>"
-        },
-        {
-          "position": {
-            "x": 240,
-            "y": 192
+            "y": 128
           },
           "text": "nested"
         },
         {
           "position": {
-            "x": 320,
+            "x": 240,
             "y": 160
           },
           "text": "</em>"
         },
         {
           "position": {
-            "x": 400,
+            "x": 80,
+            "y": 192
+          },
+          "text": "<em>"
+        },
+        {
+          "position": {
+            "x": 320,
             "y": 224
           },
-          "text": "</p>"
+          "text": "<p>"
         }
       ],
       "solution": "<p> <em> nested </em> </p>"
@@ -127,31 +127,31 @@
       "tags": [
         {
           "position": {
-            "x": 100,
-            "y": 160
-          },
-          "text": "<a>"
-        },
-        {
-          "position": {
-            "x": 180,
-            "y": 224
-          },
-          "text": "click"
-        },
-        {
-          "position": {
             "x": 260,
-            "y": 192
+            "y": 160
           },
           "text": "here"
         },
         {
           "position": {
             "x": 340,
-            "y": 256
+            "y": 192
           },
           "text": "</a>"
+        },
+        {
+          "position": {
+            "x": 100,
+            "y": 224
+          },
+          "text": "<a>"
+        },
+        {
+          "position": {
+            "x": 180,
+            "y": 256
+          },
+          "text": "click"
         }
       ],
       "solution": "<a> click here </a>"

@@ -16,6 +16,7 @@ export default class LayoutFlex extends Node2D {
   public justifyContent: JustifyContent = 'flex-start';
   public alignItems: AlignItems = 'flex-start';
   public gap = 0;
+  public padding = new Vector(0, 0);
 
   constructor(position: Vector, size: Vector) {
     super(position);
@@ -48,8 +49,13 @@ export default class LayoutFlex extends Node2D {
     if (children.length === 0) return;
 
     const isRow = this.flexDirection === 'row';
-    const containerSize = isRow ? this._size.width : this._size.height;
-    const crossSize = isRow ? this._size.height : this._size.width;
+    // Account for padding on both sides (x for width, y for height)
+    const paddingMain = isRow ? this.padding.x : this.padding.y;
+    const paddingCross = isRow ? this.padding.y : this.padding.x;
+    const containerSize =
+      (isRow ? this._size.width : this._size.height) - paddingMain * 2;
+    const crossSize =
+      (isRow ? this._size.height : this._size.width) - paddingCross * 2;
 
     // Calculate total size of children along main axis
     let totalChildSize = 0;
@@ -66,11 +72,12 @@ export default class LayoutFlex extends Node2D {
     totalChildSize += totalGap;
 
     // Calculate starting position based on justifyContent
-    let mainAxisPosition = this.calculateJustifyStart(
-      containerSize,
-      totalChildSize,
-      children.length
-    );
+    let mainAxisPosition =
+      this.calculateJustifyStart(
+        containerSize,
+        totalChildSize,
+        children.length
+      ) + paddingMain; // Add padding offset
     const spacing = this.calculateSpacing(
       containerSize,
       totalChildSize,
@@ -84,10 +91,9 @@ export default class LayoutFlex extends Node2D {
       const childCrossSize = isRow ? child.height : child.width;
 
       // Calculate cross axis position based on alignItems
-      const crossAxisPosition = this.calculateCrossAxisPosition(
-        crossSize,
-        childCrossSize
-      );
+      const crossAxisPosition =
+        this.calculateCrossAxisPosition(crossSize, childCrossSize) +
+        paddingCross; // Add padding offset
 
       // Set child position
       if (isRow) {
