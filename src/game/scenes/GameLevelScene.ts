@@ -15,6 +15,7 @@ import {
   LayoutFlex,
   Button,
   Text,
+  HtmlPreview,
 } from '@game/entities';
 import { TickEvent } from '@engine/renderer';
 import { KeyboardInputEvent, KeyAction } from '@engine/input';
@@ -35,6 +36,8 @@ export default class GameLevelScene extends Scene {
   private menuButton?: Button;
   private levelNameText?: Text;
   private uiLayout?: LayoutFlex;
+  private htmlPreview?: HtmlPreview;
+  private targetLayout?: LayoutFlex;
   private isPaused = false;
   private hasWon = false;
 
@@ -248,7 +251,6 @@ export default class GameLevelScene extends Scene {
     this.uiLayout.flexDirection = 'column';
     this.uiLayout.justifyContent = 'flex-end';
     this.uiLayout.alignItems = 'flex-end';
-    this.uiLayout.gap = 4;
     this.uiLayout.padding = new Vector(8, 8);
 
     // Add elements to layout
@@ -256,6 +258,23 @@ export default class GameLevelScene extends Scene {
     this.uiLayout.addChild(this.levelNameText);
 
     this.addChild(this.uiLayout);
+
+    // Create HTML preview for target solution in top-right corner
+    this.htmlPreview = new HtmlPreview(
+      new Vector(0, 0),
+      this.currentLevel.solution
+    );
+
+    // Create layout for target preview in top-right
+    this.targetLayout = new LayoutFlex(new Vector(0, 0), viewport);
+    this.targetLayout.flexDirection = 'column';
+    this.targetLayout.justifyContent = 'flex-start';
+    this.targetLayout.alignItems = 'flex-end';
+    this.targetLayout.padding = new Vector(8, 8);
+
+    this.targetLayout.addChild(this.htmlPreview);
+
+    this.addChild(this.targetLayout);
   }
 
   private handleKeyboardInput(event: Event): void {
