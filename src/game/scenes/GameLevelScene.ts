@@ -1,5 +1,5 @@
-import { Query, Scene, Vector, Event } from '@engine/core';
-import { SpriteMash, SpriteMashData } from '@engine/elements';
+import { Query, Scene, Vector, Event, GlobalContext } from '@engine/core';
+import { SpriteMash, SpriteMashData, Node2D } from '@engine/elements';
 import { StaticBody } from '@engine/physics';
 import {
   BOARD_DATA,
@@ -10,6 +10,8 @@ import {
   Pointing,
   Tag,
   Wall,
+  MainMenu,
+  LayoutFlex,
 } from '@game/entities';
 import { TickEvent } from '@engine/renderer';
 import { KeyboardInputEvent, KeyAction } from '@engine/input';
@@ -19,6 +21,8 @@ import LEVELS_DATA from './levels.json';
 export default class GameLevelScene extends Scene {
   private currentLevel: LevelData;
   private onExit?: () => void;
+  private pauseMenu?: Node2D;
+  private isPaused = false;
 
   constructor(levelId = 1, onExit?: () => void) {
     super();
@@ -33,7 +37,7 @@ export default class GameLevelScene extends Scene {
     this.currentLevel = level;
     this.onExit = onExit;
 
-    // Listen for Escape key to exit level
+    // Listen for Escape key to toggle pause menu
     this.on(KeyboardInputEvent, this.handleKeyboardInput.bind(this));
 
     this.run();
@@ -43,10 +47,60 @@ export default class GameLevelScene extends Scene {
     if (!(event instanceof KeyboardInputEvent)) return;
 
     if (event.action === KeyAction.DOWN && event.key === 'Escape') {
-      if (this.onExit) {
-        this.onExit();
+      if (this.isPaused) {
+        this.hidePauseMenu();
+      } else {
+        this.showPauseMenu();
       }
     }
+  }
+
+  private showPauseMenu(): void {
+    if (this.isPaused) return;
+
+    this.isPaused = true;
+
+    const viewport = GlobalContext.get<Vector>('viewport');
+
+    // Create semi-transparent overlay
+    const overlay = new Node2D();
+    overlay.fillColor = 'rgba(0, 0, 0, 0.5)';
+
+    // Create pause menu
+    const menu = new MainMenu(new Vector(0, 0), [
+      {
+        label: 'Continue',
+        action: () => {
+          this.hidePauseMenu();
+        },
+      },
+      {
+        label: 'Exit',
+        action: () => {
+          this.hidePauseMenu();
+          if (this.onExit) {
+            this.onExit();
+          }
+        },
+      },
+    ]);
+
+    // Create layout to center the menu
+    const menuLayout = new LayoutFlex(new Vector(0, 0), viewport);
+    menuLayout.justifyContent = 'center';
+    menuLayout.alignItems = 'center';
+    menuLayout.addChild(menu);
+
+    this.pauseMenu = menuLayout;
+    this.addChild(this.pauseMenu);
+  }
+
+  private hidePauseMenu(): void {
+    if (!this.isPaused || !this.pauseMenu) return;
+
+    this.isPaused = false;
+    this.removeChild(this.pauseMenu);
+    this.pauseMenu = undefined;
   }
 
   private async run() {

@@ -11,6 +11,7 @@ import Text from './Text';
 import Tag from './Tag';
 import Button from './Button';
 import Wall from './Wall';
+import MainMenu, { MenuItem } from './MainMenu';
 import BOARD_DATA from './Board.json';
 
 export {
@@ -25,5 +26,8 @@ export {
   Button,
   Tag,
   Wall,
+  MainMenu,
   BOARD_DATA,
 };
+
+export type { MenuItem };
