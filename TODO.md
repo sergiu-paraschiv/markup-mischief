@@ -10,8 +10,9 @@
 [x] publish to GH Pages
 [x] GUI: (1) start game -> pick level -> win screen, (2) in-game exit, (3) rendered view / rendered solution view
 [x] more levels
-[ ] save progression somewhere
-[ ] mobile on-screen buttons
+[x] save progression somewhere
 [ ] "CSS mode"
+[ ] add all levels
+[ ] mobile on-screen buttons
 [ ] use Dust Particles aseprite for character animations
 [ ] sound

@@ -12,6 +12,7 @@ import { LevelBuilder } from './level/LevelBuilder';
 import { WinConditionChecker } from './level/WinConditionChecker';
 import { PlayerTagInteraction } from './level/PlayerTagInteraction';
 import { GameUIManager } from './level/GameUIManager';
+import { LevelProgressionManager } from '@game/progression';
 
 /**
  * Main game level scene
@@ -21,6 +22,7 @@ export default class GameLevelScene extends Scene {
   private currentLevel: LevelData;
   private onExit?: () => void;
   private onWin?: () => void;
+  private hasNextLevel: boolean;
   private dropping = false;
   private hasWon = false;
 
@@ -29,7 +31,12 @@ export default class GameLevelScene extends Scene {
   private winChecker: WinConditionChecker | undefined;
   private tagInteraction: PlayerTagInteraction | undefined;
 
-  constructor(levelId = 1, onExit?: () => void, onWin?: () => void) {
+  constructor(
+    levelId = 1,
+    onExit?: () => void,
+    onWin?: () => void,
+    hasNextLevel = false
+  ) {
     super();
 
     const levelsData = LEVELS_DATA as LevelsData;
@@ -42,6 +49,7 @@ export default class GameLevelScene extends Scene {
     this.currentLevel = level;
     this.onExit = onExit;
     this.onWin = onWin;
+    this.hasNextLevel = hasNextLevel;
 
     this.run();
   }
@@ -58,7 +66,8 @@ export default class GameLevelScene extends Scene {
       this,
       this.currentLevel,
       this.onExit,
-      this.onWin
+      this.onWin,
+      this.hasNextLevel
     );
     this.uiManager.initialize();
 
@@ -95,6 +104,11 @@ export default class GameLevelScene extends Scene {
 
         if (!isTagGrabbed && this.winChecker.isCorrect()) {
           this.hasWon = true;
+
+          // Advance progression immediately when level is won
+          const progression = LevelProgressionManager.getInstance();
+          progression.advanceToNextLevel();
+
           this.uiManager?.showWinMenu();
         }
       }

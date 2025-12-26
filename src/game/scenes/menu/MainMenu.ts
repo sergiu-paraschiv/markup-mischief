@@ -35,24 +35,38 @@ export default class MainMenu extends Node2D {
       backButton.action = backAction;
     }
 
-    // Create menu buttons and measure them
-    const buttons: Button[] = [];
+    // Create menu buttons/text items and measure them
+    const menuElements: Node2D[] = [];
     let maxWidth = 0;
     let totalHeight = 0;
     const gap = 8;
 
     for (const menuItem of menuItems) {
-      const buttonText = new Text(menuItem.label);
-      const button = new Button(new Vector(0, 0), buttonText, menuItem.variant);
-      button.action = menuItem.action;
-      buttons.push(button);
+      let element: Node2D;
 
-      maxWidth = Math.max(maxWidth, button.width);
-      totalHeight += button.height;
+      if (menuItem.action) {
+        // Create button if action is provided
+        const buttonText = new Text(menuItem.label);
+        const button = new Button(
+          new Vector(0, 0),
+          buttonText,
+          menuItem.variant
+        );
+        button.action = menuItem.action;
+        element = button;
+      } else {
+        // Create text-only display if no action
+        element = new Text(menuItem.label, 0);
+      }
+
+      menuElements.push(element);
+
+      maxWidth = Math.max(maxWidth, element.width);
+      totalHeight += element.height;
     }
 
-    // Add gap space between buttons
-    totalHeight += gap * (buttons.length - 1);
+    // Add gap space between elements
+    totalHeight += gap * (menuElements.length - 1);
 
     // Create title with margin
     const titleText = new Text('Markup Mischief', 1, 'hero');
@@ -69,9 +83,8 @@ export default class MainMenu extends Node2D {
     this.menuLayout.alignItems = 'center';
     this.menuLayout.gap = gap;
 
-    // Add buttons to the layout
-    for (const button of buttons) {
-      this.menuLayout.addChild(button);
+    for (const element of menuElements) {
+      this.menuLayout.addChild(element);
     }
 
     // Wrap menu layout in a box with padding

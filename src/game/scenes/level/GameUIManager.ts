@@ -33,17 +33,20 @@ export class GameUIManager {
   // Callbacks
   private onExit?: () => void;
   private onWin?: () => void;
+  private hasNextLevel: boolean;
 
   constructor(
     scene: Scene,
     levelData: LevelData,
     onExit?: () => void,
-    onWin?: () => void
+    onWin?: () => void,
+    hasNextLevel = false
   ) {
     this.scene = scene;
     this.levelData = levelData;
     this.onExit = onExit;
     this.onWin = onWin;
+    this.hasNextLevel = hasNextLevel;
     this.viewport = GlobalContext.get<Vector>('viewport');
   }
 
@@ -220,7 +223,8 @@ export class GameUIManager {
 
     const buttons: MenuItem[] = [];
 
-    if (this.onWin) {
+    // Show "All Levels Complete!" text if no next level, otherwise "Next level" button
+    if (this.hasNextLevel && this.onWin) {
       buttons.push({
         label: 'Next level',
         action: () => {
@@ -228,6 +232,11 @@ export class GameUIManager {
             this.onWin();
           }
         },
+      });
+    } else if (!this.hasNextLevel) {
+      buttons.push({
+        label: 'All Levels Complete!',
+        // No action - displays as text
       });
     }
 
@@ -238,7 +247,7 @@ export class GameUIManager {
           this.onExit();
         }
       },
-      variant: 'secondary',
+      variant: this.hasNextLevel ? 'secondary' : 'primary',
     });
 
     const menu = new MainMenu(new Vector(0, 0), buttons);

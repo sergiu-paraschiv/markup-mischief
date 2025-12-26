@@ -17,6 +17,7 @@ import {
   GameLevelScene,
   LEVELS,
 } from '@game/scenes';
+import { LevelProgressionManager } from '@game/progression';
 
 import ASSETS from '../assets.json';
 
@@ -75,7 +76,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     // dbgr.enablePhysicsDebugLines = true;
     // dbgr.enableHoverHighlight = true;
     // dbgr.enableFlexDebugLines = true;
-    // dbgr.enableRenderGraph = true;
+    dbgr.enableRenderGraph = true;
 
     engine.start(120, 120);
 
@@ -88,52 +89,78 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     await loadingScene.run();
     await loadingScene.loadAssets(ASSETS.dynamic, ASSETS.chars);
 
+    // Get progression manager
+    const progression = LevelProgressionManager.getInstance();
+
+    // Create level selection menu with Continue/New Game
+    const createLevelsMenu = () => {
+      const levelMenuItems = [];
+      const currentLevel = progression.getCurrentLevel();
+      const totalLevels = LEVELS.levels.length;
+      const allLevelsComplete = currentLevel > totalLevels;
+
+      // Show "All Levels Complete" or "Continue" based on progress
+      if (allLevelsComplete) {
+        levelMenuItems.push({
+          label: 'All Levels Complete!',
+          // No action - will display as text instead of button
+        });
+      } else if (progression.hasSavedProgress()) {
+        levelMenuItems.push({
+          label: `Continue - Level ${currentLevel}`,
+          action: () => {
+            loadLevel(currentLevel);
+          },
+        });
+      }
+
+      // Always show "New Game" (or "Start Game" if no progress)
+      levelMenuItems.push({
+        label: progression.hasSavedProgress() ? 'New Game' : 'Start Game',
+        action: () => {
+          progression.resetProgress();
+          loadLevel(1);
+        },
+      });
+
+      return new MainMenuScene(levelMenuItems, () => {
+        engine.loadScene(mainMenuScene);
+      });
+    };
+
+    // Helper function to load a level with proper callbacks
+    const loadLevel = (levelId: number) => {
+      const currentLevelIndex = LEVELS.levels.findIndex(l => l.id === levelId);
+      const hasNextLevel = currentLevelIndex < LEVELS.levels.length - 1;
+
+      engine.loadScene(
+        new GameLevelScene(
+          levelId,
+          () => {
+            // onExit: return to levels menu (recreate to show updated progression)
+            engine.loadScene(createLevelsMenu());
+          },
+          () => {
+            if (hasNextLevel) {
+              const nextLevel = LEVELS.levels[currentLevelIndex + 1];
+              loadLevel(nextLevel.id);
+            } else {
+              // Last level completed, return to menu
+              engine.loadScene(createLevelsMenu());
+            }
+          },
+          hasNextLevel
+        )
+      );
+    };
+
     // Create main menu scene
     const mainMenuScene = new MainMenuScene([
       {
         label: 'HTML Mode',
         action: () => {
-          // Helper function to load a level with proper callbacks
-          const loadLevel = (levelId: number) => {
-            const currentLevelIndex = LEVELS.levels.findIndex(
-              l => l.id === levelId
-            );
-            const hasNextLevel = currentLevelIndex < LEVELS.levels.length - 1;
-
-            engine.loadScene(
-              new GameLevelScene(
-                levelId,
-                () => {
-                  // onExit: return to level selector
-                  engine.loadScene(mainMenuScene);
-                },
-                hasNextLevel
-                  ? () => {
-                      // onWin: load next level
-                      const nextLevel = LEVELS.levels[currentLevelIndex + 1];
-                      loadLevel(nextLevel.id);
-                    }
-                  : () => {
-                      // onWin (last level): return to level selector
-                      engine.loadScene(levelsScene);
-                    }
-              )
-            );
-          };
-
-          // Create level selection menu items from levels.json
-          const levelMenuItems = LEVELS.levels.map(level => ({
-            label: level.name,
-            action: () => {
-              loadLevel(level.id);
-            },
-          }));
-
-          const levelsScene = new MainMenuScene(levelMenuItems, () => {
-            engine.loadScene(mainMenuScene);
-          });
-
-          engine.loadScene(levelsScene);
+          // Recreate levels menu each time to show current progression state
+          engine.loadScene(createLevelsMenu());
         },
       },
     ]);
