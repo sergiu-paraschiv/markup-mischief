@@ -9,7 +9,6 @@ import FpsCounter from './FpsCounter';
 import RenderGraph from './RenderGraph';
 
 export default class Debugger extends CanvasItem {
-  private debugLayer: HTMLDivElement;
   private graphCanvas: HTMLCanvasElement;
   private graphContext: CanvasRenderingContext2D;
   private engine: Engine | undefined;
@@ -23,7 +22,6 @@ export default class Debugger extends CanvasItem {
   private debugLines: DebugLine[] = [];
   private _enablePhysicsDebugLines = false;
   private _enableGridLines = false;
-  private _enableFps = false;
   private _enableHoverHighlight = false;
   private _enableFlexDebugLines = false;
   private _enableRenderGraph = false;
@@ -32,14 +30,6 @@ export default class Debugger extends CanvasItem {
 
   constructor(container: HTMLElement) {
     super();
-
-    this.debugLayer = document.createElement('div');
-    this.debugLayer.style.position = 'absolute';
-    this.debugLayer.style.top = '20px';
-    this.debugLayer.style.left = '20px';
-    this.debugLayer.style.padding = '4px';
-    this.debugLayer.style.background = 'red';
-    container.appendChild(this.debugLayer);
 
     // Create separate canvas for render graph
     this.graphCanvas = document.createElement('canvas');
@@ -72,10 +62,6 @@ export default class Debugger extends CanvasItem {
     this._enableGridLines = enable;
   }
 
-  set enableFps(enable: boolean) {
-    this._enableFps = enable;
-  }
-
   set enableHoverHighlight(enable: boolean) {
     this._enableHoverHighlight = enable;
   }
@@ -106,7 +92,7 @@ export default class Debugger extends CanvasItem {
   }
 
   private onTick(event: TickEvent) {
-    if (this._enableFps) {
+    if (this._enableRenderGraph) {
       this.renderFpsCounter.advance(event.currentTime);
     }
 
@@ -122,7 +108,7 @@ export default class Debugger extends CanvasItem {
   }
 
   private onPhysicsTick(event: PhysicsTickEvent) {
-    if (this._enableFps) {
+    if (this._enableRenderGraph) {
       this.physicsFpsCounter.advance(event.currentTime);
     }
 
@@ -205,13 +191,6 @@ export default class Debugger extends CanvasItem {
       context.strokeStyle = '#ff0000';
       context.rect(0, 0, VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
       context.stroke();
-    }
-
-    if (this._enableFps) {
-      const newText = `${this.renderFpsCounter.fps.toFixed(0)} / ${this.physicsFpsCounter.fps.toFixed(0)}`;
-      if (this.debugLayer.innerText !== newText) {
-        this.debugLayer.innerText = newText;
-      }
     }
 
     if (this._enablePhysicsDebugLines) {

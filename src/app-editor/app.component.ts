@@ -45,9 +45,8 @@ export class AppComponent implements AfterViewInit {
 
     const dbgr = new Debugger(gameElement);
     dbgr.attachTo(engine);
-    dbgr.enableFps = true;
     dbgr.enableGridLines = true;
-    dbgr.enablePhysicsDebugLines = true;
+    dbgr.enablePhysicsDebugLines = false;
     dbgr.enableHoverHighlight = true;
 
     const editor = new Editor(
