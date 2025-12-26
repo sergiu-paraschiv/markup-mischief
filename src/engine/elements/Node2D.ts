@@ -29,6 +29,9 @@ export default class Node2D extends CanvasItem {
   private _fillColor: string | undefined = undefined;
   public clipRegion: ClipMask | ClipMask[] | undefined = undefined;
 
+  // Caching support
+  public cacheable = false;
+
   constructor(position?: Vector, children?: Element[]) {
     super(children);
 
@@ -111,5 +114,12 @@ export default class Node2D extends CanvasItem {
 
   get size() {
     return new Vector(this.width, this.height);
+  }
+
+  /**
+   * Get the cache key if caching is enabled
+   */
+  get cacheKey(): string | undefined {
+    return undefined;
   }
 }

@@ -1,5 +1,6 @@
 export type CanvasPurpose =
   | 'default' // Standard rendering - needs full reset
+  | 'cache'
   | 'fill-color' // Fill color operation - will set composite op
   | 'mask' // Masking operation - will set transform and composite op
   | 'clip' // Clipping operation - will set clip region

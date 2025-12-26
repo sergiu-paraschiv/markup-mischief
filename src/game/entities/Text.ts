@@ -19,6 +19,7 @@ export default class Text extends Node2D {
   private _height = 0;
   private letterSpacing: number;
   private style: TextStyle;
+  private _text = '';
 
   constructor(text?: string, letterSpacing = 1, style: TextStyle = 'regular') {
     super();
@@ -27,6 +28,21 @@ export default class Text extends Node2D {
     if (text) {
       this.setText(text);
     }
+
+    // Caching disabled - causes rendering issues with child sprites
+    this.cacheable = false;
+  }
+
+  /**
+   * Generate a cache key based on text content and rendering properties
+   * This is called automatically by the renderer when needed
+   */
+  override get cacheKey(): string | undefined {
+    if (!this.cacheable) {
+      return undefined;
+    }
+    const color = this.fillColor || 'none';
+    return `text:${this._text}:${this.style}:${this.letterSpacing}:${color}`;
   }
 
   override get fillColor(): string | undefined {
@@ -76,6 +92,7 @@ export default class Text extends Node2D {
   }
 
   public setText(text: string): void {
+    this._text = text;
     const charsMap = GlobalContext.get<CharsMap>('chars');
     const config = STYLE_CONFIG[this.style];
     const chars = text.toLowerCase().split('');

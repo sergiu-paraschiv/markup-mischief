@@ -19,9 +19,16 @@ function loadImageBitmap(
 }
 
 export default class Texture {
+  private static nextId = 0;
+  public readonly id: string;
+
   data: CanvasImageSource = new Image();
   width = 0;
   height = 0;
+
+  constructor() {
+    this.id = `tex_${Texture.nextId++}`;
+  }
 
   static empty() {
     return new Texture();

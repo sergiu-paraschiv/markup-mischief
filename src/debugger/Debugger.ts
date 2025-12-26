@@ -6,19 +6,27 @@ import { TickEvent } from '@engine/renderer';
 import { DebugLine, PhysicsTickEvent } from '@engine/physics';
 import { MouseMoveEvent } from '@engine/input';
 import FpsCounter from './FpsCounter';
+import RenderGraph from './RenderGraph';
 
 export default class Debugger extends CanvasItem {
   private debugLayer: HTMLDivElement;
+  private graphCanvas: HTMLCanvasElement;
+  private graphContext: CanvasRenderingContext2D;
   private engine: Engine | undefined;
   private previousScene: Element | undefined;
   private renderFpsCounter = new FpsCounter();
   private physicsFpsCounter = new FpsCounter();
+  private renderGraph = new RenderGraph();
+  private cacheHitGraph = new RenderGraph();
+  private renderFpsGraph = new RenderGraph();
+  private physicsFpsGraph = new RenderGraph();
   private debugLines: DebugLine[] = [];
   private _enablePhysicsDebugLines = false;
   private _enableGridLines = false;
   private _enableFps = false;
   private _enableHoverHighlight = false;
   private _enableFlexDebugLines = false;
+  private _enableRenderGraph = false;
   private hoveredObject: Node2D | undefined;
   public gridSize = new Vector(32, 32);
 
@@ -32,6 +40,24 @@ export default class Debugger extends CanvasItem {
     this.debugLayer.style.padding = '4px';
     this.debugLayer.style.background = 'red';
     container.appendChild(this.debugLayer);
+
+    // Create separate canvas for render graph
+    this.graphCanvas = document.createElement('canvas');
+    this.graphCanvas.style.position = 'absolute';
+    this.graphCanvas.style.top = '50px';
+    this.graphCanvas.style.left = '20px';
+    this.graphCanvas.style.display = 'none';
+    this.graphCanvas.width = 260;
+    this.graphCanvas.height = 480;
+    this.graphCanvas.style.imageRendering = 'pixelated';
+    container.appendChild(this.graphCanvas);
+
+    const context = this.graphCanvas.getContext('2d');
+    if (!context) {
+      throw new Error('Failed to get 2D context for graph canvas');
+    }
+    this.graphContext = context;
+    this.graphContext.imageSmoothingEnabled = false;
 
     this.on(TickEvent, this.onTick.bind(this));
     this.on(PhysicsTickEvent, this.onPhysicsTick.bind(this));
@@ -58,6 +84,11 @@ export default class Debugger extends CanvasItem {
     this._enableFlexDebugLines = enable;
   }
 
+  set enableRenderGraph(enable: boolean) {
+    this._enableRenderGraph = enable;
+    this.graphCanvas.style.display = enable ? 'block' : 'none';
+  }
+
   attachTo(engine: Engine) {
     this.engine = engine;
     engine.on(SceneLoadedEvent, event => {
@@ -78,11 +109,25 @@ export default class Debugger extends CanvasItem {
     if (this._enableFps) {
       this.renderFpsCounter.advance(event.currentTime);
     }
+
+    if (this._enableRenderGraph && this.engine) {
+      const stats = this.engine.renderer.getRenderStats();
+      this.renderGraph.addSample(stats.renderCount);
+      this.cacheHitGraph.addSample(stats.cacheHitCount);
+      this.renderFpsGraph.addSample(this.renderFpsCounter.fps);
+
+      // Draw graphs on separate canvas
+      this.drawRenderGraphs();
+    }
   }
 
   private onPhysicsTick(event: PhysicsTickEvent) {
     if (this._enableFps) {
       this.physicsFpsCounter.advance(event.currentTime);
+    }
+
+    if (this._enableRenderGraph) {
+      this.physicsFpsGraph.addSample(this.physicsFpsCounter.fps);
     }
 
     if (this._enablePhysicsDebugLines) {
@@ -192,6 +237,76 @@ export default class Debugger extends CanvasItem {
     if (this._enableFlexDebugLines && this.previousScene) {
       this.drawFlexDebugLines(context);
     }
+  }
+
+  private drawRenderGraphs() {
+    // Clear the graph canvas
+    this.graphContext.clearRect(
+      0,
+      0,
+      this.graphCanvas.width,
+      this.graphCanvas.height
+    );
+
+    const graphWidth = 240;
+    const graphHeight = 80;
+    const graphMargin = 10;
+    const graphSpacing = 25;
+
+    let currentY = graphMargin;
+
+    // Draw render FPS graph
+    this.graphContext.fillStyle = 'rgba(255, 255, 255, 0.9)';
+    this.graphContext.font = '12px monospace';
+    this.graphContext.fillText('Render FPS', graphMargin, currentY + 2);
+    currentY += 12;
+
+    this.renderFpsGraph.draw(
+      this.graphContext,
+      graphMargin,
+      currentY,
+      graphWidth,
+      graphHeight
+    );
+    currentY += graphHeight + graphSpacing;
+
+    // Draw physics FPS graph
+    this.graphContext.fillText('Physics FPS', graphMargin, currentY + 2);
+    currentY += 12;
+
+    this.physicsFpsGraph.draw(
+      this.graphContext,
+      graphMargin,
+      currentY,
+      graphWidth,
+      graphHeight
+    );
+    currentY += graphHeight + graphSpacing;
+
+    // Draw render count graph
+    this.graphContext.fillText('Renders/Frame', graphMargin, currentY + 2);
+    currentY += 12;
+
+    this.renderGraph.draw(
+      this.graphContext,
+      graphMargin,
+      currentY,
+      graphWidth,
+      graphHeight
+    );
+    currentY += graphHeight + graphSpacing;
+
+    // Draw cache hit graph
+    this.graphContext.fillText('Cache Hits/Frame', graphMargin, currentY + 2);
+    currentY += 12;
+
+    this.cacheHitGraph.draw(
+      this.graphContext,
+      graphMargin,
+      currentY,
+      graphWidth,
+      graphHeight
+    );
   }
 
   private drawFlexDebugLines(context: CanvasRenderingContext2D) {

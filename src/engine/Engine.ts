@@ -1,4 +1,4 @@
-import { IRenderer } from '@engine/renderer';
+import { CanvasRenderer } from '@engine/renderer';
 import { EventEmitter, Scene, Vector } from './core';
 import { InputDevice } from './input';
 import { PhysicsSimulation } from './physics';
@@ -7,7 +7,7 @@ import SceneLoadedEvent from './SceneLoadedEvent';
 export default class Engine extends EventEmitter {
   constructor(
     public readonly viewport: Vector,
-    private renderer: IRenderer,
+    public readonly renderer: CanvasRenderer,
     private physicsSimulation: PhysicsSimulation,
     private inputDevices: InputDevice[]
   ) {
