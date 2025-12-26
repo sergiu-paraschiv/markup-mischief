@@ -29,8 +29,7 @@ export default class Text extends Node2D {
       this.setText(text);
     }
 
-    // Caching disabled - causes rendering issues with child sprites
-    this.cacheable = false;
+    this.cacheable = true;
   }
 
   /**

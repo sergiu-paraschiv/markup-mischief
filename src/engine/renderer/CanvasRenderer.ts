@@ -6,11 +6,9 @@ import {
   ClipMask,
   ClipRegion,
   isCanvasItemClipMask,
-  Node2D,
 } from '@engine/elements';
 import TickEvent from './TickEvent';
 import { globalCanvasPool, type CanvasPurpose } from './CanvasPool';
-import { globalRenderCache } from './RenderCache';
 
 export default class CanvasRenderer {
   private canvas: HTMLCanvasElement;
@@ -84,16 +82,12 @@ export default class CanvasRenderer {
     this.workLoop.start(maxFps);
   }
 
-  /**
-   * Get render statistics for the last completed frame
-   */
-  getRenderStats(): { renderCount: number; cacheHitCount: number } {
+  getRenderStats() {
     return {
       renderCount: this.prevRenderCount,
       cacheHitCount: this.prevCacheHitCount,
     };
   }
-
   private hasCanvasItemClipMask(
     clipRegion: ClipMask | ClipMask[] | undefined
   ): boolean {
@@ -240,12 +234,6 @@ export default class CanvasRenderer {
       return;
     }
 
-    // Check if this item is cacheable
-    if (item instanceof Node2D && item.cacheable) {
-      this.renderCacheableNode(context, item);
-      return; // Skip normal rendering and children - everything is in the cache
-    }
-
     // Increment render count for this item
     this.renderCount++;
 
@@ -263,94 +251,6 @@ export default class CanvasRenderer {
     const children = Query.childrenByType(CanvasItem, item, false);
     for (const child of children) {
       this.renderCanvasItem(context, child);
-    }
-  }
-
-  /**
-   * Render a cacheable node - either from cache or render to cache
-   */
-  private renderCacheableNode(
-    context: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
-    node: Node2D
-  ): void {
-    const cacheKey = node.cacheKey;
-    if (!cacheKey) {
-      // Shouldn't happen, but fall back to normal rendering
-      this.renderCanvasItem(context, node);
-      return;
-    }
-
-    const position = node.position;
-    const width = node.width;
-    const height = node.height;
-
-    // Try to get from cache
-    const cachedCanvas = globalRenderCache.get(cacheKey);
-
-    if (cachedCanvas) {
-      // Cache hit - just draw the cached canvas
-      this.cacheHitCount++;
-      this.renderCount++; // Count cache hit as a render operation
-      context.save();
-
-      // Apply opacity if needed
-      if (node.opacity < 1.0) {
-        context.globalAlpha = node.opacity;
-      }
-
-      context.drawImage(
-        cachedCanvas,
-        Math.floor(position.x),
-        Math.floor(position.y)
-      );
-
-      context.restore();
-    } else {
-      // Cache miss - render to temporary canvas and cache it
-      const { canvas: tempCanvas, context: tempContext } =
-        this.createTempCanvas(width, height, 'cache');
-
-      // Temporarily disable caching flag to avoid infinite recursion
-      const wasCacheable = node.cacheable;
-      node.cacheable = false;
-
-      // Translate context so the node renders at (0, 0) in the temp canvas
-      tempContext.save();
-      tempContext.translate(-position.x, -position.y);
-
-      // Render the node and all its children to temp canvas
-      this.renderCanvasItem(tempContext, node);
-
-      // Render all children
-      const children = Query.childrenByType(CanvasItem, node, false);
-      for (const child of children) {
-        this.renderCanvasItem(tempContext, child);
-      }
-
-      tempContext.restore();
-
-      // Re-enable caching
-      if (wasCacheable) {
-        node.cacheable = true;
-      }
-
-      // Store in cache
-      globalRenderCache.set(cacheKey, tempCanvas, width, height);
-
-      // Draw the cached result
-      context.save();
-
-      if (node.opacity < 1.0) {
-        context.globalAlpha = node.opacity;
-      }
-
-      context.drawImage(
-        tempCanvas,
-        Math.floor(position.x),
-        Math.floor(position.y)
-      );
-
-      context.restore();
     }
   }
 
@@ -652,10 +552,8 @@ export default class CanvasRenderer {
         continue;
       }
 
-      // Check if this item is cacheable
-      if (item instanceof Node2D && item.cacheable) {
-        this.renderCacheableNode(this.context, item);
-        continue;
+      if (item.cacheable) {
+        this.cacheHitCount++;
       }
 
       // Increment render count
