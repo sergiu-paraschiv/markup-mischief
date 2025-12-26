@@ -1,9 +1,10 @@
 import { Scene, Vector } from '@engine/core';
 import { SpriteMash, SpriteMashData } from '@engine/elements';
 import { StaticBody } from '@engine/physics';
-import { BOARD_DATA, Character, PinkStar, Tag, Wall } from '@game/entities';
+import { Character, PinkStar, Tag, Wall } from '@game/entities';
 import { LevelData, positionToVector } from './LevelData';
 import { PLAYER_DEPTH, TAG_DEPTH, PLAYER_OUTLINE_DEPTH } from './constants';
+import BOARD_DATA from './Board.json';
 
 /**
  * Factory function to create solid edge walls

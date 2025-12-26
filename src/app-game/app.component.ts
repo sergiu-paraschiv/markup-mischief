@@ -75,7 +75,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     // dbgr.enableGridLines = true;
     // dbgr.enablePhysicsDebugLines = true;
     // dbgr.enableHoverHighlight = true;
-    // dbgr.enableFlexDebugLines = true;
+    dbgr.enableFlexDebugLines = true;
 
     engine.start(200, 200);
 

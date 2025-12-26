@@ -1,46 +1,40 @@
-import { Vector } from '@engine/core';
-import { Node2D, Sprite, SpriteMash, SpriteMashData } from '@engine/elements';
-import { Texture } from '@engine/loaders';
 import { drawHTML } from 'rasterizehtml';
-
-import SolutionBoardData from './SolutionBoard.json';
+import { Vector } from '@engine/core';
+import { Node2D, Sprite } from '@engine/elements';
+import { Texture } from '@engine/loaders';
 
 export default class HtmlPreview extends Node2D {
+  private _size: Vector;
   private htmlContent: string;
-  private previewCanvas: HTMLCanvasElement;
-  private board: SpriteMash;
+  private previewCanvas: OffscreenCanvas;
+  private context: OffscreenCanvasRenderingContext2D;
   private sprite: Sprite;
-  private padding = new Vector(10, 10);
 
-  constructor(position: Vector, html: string) {
+  constructor(position: Vector, size: Vector, html: string) {
     super();
+    this._size = size;
     this.position = position;
     this.htmlContent = html;
 
-    this.board = SpriteMash.fromData(SolutionBoardData as SpriteMashData);
-
     // Create an off-screen canvas for rendering HTML
-    this.previewCanvas = document.createElement('canvas');
-    this.previewCanvas.width = this.drawWidth;
-    this.previewCanvas.height = this.drawHeight;
+    this.previewCanvas = new OffscreenCanvas(this.width, this.height);
+    const context = this.previewCanvas.getContext('2d');
+    if (!context) {
+      throw new Error('Could not obtain off-screen canvas context');
+    }
+    this.context = context;
 
-    // Create a sprite with an empty texture initially
-    this.sprite = new Sprite(Texture.empty(), this.padding);
+    this.sprite = new Sprite(Texture.empty());
 
-    this.board.addChild(this.sprite);
-
-    this.addChild(this.board);
+    this.addChild(this.sprite);
 
     // Trigger initial render
     this.renderHtml();
   }
 
   public async renderHtml(): Promise<void> {
-    const ctx = this.previewCanvas.getContext('2d');
-    if (!ctx) return;
-
     // Clear the canvas
-    ctx.clearRect(0, 0, this.drawWidth, this.drawHeight);
+    this.context.clearRect(0, 0, this.width, this.height);
 
     // Wrap HTML in a minimal document with basic styling
     const wrappedHtml = `
@@ -67,15 +61,12 @@ export default class HtmlPreview extends Node2D {
 
     try {
       await drawHTML(wrappedHtml, this.previewCanvas, {
-        width: this.drawWidth,
-        height: this.drawHeight,
+        width: this.width,
+        height: this.height,
         executeJs: false,
       });
 
-      // Convert canvas to ImageBitmap
       const imageBitmap = await createImageBitmap(this.previewCanvas);
-
-      // Create texture from ImageBitmap
       const texture = Texture.fromImageBitmap(imageBitmap);
 
       // Update the sprite's texture
@@ -93,18 +84,10 @@ export default class HtmlPreview extends Node2D {
   }
 
   override get width() {
-    return this.board.width;
+    return this._size.width;
   }
 
   override get height() {
-    return this.board.height;
-  }
-
-  private get drawWidth() {
-    return this.width - this.padding.width * 2;
-  }
-
-  private get drawHeight() {
-    return this.height - this.padding.height * 2;
+    return this._size.height;
   }
 }

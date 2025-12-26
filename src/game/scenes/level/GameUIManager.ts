@@ -1,15 +1,10 @@
 import { GlobalContext, Scene, Vector } from '@engine/core';
 import { Node2D } from '@engine/elements';
-import {
-  Button,
-  HtmlPreview,
-  LayoutFlex,
-  MainMenu,
-  MenuItem,
-  Text,
-} from '@game/entities';
+import { Button, HtmlPreview, LayoutFlex, Text } from '@game/entities';
 import { LevelData } from './LevelData';
 import { MENU_DEPTH } from './constants';
+import SolutionBoard from './SolutionBoard';
+import MainMenu, { MenuItem } from '../menu/MainMenu';
 
 /**
  * Manages all UI elements for the game level
@@ -90,7 +85,13 @@ export class GameUIManager {
    * Creates the UI layout in top-right corner (HTML preview, solution toggle)
    */
   private createTopRightUI(): void {
-    this.htmlPreview = new HtmlPreview(new Vector(0, 0), '');
+    this.htmlPreview = new HtmlPreview(
+      new Vector(0, 0),
+      new Vector(100, 100),
+      ''
+    );
+
+    const solutionBoard = new SolutionBoard(new Vector(0, 0), this.htmlPreview);
 
     this.solutionToggleButtonText = new Text('Show Solution');
     this.solutionToggleButton = new Button(
@@ -114,7 +115,7 @@ export class GameUIManager {
     this.targetLayout.padding = new Vector(8, 8);
     this.targetLayout.gap = 4;
 
-    this.targetLayout.addChild(this.htmlPreview);
+    this.targetLayout.addChild(solutionBoard);
     this.targetLayout.addChild(this.solutionToggleButton);
 
     this.scene.addChild(this.targetLayout);

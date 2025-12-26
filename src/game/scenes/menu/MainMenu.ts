@@ -1,8 +1,6 @@
 import { Node2D, SpriteMash, SpriteMashData } from '@engine/elements';
 import { Vector } from '@engine/core';
-import LayoutFlex from './LayoutFlex';
-import Button from './Button';
-import Text from './Text';
+import { LayoutFlex, Button, Text } from '@game/entities';
 
 import MainMenuBoardData from './MainMenuBoard.json';
 

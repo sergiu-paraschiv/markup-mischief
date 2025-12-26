@@ -1,4 +1,6 @@
 import LayoutFlex from './LayoutFlex';
+import Layout3Slice from './Layout3Slice';
+import Layout9Slice from './Layout9Slice';
 import {
   Character,
   Pointing,
@@ -11,12 +13,15 @@ import Text from './Text';
 import Tag from './Tag';
 import Button from './Button';
 import Wall from './Wall';
-import MainMenu, { MenuItem } from './MainMenu';
 import HtmlPreview from './HtmlPreview';
-import BOARD_DATA from './Board.json';
+import PaperBoard from './PaperBoard';
+import PrimaryBoard from './PrimaryBoard';
+import SecondaryBoard from './SecondaryBoard';
 
 export {
   LayoutFlex,
+  Layout3Slice,
+  Layout9Slice,
   Text,
   Character,
   Pointing,
@@ -27,9 +32,8 @@ export {
   Button,
   Tag,
   Wall,
-  MainMenu,
   HtmlPreview,
-  BOARD_DATA,
+  PaperBoard,
+  PrimaryBoard,
+  SecondaryBoard,
 };
-
-export type { MenuItem };
