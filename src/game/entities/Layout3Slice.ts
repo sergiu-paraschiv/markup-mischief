@@ -31,6 +31,9 @@ export default class Layout3Slice extends Node2D {
     this.addChild(rs);
 
     rs.position = new Vector(width - rs.width, 0);
+    if (rs.position.x < 3) {
+      rs.clipRegion = { x: 3, y: 0, width: rs.width, height: rs.height };
+    }
 
     const availableWidth = width - Math.min(width, ls.width + rs.width);
     let remainingWidth = availableWidth;
