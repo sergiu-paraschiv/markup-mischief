@@ -165,6 +165,8 @@ export default class GameLevelScene extends Scene {
       this.activePlayer = this.player1;
     }
 
+    this.activePlayer.showExclamation();
+
     // Update tag interaction to use the new active player
     if (this.tagInteraction) {
       this.tagInteraction.setPlayer(this.activePlayer);

@@ -1,5 +1,5 @@
-import { Vector, GlobalContext } from '@engine/core';
-import { AnimatedSprite, Node2D } from '@engine/elements';
+import { GlobalContext, Vector } from '@engine/core';
+import { AnimatedSprite, AnimationRepeat, Node2D } from '@engine/elements';
 import CharacterController from './CharacterController';
 import { AssetsMap } from '@engine/loaders';
 
@@ -22,6 +22,7 @@ export default class Character extends CharacterController {
   private activeStance: Stance | undefined;
   private activeStanceStartTime = 0;
   private _pointing = Pointing.RIGHT;
+  private dialogueAnimation: AnimatedSprite | undefined;
 
   constructor(
     initialPosition: Vector,
@@ -138,5 +139,30 @@ export default class Character extends CharacterController {
         ghostSp.translation = new Vector(0, -32).sub(this.spriteOffset);
       }
     }
+  }
+
+  public showExclamation() {
+    const assets = GlobalContext.get<AssetsMap>('assets');
+    const dialogueAsset = assets['The Crusty Crew Dialogue'];
+
+    if (!dialogueAsset || !dialogueAsset.animations['Exclamation']) {
+      throw new Error('Exclamation animation not found');
+    }
+
+    if (this.dialogueAnimation) {
+      this.dialogueAnimation.remove();
+    }
+
+    this.dialogueAnimation = new AnimatedSprite(
+      dialogueAsset.animations['Exclamation']
+    );
+    this.dialogueAnimation.translation = new Vector(
+      this.colliderOffset.x +
+        this.collider.dimensions.width / 2 -
+        this.dialogueAnimation.width / 2,
+      this.colliderOffset.y - 24
+    );
+    this.dialogueAnimation.animation.repeat = AnimationRepeat.Once;
+    this.addChild(this.dialogueAnimation);
   }
 }

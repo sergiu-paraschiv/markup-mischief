@@ -120,6 +120,11 @@ export default class AnimatedSprite extends Node2D {
 
     if (this._animation.repeat === AnimationRepeat.Default) {
       this.frameIndex = 0;
+    } else if (this._animation.repeat === AnimationRepeat.Once) {
+      this.frameIndex = 0;
+    } else if (this._animation.repeat === AnimationRepeat.Twice) {
+      this.frameIndex = 0;
+      this.animationRepeatIndex = 1; // Play twice means one repeat
     } else if (this._animation.repeat === AnimationRepeat.Fixed) {
       this.frameIndex = 0;
       this.animationRepeatIndex = this._animation.repeatTimes;
@@ -136,6 +141,18 @@ export default class AnimatedSprite extends Node2D {
     if (this.frameIndex >= this._frames.length) {
       if (this._animation.repeat === AnimationRepeat.Default) {
         this.frameIndex = 0;
+      } else if (this._animation.repeat === AnimationRepeat.Once) {
+        this.frameIndex = this._frames.length - 1; // Stay on last frame
+        this.stop();
+        return;
+      } else if (this._animation.repeat === AnimationRepeat.Twice) {
+        this.frameIndex = 0;
+        this.animationRepeatIndex -= 1;
+        if (this.animationRepeatIndex <= 0) {
+          this.frameIndex = this._frames.length - 1; // Stay on last frame
+          this.stop();
+          return;
+        }
       } else if (this._animation.repeat === AnimationRepeat.Fixed) {
         this.frameIndex = 0;
         this.animationRepeatIndex -= 1;
@@ -143,9 +160,7 @@ export default class AnimatedSprite extends Node2D {
           this.stop();
           return;
         }
-      }
-      // TODO: handle AnimationRepeat.Once and AnimationReapeat.Twice
-      else {
+      } else {
         this.stop();
         return;
       }

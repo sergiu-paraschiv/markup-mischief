@@ -73,10 +73,10 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     const dbgr = new Debugger(gameElement);
     dbgr.attachTo(engine);
     // dbgr.enableGridLines = true;
-    dbgr.enablePhysicsDebugLines = true;
+    // dbgr.enablePhysicsDebugLines = true;
     // dbgr.enableHoverHighlight = true;
     // dbgr.enableFlexDebugLines = true;
-    dbgr.enableRenderGraph = true;
+    // dbgr.enableRenderGraph = true;
 
     engine.start(120, 120);
 
