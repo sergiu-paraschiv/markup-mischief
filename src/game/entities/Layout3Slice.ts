@@ -5,6 +5,9 @@ import { Vector } from '@engine/core';
 export default class Layout3Slice extends Node2D {
   private _width = 0;
   private _height = 0;
+  private _left: Texture | undefined;
+  private _center: Texture | undefined;
+  private _right: Texture | undefined;
 
   constructor(
     width: number,
@@ -15,6 +18,11 @@ export default class Layout3Slice extends Node2D {
     super();
     this._width = width;
     this._height = (left || center || right)?.height || 0;
+    this._left = left;
+    this._center = center;
+    this._right = right;
+
+    this.cacheable = true;
 
     const ls = new Sprite(left);
     const rs = new Sprite(right);
@@ -54,5 +62,18 @@ export default class Layout3Slice extends Node2D {
 
   override get height() {
     return this._height;
+  }
+
+  /**
+   * Generate a cache key based on dimensions and texture IDs
+   */
+  override get cacheKey(): string | undefined {
+    if (!this.cacheable) {
+      return undefined;
+    }
+    const leftId = this._left?.id || 'none';
+    const centerId = this._center?.id || 'none';
+    const rightId = this._right?.id || 'none';
+    return `3slice:${this._width}:${leftId}:${centerId}:${rightId}`;
   }
 }

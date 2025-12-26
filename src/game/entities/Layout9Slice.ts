@@ -12,6 +12,15 @@ import { Vector } from '@engine/core';
  */
 export default class Layout9Slice extends Node2D {
   private _size = new Vector(0, 0);
+  private _topLeft: Texture | undefined;
+  private _topCenter: Texture | undefined;
+  private _topRight: Texture | undefined;
+  private _middleLeft: Texture | undefined;
+  private _middleCenter: Texture | undefined;
+  private _middleRight: Texture | undefined;
+  private _bottomLeft: Texture | undefined;
+  private _bottomCenter: Texture | undefined;
+  private _bottomRight: Texture | undefined;
 
   constructor(
     size: Vector,
@@ -27,6 +36,17 @@ export default class Layout9Slice extends Node2D {
   ) {
     super();
     this._size = size;
+    this._topLeft = topLeft;
+    this._topCenter = topCenter;
+    this._topRight = topRight;
+    this._middleLeft = middleLeft;
+    this._middleCenter = middleCenter;
+    this._middleRight = middleRight;
+    this._bottomLeft = bottomLeft;
+    this._bottomCenter = bottomCenter;
+    this._bottomRight = bottomRight;
+
+    this.cacheable = true;
 
     // Create corner sprites
     const tlSprite = new Sprite(topLeft);
@@ -207,5 +227,24 @@ export default class Layout9Slice extends Node2D {
 
   override get height() {
     return this._size.height;
+  }
+
+  /**
+   * Generate a cache key based on dimensions and all 9 texture IDs
+   */
+  override get cacheKey(): string | undefined {
+    if (!this.cacheable) {
+      return undefined;
+    }
+    const tlId = this._topLeft?.id || 'none';
+    const tcId = this._topCenter?.id || 'none';
+    const trId = this._topRight?.id || 'none';
+    const mlId = this._middleLeft?.id || 'none';
+    const mcId = this._middleCenter?.id || 'none';
+    const mrId = this._middleRight?.id || 'none';
+    const blId = this._bottomLeft?.id || 'none';
+    const bcId = this._bottomCenter?.id || 'none';
+    const brId = this._bottomRight?.id || 'none';
+    return `9slice:${this._size.width}:${this._size.height}:${tlId}:${tcId}:${trId}:${mlId}:${mcId}:${mrId}:${blId}:${bcId}:${brId}`;
   }
 }
