@@ -48,9 +48,11 @@ export class PlayerTagInteraction {
   update(hasWon: boolean): void {
     if (this.grabbedTag && !hasWon) {
       // Update grabbed tag position to follow player
-      this.grabbedTag.position = this.player.position.add(
-        new Vector(this.player.pointing === Pointing.LEFT ? 24 : 38, 8)
-      );
+      this.grabbedTag.position = this.player.position
+        .add(this.player.colliderOffset)
+        .add(new Vector(this.player.collider.dimensions.width / 2, 0))
+        .sub(new Vector(this.grabbedTag.width / 2, 0))
+        .add(new Vector(this.player.pointing === Pointing.LEFT ? -6 : 6, 8));
     }
 
     this.player.updateGhostPosition();

@@ -48,6 +48,10 @@ export default class CollisionObject extends Node2D {
     this._colliderOffset = offset;
   }
 
+  get colliderOffset() {
+    return this._colliderOffset ?? new Vector(0, 0);
+  }
+
   setColliderDimensions(dimensions: Vector | undefined) {
     this._colliderDimensions = dimensions;
   }

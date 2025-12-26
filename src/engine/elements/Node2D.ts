@@ -43,21 +43,6 @@ export default class Node2D extends CanvasItem {
     return undefined;
   }
 
-  get hasCacheableParent(): boolean {
-    const parent = Query.parentByType(Node2D, this);
-    if (!parent) {
-      return false;
-    }
-
-    // Check if parent is cacheable and has a cache key
-    if (parent.cacheable && parent.cacheKey) {
-      return true;
-    }
-
-    // Recursively check parent's ancestors
-    return parent.hasCacheableParent;
-  }
-
   get opacity(): number {
     let accumulatedOpacity = this._opacity;
     const parent = Query.parentByType(Node2D, this);
