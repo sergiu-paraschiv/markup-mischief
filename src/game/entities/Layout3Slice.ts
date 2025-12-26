@@ -74,6 +74,7 @@ export default class Layout3Slice extends Node2D {
     const leftId = this._left?.id || 'none';
     const centerId = this._center?.id || 'none';
     const rightId = this._right?.id || 'none';
-    return `3slice:${this._width}:${leftId}:${centerId}:${rightId}`;
+    const color = this.fillColor || 'none';
+    return `3slice:${this._width}:${leftId}:${centerId}:${rightId}:${color}`;
   }
 }

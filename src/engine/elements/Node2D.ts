@@ -43,6 +43,21 @@ export default class Node2D extends CanvasItem {
     return undefined;
   }
 
+  get hasCacheableParent(): boolean {
+    const parent = Query.parentByType(Node2D, this);
+    if (!parent) {
+      return false;
+    }
+
+    // Check if parent is cacheable and has a cache key
+    if (parent.cacheable && parent.cacheKey) {
+      return true;
+    }
+
+    // Recursively check parent's ancestors
+    return parent.hasCacheableParent;
+  }
+
   get opacity(): number {
     let accumulatedOpacity = this._opacity;
     const parent = Query.parentByType(Node2D, this);
@@ -72,8 +87,12 @@ export default class Node2D extends CanvasItem {
     this._scale = value;
   }
 
+  get ownPosition() {
+    return this._position.add(this._translation);
+  }
+
   get position() {
-    const ownPosition = this._position.add(this._translation);
+    const ownPosition = this.ownPosition;
     const positionedParent = Query.parentByType(Node2D, this);
     if (positionedParent) {
       return positionedParent.position.add(ownPosition);

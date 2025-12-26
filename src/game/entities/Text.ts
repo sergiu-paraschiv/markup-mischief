@@ -32,10 +32,6 @@ export default class Text extends Node2D {
     this.cacheable = true;
   }
 
-  /**
-   * Generate a cache key based on text content and rendering properties
-   * This is called automatically by the renderer when needed
-   */
   override get cacheKey(): string | undefined {
     if (!this.cacheable) {
       return undefined;

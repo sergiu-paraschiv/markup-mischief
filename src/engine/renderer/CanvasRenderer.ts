@@ -202,7 +202,7 @@ export default class CanvasRenderer {
       if (isCanvasItemClipMask(canvasItemMask)) {
         // Render the CanvasItem at its natural position
         // The item already has the correct absolute position
-        this.renderCanvasItem(maskContext, canvasItemMask.item);
+        this.renderCanvasItem(maskContext, canvasItemMask.item, true);
       }
     }
 
@@ -230,7 +230,8 @@ export default class CanvasRenderer {
 
   private renderCanvasItem(
     context: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
-    item: CanvasItem
+    item: CanvasItem,
+    withChildren = false
   ): void {
     if (!item.isVisible) {
       return;
@@ -249,10 +250,12 @@ export default class CanvasRenderer {
       item.draw(context);
     }
 
-    // Recursively render children
-    const children = Query.childrenByType(CanvasItem, item, false);
-    for (const child of children) {
-      this.renderCanvasItem(context, child);
+    if (withChildren) {
+      // Recursively render children
+      const children = Query.childrenByType(CanvasItem, item, false);
+      for (const child of children) {
+        this.renderCanvasItem(context, child, withChildren);
+      }
     }
   }
 
@@ -292,23 +295,16 @@ export default class CanvasRenderer {
       'cache'
     );
 
-    // Save the original position and temporarily move to origin for rendering
-    const originalPos = item.position.clone();
-    item.position.x = 0;
-    item.position.y = 0;
+    // Calculate the offset needed to make the computed position (0,0)
+    // Since position getter adds parent position, we need to subtract it
+    const originalPosition = item.ownPosition.clone();
+    const parent = Query.parentByType(Node2D, item);
+    const parentPos = parent ? parent.position : new Vector(0, 0);
+    item.position = new Vector(0, 0).sub(parentPos);
 
-    // Render using existing draw logic
-    if (item instanceof AnimatedSprite) {
-      this.drawAnimatedSprite(tempContext, item);
-    } else if (item instanceof Sprite) {
-      this.drawSprite(tempContext, item);
-    } else {
-      item.draw(tempContext);
-    }
+    this.renderCanvasItem(tempContext, item, true);
 
-    // Restore original position
-    item.position.x = originalPos.x;
-    item.position.y = originalPos.y;
+    item.position = originalPosition;
 
     // Cache the rendered content
     globalRenderCache.set(cacheKey, tempCanvas, width, height);
@@ -627,6 +623,11 @@ export default class CanvasRenderer {
       }
 
       if (item instanceof Node2D) {
+        // Skip rendering if this item has a cacheable parent
+        if (this.itemHasCachedParent(item)) {
+          continue;
+        }
+
         // Check if item is cacheable and has a cache key
         const cacheKey = item.cacheable ? item.cacheKey : undefined;
 
@@ -637,22 +638,28 @@ export default class CanvasRenderer {
         }
       }
 
-      // Non-cacheable item - render normally
-      // Increment render count
-      this.renderCount++;
-
-      // Handle Sprite and AnimatedSprite rendering in CanvasRenderer
-      if (item instanceof AnimatedSprite) {
-        this.drawAnimatedSprite(this.context, item);
-      } else if (item instanceof Sprite) {
-        this.drawSprite(this.context, item);
-      } else {
-        // Fall back to default draw method for other CanvasItem types
-        item.draw(this.context);
-      }
+      this.renderCanvasItem(this.context, item, false);
     }
 
     // Release all temp canvases after rendering is complete
     globalCanvasPool.releaseAll();
+  }
+
+  itemHasCachedParent(item: Node2D): boolean {
+    const parent = Query.parentByType(Node2D, item);
+
+    if (!parent) {
+      return false;
+    }
+
+    if (
+      parent.cacheable &&
+      parent.cacheKey &&
+      globalRenderCache.get(parent.cacheKey)
+    ) {
+      return true;
+    }
+
+    return this.itemHasCachedParent(parent);
   }
 }

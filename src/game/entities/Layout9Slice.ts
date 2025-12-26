@@ -229,9 +229,6 @@ export default class Layout9Slice extends Node2D {
     return this._size.height;
   }
 
-  /**
-   * Generate a cache key based on dimensions and all 9 texture IDs
-   */
   override get cacheKey(): string | undefined {
     if (!this.cacheable) {
       return undefined;
@@ -245,6 +242,7 @@ export default class Layout9Slice extends Node2D {
     const blId = this._bottomLeft?.id || 'none';
     const bcId = this._bottomCenter?.id || 'none';
     const brId = this._bottomRight?.id || 'none';
-    return `9slice:${this._size.width}:${this._size.height}:${tlId}:${tcId}:${trId}:${mlId}:${mcId}:${mrId}:${blId}:${bcId}:${brId}`;
+    const color = this.fillColor || 'none';
+    return `9slice:${this._size.width}:${this._size.height}:${tlId}:${tcId}:${trId}:${mlId}:${mcId}:${mrId}:${blId}:${bcId}:${brId}:${color}`;
   }
 }
