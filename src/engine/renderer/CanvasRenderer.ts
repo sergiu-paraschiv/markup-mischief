@@ -9,6 +9,7 @@ import {
 } from '@engine/elements';
 import IRenderer from './IRenderer';
 import TickEvent from './TickEvent';
+import { globalCanvasPool, type CanvasPurpose } from './CanvasPool';
 
 export default class CanvasRenderer implements IRenderer {
   private canvas: HTMLCanvasElement;
@@ -84,19 +85,13 @@ export default class CanvasRenderer implements IRenderer {
 
   private createTempCanvas(
     width: number,
-    height: number
+    height: number,
+    purpose?: CanvasPurpose
   ): {
     canvas: OffscreenCanvas;
     context: OffscreenCanvasRenderingContext2D;
   } {
-    const canvas = new OffscreenCanvas(width, height);
-    const context = canvas.getContext('2d');
-
-    if (!context) {
-      throw new Error('Failed to get 2D context for temporary canvas');
-    }
-
-    return { canvas, context };
+    return globalCanvasPool.getCanvas(width, height, purpose);
   }
 
   private applyRectangleClips(
@@ -135,25 +130,29 @@ export default class CanvasRenderer implements IRenderer {
 
     if (rectangles.length === 0) return canvas;
 
-    // Create temp canvas and apply rectangle clip
-    const { canvas: tempCanvas, context: tempContext } = this.createTempCanvas(
-      width,
-      height
-    );
+    // Create new canvas (not pooled - returned to caller)
+    const resultCanvas = new OffscreenCanvas(width, height);
+    const resultContext = resultCanvas.getContext('2d');
 
-    tempContext.save();
-    tempContext.beginPath();
+    if (!resultContext) {
+      throw new Error('Failed to get 2D context for rectangle clip canvas');
+    }
+
+    resultContext.imageSmoothingEnabled = false;
+
+    resultContext.save();
+    resultContext.beginPath();
     for (const region of rectangles) {
       // Clip regions are relative to sprite (0,0 = top-left of sprite)
-      tempContext.rect(region.x, region.y, region.width, region.height);
+      resultContext.rect(region.x, region.y, region.width, region.height);
     }
-    tempContext.clip();
+    resultContext.clip();
 
     // Draw the source canvas with clipping applied
-    tempContext.drawImage(canvas, 0, 0);
-    tempContext.restore();
+    resultContext.drawImage(canvas, 0, 0);
+    resultContext.restore();
 
-    return tempCanvas;
+    return resultCanvas;
   }
 
   private applyCanvasItemClipMasks(
@@ -172,10 +171,11 @@ export default class CanvasRenderer implements IRenderer {
       return canvas;
     }
 
-    // Create a mask canvas
+    // Create a mask canvas (pooled - used immediately)
     const { canvas: maskCanvas, context: maskContext } = this.createTempCanvas(
       bounds.width,
-      bounds.height
+      bounds.height,
+      'mask'
     );
 
     // Render all CanvasItem masks onto the mask canvas
@@ -193,9 +193,15 @@ export default class CanvasRenderer implements IRenderer {
 
     maskContext.restore();
 
-    // Create result canvas
-    const { canvas: resultCanvas, context: resultContext } =
-      this.createTempCanvas(bounds.width, bounds.height);
+    // Create result canvas (not pooled - returned to caller)
+    const resultCanvas = new OffscreenCanvas(bounds.width, bounds.height);
+    const resultContext = resultCanvas.getContext('2d');
+
+    if (!resultContext) {
+      throw new Error('Failed to get 2D context for clip mask result canvas');
+    }
+
+    resultContext.imageSmoothingEnabled = false;
 
     // Draw the original content
     resultContext.drawImage(canvas, 0, 0);
@@ -242,20 +248,25 @@ export default class CanvasRenderer implements IRenderer {
       return null;
     }
 
-    const { canvas: tempCanvas, context: tempContext } = this.createTempCanvas(
-      width,
-      height
-    );
+    // Create a new canvas (not pooled) because the caller will hold onto this
+    const canvas = new OffscreenCanvas(width, height);
+    const context = canvas.getContext('2d');
+
+    if (!context) {
+      throw new Error('Failed to get 2D context for fill color canvas');
+    }
+
+    context.imageSmoothingEnabled = false;
 
     // Draw the image
-    tempContext.drawImage(imageSource, 0, 0);
+    context.drawImage(imageSource, 0, 0);
 
     // Apply fill color using source-in
-    tempContext.globalCompositeOperation = 'source-in';
-    tempContext.fillStyle = fillColor;
-    tempContext.fillRect(0, 0, width, height);
+    context.globalCompositeOperation = 'source-in';
+    context.fillStyle = fillColor;
+    context.fillRect(0, 0, width, height);
 
-    return tempCanvas;
+    return canvas;
   }
 
   private drawTextureWithTransforms(
@@ -506,9 +517,11 @@ export default class CanvasRenderer implements IRenderer {
 
     this.rootElement.dispatchEvent(new TickEvent(currentTime));
 
+    // Use skipInvisible optimization to avoid traversing invisible subtrees
     for (const item of Query.childrenByType(
       CanvasItem,
       this.rootElement,
+      true,
       true
     )) {
       if (!item.isVisible) {
@@ -525,5 +538,8 @@ export default class CanvasRenderer implements IRenderer {
         item.draw(this.context);
       }
     }
+
+    // Release all temp canvases after rendering is complete
+    globalCanvasPool.releaseAll();
   }
 }

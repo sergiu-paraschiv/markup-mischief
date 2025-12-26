@@ -11,6 +11,10 @@ export interface ZSortedElement<T = Element> {
 export default class Element extends EventEmitter {
   private _parent?: Element;
   private _children: ZSortedElement[] = [];
+  private _depthSortedChildrenCache?: Element[];
+  private _childrenCacheDirty = true;
+
+  private _visible = true;
 
   constructor(children?: Element[]) {
     super();
@@ -20,14 +24,39 @@ export default class Element extends EventEmitter {
     }
   }
 
+  set isVisible(visible) {
+    this._visible = visible;
+  }
+
+  get isVisible(): boolean {
+    if (!this._visible) {
+      return false;
+    }
+
+    const parent = this.parent;
+    if (parent) {
+      return parent.isVisible;
+    }
+
+    return true;
+  }
+
+  get childrenWithDepth() {
+    return this._children;
+  }
+
   get children() {
     return this._children.map(child => child.element);
   }
 
   get depthSortedChildren() {
-    return this._children
-      .sort((a, b) => a.depth - b.depth)
-      .map(child => child.element);
+    if (this._childrenCacheDirty || !this._depthSortedChildrenCache) {
+      this._depthSortedChildrenCache = this._children
+        .sort((a, b) => a.depth - b.depth)
+        .map(child => child.element);
+      this._childrenCacheDirty = false;
+    }
+    return this._depthSortedChildrenCache;
   }
 
   get parent(): Element | undefined {
@@ -60,6 +89,7 @@ export default class Element extends EventEmitter {
       element: child,
       depth,
     });
+    this._childrenCacheDirty = true;
     child.parent = this;
     child.dispatchEvent(new ElementAddedEvent());
   }
@@ -68,6 +98,7 @@ export default class Element extends EventEmitter {
     this._children = this._children.filter(
       searchedChild => searchedChild.element !== child
     );
+    this._childrenCacheDirty = true;
     child.dispatchEvent(new ElementRemovedEvent());
     child.clearParent();
   }
@@ -79,6 +110,7 @@ export default class Element extends EventEmitter {
       child.element.clearParent();
     });
     this._children = [];
+    this._childrenCacheDirty = true;
   }
 
   remove(): void {

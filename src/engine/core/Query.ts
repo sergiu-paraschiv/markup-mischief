@@ -1,5 +1,10 @@
 import Element from './Element';
 
+interface ElementWithDepth<T> {
+  element: T;
+  depth: number;
+}
+
 function traverseChildren(
   node: Element,
   action: (childNode: Element) => void,
@@ -8,7 +13,7 @@ function traverseChildren(
   const children = depthSorted ? node.depthSortedChildren : node.children;
   for (const childNode of children) {
     action(childNode);
-    traverseChildren(childNode, action);
+    traverseChildren(childNode, action, depthSorted);
   }
 }
 
@@ -17,21 +22,56 @@ export default class Query {
   static childrenByType<T extends Element>(
     type: new (...args: never[]) => T,
     node: Element,
-    depthSorted = false
+    depthSorted = false,
+    skipInvisible = false
   ): T[] {
-    const foundNodes: T[] = [];
+    if (!depthSorted) {
+      // Fast path: no sorting needed
+      const foundNodes: T[] = [];
+      traverseChildren(
+        node,
+        child => {
+          if (child instanceof type) {
+            foundNodes.push(child);
+          }
+        },
+        false
+      );
+      return foundNodes;
+    }
 
-    traverseChildren(
-      node,
-      child => {
-        if (child instanceof type) {
-          foundNodes.push(child);
+    // Optimized depth-sorted path: collect with depth, then sort once
+    const foundNodesWithDepth: ElementWithDepth<T>[] = [];
+
+    // Traverse and collect elements with their accumulated depth
+    function collectWithDepth(currentNode: Element, accumulatedDepth: number) {
+      for (const childData of currentNode.childrenWithDepth) {
+        const child = childData.element;
+        const childDepth = accumulatedDepth + childData.depth;
+
+        // Skip invisible elements and their children if requested
+        if (skipInvisible && !child.isVisible) {
+          continue;
         }
-      },
-      depthSorted
-    );
 
-    return foundNodes;
+        if (child instanceof type) {
+          foundNodesWithDepth.push({
+            element: child,
+            depth: childDepth,
+          });
+        }
+
+        // Recursively collect from children
+        collectWithDepth(child, childDepth);
+      }
+    }
+
+    collectWithDepth(node, 0);
+
+    // Sort once by accumulated depth
+    foundNodesWithDepth.sort((a, b) => a.depth - b.depth);
+
+    return foundNodesWithDepth.map(item => item.element);
   }
 
   static parentByType<T extends Element>(
