@@ -9,21 +9,44 @@ export class WinConditionChecker {
   private scene: Scene;
   private levelData: LevelData;
   private readonly rowTolerance: number = 16; // Pixels within which tags are considered on same row
+  private isCssMode: boolean;
 
-  constructor(scene: Scene, levelData: LevelData) {
+  constructor(scene: Scene, levelData: LevelData, mode: 'html' | 'css') {
     this.scene = scene;
     this.levelData = levelData;
+    this.isCssMode = mode === 'css';
   }
 
   getCurrentHtml(): string {
     const tags = Query.childrenByType(Tag, this.scene);
-    const sortedTags = this.sortTags(tags);
+    const htmlTags = tags.filter(tag => tag.tagType === 'html');
+    const sortedTags = this.sortTags(htmlTags);
+    return sortedTags.map(tag => tag.text).join(' ');
+  }
+
+  getCurrentCss(): string {
+    const tags = Query.childrenByType(Tag, this.scene);
+    const cssTags = tags.filter(tag => tag.tagType === 'css');
+    const sortedTags = this.sortTags(cssTags);
     return sortedTags.map(tag => tag.text).join(' ');
   }
 
   isCorrect(): boolean {
     const html = this.getCurrentHtml();
-    return html === this.levelData.solution;
+    const htmlCorrect = html === this.levelData.html.solution;
+
+    // In HTML mode, only check HTML solution
+    if (!this.isCssMode) {
+      return htmlCorrect;
+    }
+
+    // In CSS mode, check both HTML and CSS solutions
+    const css = this.getCurrentCss();
+    const cssCorrect = this.levelData.css
+      ? css === this.levelData.css.solution
+      : true;
+
+    return htmlCorrect && cssCorrect;
   }
 
   /**
@@ -44,7 +67,11 @@ export class WinConditionChecker {
     });
   }
 
-  getSolution(): string {
-    return this.levelData.solution;
+  getHtmlSolution(): string {
+    return this.levelData.html.solution;
+  }
+
+  getCssSolution(): string {
+    return this.levelData.css?.solution || '';
   }
 }

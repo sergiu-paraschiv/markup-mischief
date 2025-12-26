@@ -1,7 +1,13 @@
 import { Scene, Vector } from '@engine/core';
 import { SpriteMash, SpriteMashData } from '@engine/elements';
 import { StaticBody } from '@engine/physics';
-import { Character, PinkStar, Tag, Wall } from '@game/entities';
+import {
+  Character,
+  PinkStar,
+  CaptainClownNose,
+  Tag,
+  Wall,
+} from '@game/entities';
 import { LevelData, positionToVector } from './LevelData';
 import { PLAYER_DEPTH, TAG_DEPTH, PLAYER_OUTLINE_DEPTH } from './constants';
 import HTML_BOARD_DATA from './BoardHTML.json';
@@ -19,30 +25,23 @@ export class LevelBuilder {
   private scene: Scene;
   private levelData: LevelData;
   private mode: LevelMode;
-  private dropping: () => boolean;
 
-  constructor(
-    scene: Scene,
-    levelData: LevelData,
-    mode: LevelMode,
-    dropping: () => boolean
-  ) {
+  constructor(scene: Scene, levelData: LevelData, mode: LevelMode) {
     this.scene = scene;
     this.levelData = levelData;
     this.mode = mode;
-    this.dropping = dropping;
   }
 
   /**
-   * Builds the complete level including background, walls, platforms, tags, and player
+   * Builds the complete level including background, walls, platforms, tags, and player(s)
    */
-  build(): PinkStar {
+  build(): { player1: Character; player2?: Character } {
     this.buildBackground();
     this.buildWalls();
     this.buildPlatforms();
     this.buildTags();
 
-    return this.buildPlayer();
+    return this.buildPlayers();
   }
 
   private buildBackground(): void {
@@ -81,7 +80,7 @@ export class LevelBuilder {
       )
     );
 
-    // Top-right corner wall
+    // Bottom-right corner wall
     this.scene.addChild(
       makeEdgeWall(
         new Vector(32 * (LEVEL_WIDTH - 6), 32 * (LEVEL_HEIGHT - 3)),
@@ -106,44 +105,67 @@ export class LevelBuilder {
         this.scene.addChild(
           makePlatformWall(
             new Vector(32 * 3, 2 + 32 * i),
-            new Vector(32 * 10, 1),
-            this.dropping
+            new Vector(32 * 10, 1)
           )
         );
       }
     } else {
       for (let i = LEVEL_HEIGHT - 6; i <= LEVEL_HEIGHT - 2; i += 1) {
         this.scene.addChild(
+          makePlatformWall(new Vector(32, 2 + 32 * i), new Vector(32 * 8, 1))
+        );
+      }
+      for (let i = LEVEL_HEIGHT - 6; i <= LEVEL_HEIGHT - 2; i += 1) {
+        this.scene.addChild(
           makePlatformWall(
-            new Vector(32, 2 + 32 * i),
-            new Vector(32 * 8, 1),
-            this.dropping
+            new Vector(32 * 10, 2 + 32 * i),
+            new Vector(32 * 9, 1)
           )
         );
       }
     }
   }
 
-  private buildPlayer(): PinkStar {
-    const player = new PinkStar(positionToVector(this.levelData.playerStart));
-    this.scene.addChild(player, PLAYER_DEPTH);
+  private buildPlayers(): { player1: Character; player2?: Character } {
+    const player1 = new PinkStar(
+      positionToVector(this.levelData.html.playerStart)
+    );
+    this.scene.addChild(player1, PLAYER_DEPTH);
     // Add ghost at a higher depth so it renders on top of tags
-    this.scene.addChild(player.ghost, PLAYER_OUTLINE_DEPTH);
+    this.scene.addChild(player1.ghost, PLAYER_OUTLINE_DEPTH);
 
-    return player;
+    // In CSS mode, add the second character
+    if (this.mode === 'css' && this.levelData.css) {
+      const player2 = new CaptainClownNose(
+        positionToVector(this.levelData.css.playerStart)
+      );
+      this.scene.addChild(player2, PLAYER_DEPTH);
+      this.scene.addChild(player2.ghost, PLAYER_OUTLINE_DEPTH);
+
+      return { player1, player2 };
+    }
+
+    return { player1 };
   }
 
   private buildTags(): void {
-    this.levelData.tags.forEach(tagData => {
+    // Add HTML tags (always present)
+    this.levelData.html.tags.forEach(tagData => {
       this.scene.addChild(
-        makeTagTile(
-          positionToVector(tagData.position),
-          tagData.text,
-          this.dropping
-        ),
+        makeTagTile(positionToVector(tagData.position), tagData.text, 'html'),
         TAG_DEPTH
       );
     });
+
+    // Add CSS tags (only in CSS mode)
+    if (this.mode === 'css' && this.levelData.css) {
+      this.levelData.css.tags.forEach(tagData => {
+        this.scene.addChild(
+          makeTagTile(positionToVector(tagData.position), tagData.text, 'css'),
+          TAG_DEPTH
+        );
+      });
+    }
   }
 }
 
@@ -161,16 +183,13 @@ export function makeEdgeWall(position: Vector, size: Vector): StaticBody {
  * Factory function to create one-way platform walls
  * Characters can drop through and jump through from below
  */
-export function makePlatformWall(
-  position: Vector,
-  size: Vector,
-  dropping: () => boolean
-): StaticBody {
+export function makePlatformWall(position: Vector, size: Vector): StaticBody {
   const body = new StaticBody(position);
   body.addChild(new Wall(position, size));
 
   body.filterCollisionFn = ({ collider, velocity }) => {
-    if (collider instanceof Character && dropping()) {
+    // Check if the specific character is dropping, not a shared flag
+    if (collider instanceof Character && collider.isDropping) {
       return false;
     }
 
@@ -191,12 +210,13 @@ export function makePlatformWall(
 export function makeTagTile(
   position: Vector,
   text: string,
-  dropping: () => boolean
+  tagType: 'html' | 'css'
 ): Tag {
-  const tag = new Tag(position, text);
+  const tag = new Tag(position, text, tagType);
 
   tag.filterCollisionFn = ({ collider, velocity }) => {
-    if (collider instanceof Character && dropping()) {
+    // Check if the specific character is dropping, not a shared flag
+    if (collider instanceof Character && collider.isDropping) {
       return false;
     }
 

@@ -126,18 +126,32 @@ export class GameUIManager {
   }
 
   /**
-   * Updates the HTML preview with current or solution HTML
+   * Updates the HTML preview with current or solution HTML (and optionally CSS)
    */
-  updateHtmlPreview(currentHtml: string, solutionHtml: string): void {
+  updateHtmlPreview(
+    currentHtml: string,
+    solutionHtml: string,
+    currentCss?: string,
+    solutionCss?: string
+  ): void {
     if (!this.htmlPreview) return;
+
+    let displayHtml: string;
+    let displayCss = '';
 
     if (this.isCtrlPressed || this.showSolutionToggle) {
       // Show solution when Ctrl is pressed or toggle is on
-      this.htmlPreview.setHtml(solutionHtml);
+      displayHtml = solutionHtml;
+      displayCss = solutionCss || '';
     } else {
       // Show current output by default
-      this.htmlPreview.setHtml(currentHtml);
+      displayHtml = currentHtml;
+      displayCss = currentCss || '';
     }
+
+    // Pass both HTML and CSS to the preview component
+    // The CSS will be injected into the style tag and applied to the HTML
+    this.htmlPreview.setHtml(displayHtml, displayCss);
   }
 
   /**

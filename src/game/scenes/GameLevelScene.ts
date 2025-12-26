@@ -1,9 +1,5 @@
 import { Scene, Event } from '@engine/core';
-import {
-  CharacterDropEvent,
-  CharacterGrabEvent,
-  PinkStar,
-} from '@game/entities';
+import { CharacterGrabEvent, Character } from '@game/entities';
 import { TickEvent } from '@engine/renderer';
 import { KeyboardInputEvent, KeyAction } from '@engine/input';
 import { LevelData, LevelsData } from './level/LevelData';
@@ -18,30 +14,23 @@ import { LevelProgressionManager, type GameMode } from '@game/progression';
  * Base class for game level scenes
  * Handles common functionality for both HTML and CSS game modes
  */
-export abstract class BaseLevelScene extends Scene {
+export default class GameLevelScene extends Scene {
   private currentLevel: LevelData;
+  private mode: GameMode;
   private onExit?: () => void;
   private onWin?: () => void;
   private hasNextLevel: boolean;
-  private dropping = false;
   private hasWon = false;
 
-  private player: PinkStar | undefined;
+  private player1: Character | undefined;
+  private player2: Character | undefined;
+  private activePlayer: Character | undefined;
   private uiManager: GameUIManager | undefined;
   private winChecker: WinConditionChecker | undefined;
   private tagInteraction: PlayerTagInteraction | undefined;
 
-  /**
-   * Subclasses must specify which game mode they implement
-   */
-  protected abstract getMode(): GameMode;
-
-  /**
-   * Subclasses must specify which level array to use from levels.json
-   */
-  protected abstract getLevelArray(levelsData: LevelsData): LevelData[];
-
   constructor(
+    mode: GameMode,
     levelId = 1,
     onExit?: () => void,
     onWin?: () => void,
@@ -49,8 +38,11 @@ export abstract class BaseLevelScene extends Scene {
   ) {
     super();
 
+    this.mode = mode;
+
     const levelsData = LEVELS_DATA as LevelsData;
-    const levels = this.getLevelArray(levelsData);
+    const levels =
+      mode === 'html' ? levelsData.htmlLevels : levelsData.cssLevels;
     const level = levels.find(l => l.id === levelId);
 
     if (!level) {
@@ -66,13 +58,18 @@ export abstract class BaseLevelScene extends Scene {
   }
 
   private async run() {
-    const levelBuilder = new LevelBuilder(
-      this,
-      this.currentLevel,
-      this.getMode(),
-      () => this.dropping
-    );
-    this.player = levelBuilder.build();
+    const levelBuilder = new LevelBuilder(this, this.currentLevel, this.mode);
+    const players = levelBuilder.build();
+    this.player1 = players.player1;
+    this.player2 = players.player2;
+
+    // Set the active player (player1 by default)
+    this.activePlayer = this.player1;
+
+    // In CSS mode with two players, disable player2 initially
+    if (this.player2) {
+      this.player2.enabled = false;
+    }
 
     this.uiManager = new GameUIManager(
       this,
@@ -83,19 +80,19 @@ export abstract class BaseLevelScene extends Scene {
     );
     this.uiManager.initialize();
 
-    this.tagInteraction = new PlayerTagInteraction(this, this.player);
+    this.tagInteraction = new PlayerTagInteraction(this, this.activePlayer);
 
-    this.winChecker = new WinConditionChecker(this, this.currentLevel);
+    this.winChecker = new WinConditionChecker(
+      this,
+      this.currentLevel,
+      this.mode
+    );
 
     this.setupEventHandlers();
   }
 
   private setupEventHandlers(): void {
     this.on(KeyboardInputEvent, this.handleKeyboardInput.bind(this));
-
-    this.on(CharacterDropEvent, event => {
-      this.dropping = event.start;
-    });
 
     this.on(CharacterGrabEvent, () => {
       this.tagInteraction?.handleGrab();
@@ -107,9 +104,15 @@ export abstract class BaseLevelScene extends Scene {
       this.tagInteraction?.update(this.hasWon);
 
       if (!this.hasWon) {
-        // Get current HTML for preview
+        // Get current HTML and CSS for preview
         const html = this.winChecker.getCurrentHtml();
-        this.uiManager?.updateHtmlPreview(html, this.winChecker.getSolution());
+        const css = this.winChecker.getCurrentCss();
+        this.uiManager?.updateHtmlPreview(
+          html,
+          this.winChecker.getHtmlSolution(),
+          css,
+          this.winChecker.getCssSolution()
+        );
 
         // Only check win condition if no tag is currently grabbed
         const isTagGrabbed = this.tagInteraction?.getGrabbedTag() !== undefined;
@@ -136,6 +139,35 @@ export abstract class BaseLevelScene extends Scene {
 
     if (event.action === KeyAction.DOWN && event.key === 'Escape') {
       this.uiManager?.togglePauseMenu();
+    }
+
+    // Handle character switching in CSS mode (Shift key)
+    if (
+      event.action === KeyAction.DOWN &&
+      event.key === 'Shift' &&
+      this.player2
+    ) {
+      this.switchActivePlayer();
+    }
+  }
+
+  private switchActivePlayer(): void {
+    if (!this.player1 || !this.player2) return;
+
+    // Toggle between players
+    if (this.activePlayer === this.player1) {
+      this.player1.enabled = false;
+      this.player2.enabled = true;
+      this.activePlayer = this.player2;
+    } else {
+      this.player2.enabled = false;
+      this.player1.enabled = true;
+      this.activePlayer = this.player1;
+    }
+
+    // Update tag interaction to use the new active player
+    if (this.tagInteraction) {
+      this.tagInteraction.setPlayer(this.activePlayer);
     }
   }
 }

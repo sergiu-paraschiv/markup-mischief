@@ -10,12 +10,17 @@ export interface TagData {
   text: string;
 }
 
-export interface LevelData {
-  id: number;
-  name: string;
+export interface CodeSection {
   playerStart: PositionData;
   tags: TagData[];
   solution: string;
+}
+
+export interface LevelData {
+  id: number;
+  name: string;
+  html: CodeSection; // Always present
+  css?: CodeSection; // Optional, only for CSS mode levels
 }
 
 export interface LevelsData {

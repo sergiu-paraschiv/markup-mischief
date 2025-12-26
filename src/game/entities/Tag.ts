@@ -7,7 +7,8 @@ import Layout3Slice from './Layout3Slice';
 export default class Tag extends DynamicBody {
   constructor(
     initialPosition: Vector,
-    public readonly text: string
+    public readonly text: string,
+    public readonly tagType: 'html' | 'css' = 'html'
   ) {
     super(initialPosition);
     const assets = GlobalContext.get<AssetsMap>('assets');

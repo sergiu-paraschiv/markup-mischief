@@ -6,15 +6,17 @@ import { Texture } from '@engine/loaders';
 export default class HtmlPreview extends Node2D {
   private _size: Vector;
   private htmlContent: string;
+  private cssContent: string;
   private previewCanvas: OffscreenCanvas;
   private context: OffscreenCanvasRenderingContext2D;
   private sprite: Sprite;
 
-  constructor(position: Vector, size: Vector, html: string) {
+  constructor(position: Vector, size: Vector, html: string, css = '') {
     super();
     this._size = size;
     this.position = position;
     this.htmlContent = html;
+    this.cssContent = css;
 
     // Create an off-screen canvas for rendering HTML
     this.previewCanvas = new OffscreenCanvas(this.width, this.height);
@@ -48,11 +50,14 @@ export default class HtmlPreview extends Node2D {
               font-size: 12px;
               line-height: 1.4;
             }
-            
+
             a {
               color: blue;
               text-decoration: underline;
             }
+
+            /* User-provided CSS */
+            ${this.cssContent}
           </style>
         </head>
         <body>${this.htmlContent}</body>
@@ -76,9 +81,10 @@ export default class HtmlPreview extends Node2D {
     }
   }
 
-  public setHtml(html: string): void {
-    if (this.htmlContent !== html) {
+  public setHtml(html: string, css = ''): void {
+    if (this.htmlContent !== html || this.cssContent !== css) {
       this.htmlContent = html;
+      this.cssContent = css;
       this.renderHtml();
     }
   }

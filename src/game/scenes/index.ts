@@ -1,7 +1,7 @@
 import LoadingScene from './LoadingScene';
 import MainMenuScene from './MainMenuScene';
-import HTMLLevelScene from './HTMLLevelScene';
-import CSSLevelScene from './CSSLevelScene';
+import GameLevelScene from './GameLevelScene';
+
 import LEVELS from './level/levels.json';
 
-export { LoadingScene, MainMenuScene, HTMLLevelScene, CSSLevelScene, LEVELS };
+export { LoadingScene, MainMenuScene, GameLevelScene, LEVELS };

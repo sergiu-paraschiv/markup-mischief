@@ -1,16 +1,25 @@
 import { Query, Scene, Vector } from '@engine/core';
-import { PinkStar, Pointing, Tag } from '@game/entities';
+import { Character, Pointing, Tag } from '@game/entities';
 
 /**
  * Manages player-tag interaction mechanics (grabbing, dropping, ghost rendering)
  */
 export class PlayerTagInteraction {
   private scene: Scene;
-  private player: PinkStar;
+  private player: Character;
   private grabbedTag?: Tag;
 
-  constructor(scene: Scene, player: PinkStar) {
+  constructor(scene: Scene, player: Character) {
     this.scene = scene;
+    this.player = player;
+  }
+
+  /**
+   * Changes the active player (used when switching characters in CSS mode)
+   */
+  setPlayer(player: Character): void {
+    // Release any currently grabbed tag when switching players
+    this.releaseTag();
     this.player = player;
   }
 

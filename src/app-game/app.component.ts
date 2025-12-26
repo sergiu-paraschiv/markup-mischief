@@ -14,8 +14,7 @@ import { Debugger } from '@debugger';
 import {
   LoadingScene,
   MainMenuScene,
-  HTMLLevelScene,
-  CSSLevelScene,
+  GameLevelScene,
   LEVELS,
 } from '@game/scenes';
 import { LevelProgressionManager, GameMode } from '@game/progression';
@@ -74,7 +73,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     const dbgr = new Debugger(gameElement);
     dbgr.attachTo(engine);
     // dbgr.enableGridLines = true;
-    dbgr.enablePhysicsDebugLines = true;
+    // dbgr.enablePhysicsDebugLines = true;
     // dbgr.enableHoverHighlight = true;
     // dbgr.enableFlexDebugLines = true;
     dbgr.enableRenderGraph = true;
@@ -139,14 +138,13 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       const currentLevelIndex = levels.findIndex(l => l.id === levelId);
       const hasNextLevel = currentLevelIndex < levels.length - 1;
 
-      const SceneClass = mode === 'html' ? HTMLLevelScene : CSSLevelScene;
-
       engine.loadScene(
-        new SceneClass(
+        new GameLevelScene(
+          mode,
           levelId,
           () => {
             // onExit: return to levels menu (recreate to show updated progression)
-            engine.loadScene(createLevelsMenu(mode));
+            engine.loadScene(mainMenuScene);
           },
           () => {
             if (hasNextLevel) {

@@ -21,6 +21,8 @@ export class CharacterGrabEvent extends Event {}
 
 export default class CharacterController extends DynamicBody {
   protected input: InputState;
+  private _enabled = true;
+  private _dropping = false;
 
   constructor(initialPosition: Vector) {
     super(initialPosition);
@@ -82,17 +84,18 @@ export default class CharacterController extends DynamicBody {
     });
 
     let jumping = false;
-    let dropping = false;
     this.input.onChange(newState => {
+      if (!this._enabled) return;
+
       if (newState.get(CharacterInput.UP) && this.isGrounded()) {
         jumping = true;
       }
 
       if (newState.get(CharacterInput.DROP) && this.isGrounded()) {
-        dropping = true;
+        this._dropping = true;
         this.dispatchEvent(new CharacterDropEvent(true));
-      } else if (dropping) {
-        dropping = false;
+      } else if (this._dropping) {
+        this._dropping = false;
         this.dispatchEvent(new CharacterDropEvent(false));
       }
 
@@ -102,6 +105,8 @@ export default class CharacterController extends DynamicBody {
     });
 
     this.on(PhysicsTickEvent, e => {
+      if (!this._enabled) return;
+
       if (
         !(
           this.input.state.get(CharacterInput.LEFT) &&
@@ -121,7 +126,7 @@ export default class CharacterController extends DynamicBody {
         this.applyImpulse(new Vector(0, -32 * 9), e.deltaTime);
       }
 
-      if (dropping) {
+      if (this._dropping) {
         this.applyImpulse(new Vector(0, 3), e.deltaTime);
       }
     });
@@ -129,6 +134,18 @@ export default class CharacterController extends DynamicBody {
     this.on(AfterPhysicsTickEvent, e => {
       this.switchStance(e.currentTime);
     });
+  }
+
+  get enabled(): boolean {
+    return this._enabled;
+  }
+
+  set enabled(value: boolean) {
+    this._enabled = value;
+  }
+
+  get isDropping(): boolean {
+    return this._dropping;
   }
 
   protected switchStance(currentTime: number) {
