@@ -6,9 +6,11 @@ import {
   ClipMask,
   ClipRegion,
   isCanvasItemClipMask,
+  Node2D,
 } from '@engine/elements';
 import TickEvent from './TickEvent';
 import { globalCanvasPool, type CanvasPurpose } from './CanvasPool';
+import { globalRenderCache } from './RenderCache';
 
 export default class CanvasRenderer {
   private canvas: HTMLCanvasElement;
@@ -252,6 +254,78 @@ export default class CanvasRenderer {
     for (const child of children) {
       this.renderCanvasItem(context, child);
     }
+  }
+
+  private renderCachedItem(
+    context: CanvasRenderingContext2D,
+    item: Node2D,
+    cacheKey: string
+  ): void {
+    // Try to get from cache
+    const cachedCanvas = globalRenderCache.get(cacheKey);
+
+    if (cachedCanvas) {
+      // Cache hit - draw the cached canvas directly
+      this.cacheHitCount++;
+
+      // Draw the cached canvas at the item's position
+      context.save();
+      if (item.opacity < 1.0) {
+        context.globalAlpha = item.opacity;
+      }
+      context.drawImage(
+        cachedCanvas,
+        Math.floor(item.position.x),
+        Math.floor(item.position.y)
+      );
+      context.restore();
+
+      return;
+    }
+
+    // Cache miss - render to temp canvas and cache it
+    const width = item.width;
+    const height = item.height;
+    const { canvas: tempCanvas, context: tempContext } = this.createTempCanvas(
+      width,
+      height,
+      'cache'
+    );
+
+    // Save the original position and temporarily move to origin for rendering
+    const originalPos = item.position.clone();
+    item.position.x = 0;
+    item.position.y = 0;
+
+    // Render using existing draw logic
+    if (item instanceof AnimatedSprite) {
+      this.drawAnimatedSprite(tempContext, item);
+    } else if (item instanceof Sprite) {
+      this.drawSprite(tempContext, item);
+    } else {
+      item.draw(tempContext);
+    }
+
+    // Restore original position
+    item.position.x = originalPos.x;
+    item.position.y = originalPos.y;
+
+    // Cache the rendered content
+    globalRenderCache.set(cacheKey, tempCanvas, width, height);
+
+    // Draw the newly cached canvas at the original position
+    context.save();
+    if (item.opacity < 1.0) {
+      context.globalAlpha = item.opacity;
+    }
+    context.drawImage(
+      tempCanvas,
+      Math.floor(item.position.x),
+      Math.floor(item.position.y)
+    );
+    context.restore();
+
+    this.renderCount++;
   }
 
   private applyFillColorToTexture(
@@ -552,10 +626,18 @@ export default class CanvasRenderer {
         continue;
       }
 
-      if (item.cacheable) {
-        this.cacheHitCount++;
+      if (item instanceof Node2D) {
+        // Check if item is cacheable and has a cache key
+        const cacheKey = item.cacheable ? item.cacheKey : undefined;
+
+        if (cacheKey) {
+          // Use cached rendering
+          this.renderCachedItem(this.context, item, cacheKey);
+          continue;
+        }
       }
 
+      // Non-cacheable item - render normally
       // Increment render count
       this.renderCount++;
 

@@ -29,11 +29,18 @@ export default class Node2D extends CanvasItem {
   private _fillColor: string | undefined = undefined;
   public clipRegion: ClipMask | ClipMask[] | undefined = undefined;
 
+  // Caching support
+  public cacheable = false;
+
   constructor(position?: Vector, children?: Element[]) {
     super(children);
 
     this._position = position || new Vector();
     this._translation = new Vector();
+  }
+
+  get cacheKey(): string | undefined {
+    return undefined;
   }
 
   get opacity(): number {
