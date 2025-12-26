@@ -43,7 +43,6 @@ export default class Button extends Node2D {
     // Set up mouse interaction
     this.mouseInteraction = new MouseInteractionManager(this);
 
-    // Example: Add hover effect
     this.mouseInteraction.on(MouseEnterEvent, this.handleMouseEnter.bind(this));
     this.mouseInteraction.on(MouseLeaveEvent, this.handleMouseLeave.bind(this));
     this.mouseInteraction.on(MouseClickEvent, this.handleMouseClick.bind(this));

@@ -1,49 +1,33 @@
-import { Query, Scene, Vector, Event, GlobalContext } from '@engine/core';
-import { SpriteMash, SpriteMashData, Node2D } from '@engine/elements';
-import { StaticBody } from '@engine/physics';
+import { Scene, Event } from '@engine/core';
 import {
-  BOARD_DATA,
-  PinkStar,
-  Character,
   CharacterDropEvent,
   CharacterGrabEvent,
-  Pointing,
-  Tag,
-  Wall,
-  MainMenu,
-  MenuItem,
-  LayoutFlex,
-  Button,
-  Text,
-  HtmlPreview,
+  PinkStar,
 } from '@game/entities';
 import { TickEvent } from '@engine/renderer';
 import { KeyboardInputEvent, KeyAction } from '@engine/input';
-import { LevelData, LevelsData, positionToVector } from './LevelData';
-import LEVELS_DATA from './levels.json';
+import { LevelData, LevelsData } from './level/LevelData';
+import LEVELS_DATA from './level/levels.json';
+import { LevelBuilder } from './level/LevelBuilder';
+import { WinConditionChecker } from './level/WinConditionChecker';
+import { PlayerTagInteraction } from './level/PlayerTagInteraction';
+import { GameUIManager } from './level/GameUIManager';
 
-const PLAYER_DEPTH = 700;
-const TAG_DEPTH = 800;
-const PLAYER_OUTLINE_DEPTH = 900;
-const MENU_DEPTH = 1000;
-
+/**
+ * Main game level scene
+ * Orchestrates level building, UI, player-tag interactions, and win conditions
+ */
 export default class GameLevelScene extends Scene {
   private currentLevel: LevelData;
   private onExit?: () => void;
   private onWin?: () => void;
-  private pauseMenu?: Node2D;
-  private winMenu?: Node2D;
-  private menuButton?: Button;
-  private levelNameText?: Text;
-  private uiLayout?: LayoutFlex;
-  private htmlPreview?: HtmlPreview;
-  private targetLayout?: LayoutFlex;
-  private solutionToggleButton?: Button;
-  private solutionToggleButtonText?: Text;
-  private isPaused = false;
+  private dropping = false;
   private hasWon = false;
-  private isCtrlPressed = false;
-  private showSolutionToggle = false;
+
+  private player: PinkStar | undefined;
+  private uiManager: GameUIManager | undefined;
+  private winChecker: WinConditionChecker | undefined;
+  private tagInteraction: PlayerTagInteraction | undefined;
 
   constructor(levelId = 1, onExit?: () => void, onWin?: () => void) {
     super();
@@ -59,393 +43,73 @@ export default class GameLevelScene extends Scene {
     this.onExit = onExit;
     this.onWin = onWin;
 
-    // Listen for Escape key to toggle pause menu
-    this.on(KeyboardInputEvent, this.handleKeyboardInput.bind(this));
-
     this.run();
   }
 
   private async run() {
-    function makeEdgeWall(position: Vector, size: Vector) {
-      const body = new StaticBody(position);
-      body.addChild(new Wall(position, size));
-
-      return body;
-    }
-
-    function makePlatformWall(position: Vector, size: Vector) {
-      const body = new StaticBody(position);
-      body.addChild(new Wall(position, size));
-
-      body.filterCollisionFn = ({ collider, velocity }) => {
-        if (collider instanceof Character && dropping) {
-          return false;
-        }
-
-        if (collider instanceof Character && velocity.y <= 0) {
-          return false;
-        }
-
-        return true;
-      };
-
-      return body;
-    }
-
-    function makeTagTile(position: Vector, text: string) {
-      const tag = new Tag(position, text);
-
-      tag.filterCollisionFn = ({ collider, velocity }) => {
-        if (collider instanceof Character && dropping) {
-          return false;
-        }
-
-        if (collider instanceof Character && velocity.y <= 0) {
-          return false;
-        }
-
-        return true;
-      };
-
-      return tag;
-    }
-
-    let dropping = false;
-    let grabbedTag: Tag | undefined;
-
-    const board = SpriteMash.fromData(BOARD_DATA as SpriteMashData);
-    this.addChild(board);
-    this.addChild(makeEdgeWall(new Vector(0, 0), new Vector(32, 32 * 12)));
-    this.addChild(
-      makeEdgeWall(new Vector(32 * 15, 0), new Vector(32, 32 * 12))
+    const levelBuilder = new LevelBuilder(
+      this,
+      this.currentLevel,
+      () => this.dropping
     );
-    this.addChild(makeEdgeWall(new Vector(32, 0), new Vector(32 * 14, 32)));
-    this.addChild(
-      makeEdgeWall(new Vector(32, 32 * 11), new Vector(32 * 14, 32))
-    );
-    this.addChild(
-      makeEdgeWall(new Vector(32 * 11, 32 * 9), new Vector(32 * 4, 32 * 2))
-    );
+    this.player = levelBuilder.build();
 
-    for (let i = 6; i <= 10; i += 1) {
-      this.addChild(
-        makePlatformWall(new Vector(32 * 1, 2 + 32 * i), new Vector(32 * 9, 1))
-      );
-    }
-
-    this.addChild(
-      makePlatformWall(new Vector(32 * 10 + 24, 2 + 32 * 8), new Vector(22, 1))
+    this.uiManager = new GameUIManager(
+      this,
+      this.currentLevel,
+      this.onExit,
+      this.onWin
     );
+    this.uiManager.initialize();
 
-    this.addChild(
-      makePlatformWall(new Vector(32 * 13 + 24, 2 + 32 * 7), new Vector(22, 1))
-    );
+    this.tagInteraction = new PlayerTagInteraction(this, this.player);
 
-    this.addChild(
-      makePlatformWall(new Vector(32 * 6 + 24, 2 + 32 * 4), new Vector(22, 1))
-    );
+    this.winChecker = new WinConditionChecker(this, this.currentLevel);
 
-    // Spawn player from level data
-    const player = new PinkStar(
-      positionToVector(this.currentLevel.playerStart)
-    );
-    this.addChild(player, PLAYER_DEPTH);
-    // Add ghost at a higher depth so it renders on top of tags
-    this.addChild(player.ghost, PLAYER_OUTLINE_DEPTH);
+    this.setupEventHandlers();
+  }
 
-    // Spawn tags from level data
-    this.currentLevel.tags.forEach(tagData => {
-      this.addChild(
-        makeTagTile(positionToVector(tagData.position), tagData.text),
-        TAG_DEPTH
-      );
-    });
+  private setupEventHandlers(): void {
+    this.on(KeyboardInputEvent, this.handleKeyboardInput.bind(this));
 
     this.on(CharacterDropEvent, event => {
-      dropping = event.start;
+      this.dropping = event.start;
     });
 
     this.on(CharacterGrabEvent, () => {
-      if (grabbedTag) {
-        grabbedTag = undefined;
-      } else {
-        const tag = player.checkFutureIntersection(
-          new Vector(0, 1),
-          collider => collider instanceof Tag
-        );
-        if (tag) {
-          grabbedTag = tag as Tag;
-        }
-      }
-
-      Query.childrenByType(Tag, this).forEach(tag => tag.wakeUp());
+      this.tagInteraction?.handleGrab();
     });
 
     this.on(TickEvent, () => {
-      if (grabbedTag && !this.hasWon) {
-        grabbedTag.position = player.position.add(
-          new Vector(player.pointing === Pointing.LEFT ? 24 : 38, 8)
-        );
-      } else if (!this.hasWon) {
-        const tags = Query.childrenByType(Tag, this);
-        // Sort with tolerance for Y positions (within 16 pixels = same row)
-        const rowTolerance = 16;
-        tags.sort((a, b) => {
-          const yDiff = Math.abs(a.position.y - b.position.y);
+      if (!this.winChecker) return;
 
-          // If Y positions are within tolerance, consider them same row - sort by X
-          if (yDiff < rowTolerance) {
-            return a.position.x - b.position.x;
-          }
+      this.tagInteraction?.update(this.hasWon);
 
-          // Different rows - sort by Y
-          return a.position.y - b.position.y;
-        });
+      if (!this.hasWon) {
+        // Get current HTML for preview
+        const html = this.winChecker.getCurrentHtml();
+        this.uiManager?.updateHtmlPreview(html, this.winChecker.getSolution());
 
-        const html = tags.map(tag => tag.text).join(' ');
+        // Only check win condition if no tag is currently grabbed
+        const isTagGrabbed = this.tagInteraction?.getGrabbedTag() !== undefined;
 
-        // Update HTML preview based on Ctrl key state or toggle button
-        if (this.htmlPreview) {
-          if (this.isCtrlPressed || this.showSolutionToggle) {
-            // Show solution when Ctrl is pressed or toggle is on
-            this.htmlPreview.setHtml(this.currentLevel.solution);
-          } else {
-            // Show current output by default
-            this.htmlPreview.setHtml(html);
-          }
+        if (!isTagGrabbed && this.winChecker.isCorrect()) {
+          this.hasWon = true;
+          this.uiManager?.showWinMenu();
         }
-
-        if (html === this.currentLevel.solution) {
-          this.showWinMenu();
-        }
-      }
-
-      // Update ghost position to follow player
-      player.updateGhostPosition();
-
-      // Check if player is behind any tags
-      const overlappingTags = player.checkAllCurrentIntersections(
-        collider => collider instanceof Tag
-      );
-
-      if (overlappingTags.length > 0) {
-        // Create CanvasItem clip masks from overlapping tags
-        player.ghostGraphics.clipRegion = overlappingTags.map(tag => {
-          const tagBox = tag.collider;
-
-          return {
-            item: tag,
-            position: new Vector(tagBox.position.x, tagBox.position.y),
-          };
-        });
-        player.ghostGraphics.isVisible = true;
-      } else {
-        player.ghostGraphics.clipRegion = undefined;
-        player.ghostGraphics.isVisible = false;
       }
     });
-
-    // Create UI layout in bottom-right corner
-    const viewport = GlobalContext.get<Vector>('viewport');
-
-    // Create level name text
-    this.levelNameText = new Text(this.currentLevel.name);
-    this.levelNameText.fillColor = '#639d6d';
-
-    // Create menu button
-    const menuButtonText = new Text('Menu');
-    this.menuButton = new Button(new Vector(0, 0), menuButtonText);
-    this.menuButton.action = () => {
-      this.showPauseMenu();
-    };
-
-    // Create flex layout container
-    this.uiLayout = new LayoutFlex(
-      new Vector(0, viewport.height - 60),
-      new Vector(viewport.width, 60)
-    );
-    this.uiLayout.flexDirection = 'column';
-    this.uiLayout.justifyContent = 'flex-end';
-    this.uiLayout.alignItems = 'flex-end';
-    this.uiLayout.padding = new Vector(8, 8);
-
-    // Add elements to layout
-    this.uiLayout.addChild(this.menuButton);
-    this.uiLayout.addChild(this.levelNameText);
-
-    this.addChild(this.uiLayout);
-
-    // Create HTML preview for current output in top-right corner
-    // Initially empty, will be updated in TickEvent
-    this.htmlPreview = new HtmlPreview(new Vector(0, 0), '');
-
-    // Create solution toggle button
-    this.solutionToggleButtonText = new Text('Show Solution');
-    this.solutionToggleButton = new Button(
-      new Vector(0, 0),
-      this.solutionToggleButtonText
-    );
-    this.solutionToggleButton.action = () => {
-      this.showSolutionToggle = !this.showSolutionToggle;
-      // Update button text based on toggle state
-      if (this.solutionToggleButtonText) {
-        this.solutionToggleButtonText.setText(
-          this.showSolutionToggle ? 'Hide Solution' : 'Show Solution'
-        );
-      }
-    };
-
-    // Create layout for target preview in top-right
-    this.targetLayout = new LayoutFlex(new Vector(0, 0), viewport);
-    this.targetLayout.flexDirection = 'column';
-    this.targetLayout.justifyContent = 'flex-start';
-    this.targetLayout.alignItems = 'flex-end';
-    this.targetLayout.padding = new Vector(8, 8);
-    this.targetLayout.gap = 4;
-
-    this.targetLayout.addChild(this.htmlPreview);
-    this.targetLayout.addChild(this.solutionToggleButton);
-
-    this.addChild(this.targetLayout);
   }
 
   private handleKeyboardInput(event: Event): void {
     if (!(event instanceof KeyboardInputEvent)) return;
 
-    // Handle Ctrl key press/release
     if (event.key === 'Control') {
-      this.isCtrlPressed = event.action === KeyAction.DOWN;
-
-      // Update button text to reflect Ctrl state
-      if (this.solutionToggleButtonText) {
-        if (this.isCtrlPressed) {
-          this.solutionToggleButtonText.setText('Hide Solution');
-        } else {
-          // Reset to appropriate text based on toggle state
-          this.solutionToggleButtonText.setText(
-            this.showSolutionToggle ? 'Hide Solution' : 'Show Solution'
-          );
-        }
-      }
+      this.uiManager?.setCtrlPressed(event.action === KeyAction.DOWN);
     }
 
     if (event.action === KeyAction.DOWN && event.key === 'Escape') {
-      if (this.isPaused) {
-        this.hidePauseMenu();
-      } else {
-        this.showPauseMenu();
-      }
+      this.uiManager?.togglePauseMenu();
     }
-  }
-
-  private showPauseMenu(): void {
-    if (this.isPaused) return;
-
-    this.isPaused = true;
-
-    // Hide UI layout
-    if (this.uiLayout) {
-      this.uiLayout.isVisible = false;
-    }
-
-    const viewport = GlobalContext.get<Vector>('viewport');
-
-    // Create semi-transparent overlay
-    const overlay = new Node2D();
-    overlay.fillColor = 'rgba(0, 0, 0, 0.5)';
-
-    // Create pause menu
-    const menu = new MainMenu(new Vector(0, 0), [
-      {
-        label: 'Continue',
-        action: () => {
-          this.hidePauseMenu();
-        },
-      },
-      {
-        label: 'Exit',
-        action: () => {
-          this.hidePauseMenu();
-          if (this.onExit) {
-            this.onExit();
-          }
-        },
-      },
-    ]);
-
-    // Create layout to center the menu
-    const menuLayout = new LayoutFlex(new Vector(0, 0), viewport);
-    menuLayout.justifyContent = 'center';
-    menuLayout.alignItems = 'center';
-    menuLayout.addChild(menu);
-
-    this.pauseMenu = menuLayout;
-    this.addChild(this.pauseMenu, MENU_DEPTH);
-  }
-
-  private hidePauseMenu(): void {
-    if (!this.isPaused || !this.pauseMenu) return;
-
-    this.isPaused = false;
-    this.removeChild(this.pauseMenu);
-    this.pauseMenu = undefined;
-
-    // Show UI layout again
-    if (this.uiLayout) {
-      this.uiLayout.isVisible = true;
-    }
-  }
-
-  private showWinMenu(): void {
-    if (this.hasWon) return;
-
-    this.hasWon = true;
-
-    // Hide UI layout
-    if (this.uiLayout) {
-      this.uiLayout.isVisible = false;
-    }
-
-    const viewport = GlobalContext.get<Vector>('viewport');
-
-    // Create semi-transparent overlay
-    const overlay = new Node2D();
-    overlay.fillColor = 'rgba(0, 0, 0, 0.5)';
-
-    const buttons: MenuItem[] = [];
-
-    // Add Next level button to trigger onWin callback
-    if (this.onWin) {
-      buttons.push({
-        label: 'Next level',
-        action: () => {
-          if (this.onWin) {
-            this.onWin();
-          }
-        },
-      });
-    }
-
-    // Add Exit button
-    buttons.push({
-      label: 'Exit',
-      action: () => {
-        if (this.onExit) {
-          this.onExit();
-        }
-      },
-    });
-
-    // Create win menu with celebration message
-    const menu = new MainMenu(new Vector(0, 0), buttons);
-
-    // Create layout to center the menu
-    const menuLayout = new LayoutFlex(new Vector(0, 0), viewport);
-    menuLayout.justifyContent = 'center';
-    menuLayout.alignItems = 'center';
-    menuLayout.addChild(menu);
-
-    this.winMenu = menuLayout;
-    this.addChild(this.winMenu, MENU_DEPTH);
   }
 }

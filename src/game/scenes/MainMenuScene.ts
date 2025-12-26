@@ -8,7 +8,6 @@ export default class MainMenuScene extends Scene {
     const viewport = GlobalContext.get<Vector>('viewport');
     const menu = new MainMenu(new Vector(0, 0), menuItems, backAction);
 
-    // Create main layout to center everything
     const mainLayout = new LayoutFlex(new Vector(0, 0), viewport);
     mainLayout.justifyContent = 'center';
     mainLayout.alignItems = 'center';
