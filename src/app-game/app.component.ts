@@ -77,7 +77,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     // dbgr.enableHoverHighlight = true;
     dbgr.enableFlexDebugLines = true;
 
-    engine.start(200, 200);
+    engine.start(120, 120);
 
     const loadingScene = new LoadingScene(
       ASSETS.loading,

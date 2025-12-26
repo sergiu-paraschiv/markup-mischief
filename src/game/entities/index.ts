@@ -11,12 +11,12 @@ import {
 } from './characters';
 import Text from './Text';
 import Tag from './Tag';
-import Button from './Button';
+import Button, { ButtonVariant } from './Button';
 import Wall from './Wall';
 import HtmlPreview from './HtmlPreview';
 import PaperBoard from './PaperBoard';
-import PrimaryBoard from './PrimaryBoard';
-import SecondaryBoard from './SecondaryBoard';
+import Board from './Board';
+import Box from './Box';
 
 export {
   LayoutFlex,
@@ -34,6 +34,8 @@ export {
   Wall,
   HtmlPreview,
   PaperBoard,
-  PrimaryBoard,
-  SecondaryBoard,
+  Board,
+  Box,
 };
+
+export type { ButtonVariant };

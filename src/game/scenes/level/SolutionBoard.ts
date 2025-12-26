@@ -1,6 +1,6 @@
 import { Vector } from '@engine/core';
 import { Node2D } from '@engine/elements';
-import { HtmlPreview, SecondaryBoard } from '@game/entities';
+import { HtmlPreview, Board } from '@game/entities';
 
 export default class SolutionBoard extends Node2D {
   private board: Node2D;
@@ -9,9 +9,11 @@ export default class SolutionBoard extends Node2D {
     super(position);
 
     const padding = new Vector(10, 10);
-    this.board = new SecondaryBoard(
+    this.board = new Board(
       new Vector(0, 0),
-      htmlPreview.size.add(padding.mul(2))
+      htmlPreview.size.add(padding.mul(2)),
+      'secondary',
+      false
     );
     htmlPreview.position = padding;
     this.board.addChild(htmlPreview);

@@ -56,8 +56,7 @@ export class GameUIManager {
    * Creates the UI layout in bottom-right corner (menu button, level name)
    */
   private createBottomRightUI(): void {
-    this.levelNameText = new Text(this.levelData.name);
-    this.levelNameText.fillColor = '#639d6d';
+    this.levelNameText = new Text(this.levelData.name, 0, 'hero');
 
     const menuButtonText = new Text('Menu');
     this.menuButton = new Button(new Vector(0, 0), menuButtonText);
@@ -73,6 +72,7 @@ export class GameUIManager {
     this.uiLayout.justifyContent = 'flex-end';
     this.uiLayout.alignItems = 'flex-end';
     this.uiLayout.padding = new Vector(8, 8);
+    this.uiLayout.gap = 6;
 
     // Add elements to layout
     this.uiLayout.addChild(this.menuButton);
@@ -96,7 +96,8 @@ export class GameUIManager {
     this.solutionToggleButtonText = new Text('Show Solution');
     this.solutionToggleButton = new Button(
       new Vector(0, 0),
-      this.solutionToggleButtonText
+      this.solutionToggleButtonText,
+      'secondary'
     );
     this.solutionToggleButton.action = () => {
       this.showSolutionToggle = !this.showSolutionToggle;
@@ -161,8 +162,8 @@ export class GameUIManager {
 
     this.isPaused = true;
 
-    if (this.uiLayout) {
-      this.uiLayout.isVisible = false;
+    if (this.menuButton) {
+      this.menuButton.isVisible = false;
     }
 
     const menu = new MainMenu(new Vector(0, 0), [
@@ -202,8 +203,8 @@ export class GameUIManager {
     this.scene.removeChild(this.pauseMenu);
     this.pauseMenu = undefined;
 
-    if (this.uiLayout) {
-      this.uiLayout.isVisible = true;
+    if (this.menuButton) {
+      this.menuButton.isVisible = true;
     }
   }
 
@@ -213,8 +214,8 @@ export class GameUIManager {
   showWinMenu(): void {
     if (this.winMenu) return;
 
-    if (this.uiLayout) {
-      this.uiLayout.isVisible = false;
+    if (this.menuButton) {
+      this.menuButton.isVisible = false;
     }
 
     const buttons: MenuItem[] = [];
@@ -237,6 +238,7 @@ export class GameUIManager {
           this.onExit();
         }
       },
+      variant: 'secondary',
     });
 
     const menu = new MainMenu(new Vector(0, 0), buttons);

@@ -268,7 +268,8 @@ export default class CanvasRenderer implements IRenderer {
     fillColor: string | undefined,
     clipRegion: ClipMask | ClipMask[] | undefined,
     flipH = false,
-    flipV = false
+    flipV = false,
+    scale: Vector = new Vector(1, 1)
   ) {
     const needsCanvasItemMask = this.hasCanvasItemClipMask(clipRegion);
 
@@ -288,14 +289,14 @@ export default class CanvasRenderer implements IRenderer {
 
       // Apply flip transforms if needed
       if (flipH || flipV) {
-        const scaleX = flipH ? -1 : 1;
-        const scaleY = flipV ? -1 : 1;
-        tempContext.scale(scaleX, scaleY);
+        const flipScaleX = flipH ? -1 : 1;
+        const flipScaleY = flipV ? -1 : 1;
+        tempContext.scale(flipScaleX, flipScaleY);
         tempContext.drawImage(
           imageSource,
-          scaleX * 0,
+          flipScaleX * 0,
           0,
-          scaleX * width,
+          flipScaleX * width,
           height
         );
       } else {
@@ -314,7 +315,11 @@ export default class CanvasRenderer implements IRenderer {
         }
       );
 
-      // Draw to final context with opacity and rectangle clips
+      // Calculate scaled dimensions
+      const scaledWidth = width * scale.x;
+      const scaledHeight = height * scale.y;
+
+      // Draw to final context with opacity, scale, and rectangle clips
       context.save();
       this.applyRectangleClips(context, clipRegion);
 
@@ -325,7 +330,9 @@ export default class CanvasRenderer implements IRenderer {
       context.drawImage(
         maskedCanvas,
         Math.floor(position.x),
-        Math.floor(position.y)
+        Math.floor(position.y),
+        scaledWidth,
+        scaledHeight
       );
 
       context.restore();
@@ -357,14 +364,14 @@ export default class CanvasRenderer implements IRenderer {
 
         // Apply flip transforms if needed
         if (flipH || flipV) {
-          const scaleX = flipH ? -1 : 1;
-          const scaleY = flipV ? -1 : 1;
-          tempContext.scale(scaleX, scaleY);
+          const flipScaleX = flipH ? -1 : 1;
+          const flipScaleY = flipV ? -1 : 1;
+          tempContext.scale(flipScaleX, flipScaleY);
           tempContext.drawImage(
             imageSource,
-            scaleX * 0,
+            flipScaleX * 0,
             0,
-            scaleX * width,
+            flipScaleX * width,
             height
           );
         } else {
@@ -379,7 +386,11 @@ export default class CanvasRenderer implements IRenderer {
           height
         );
 
-        // Draw final result with opacity
+        // Calculate scaled dimensions
+        const scaledWidth = width * scale.x;
+        const scaledHeight = height * scale.y;
+
+        // Draw final result with opacity and scale
         context.save();
         if (opacity < 1.0) {
           context.globalAlpha = opacity;
@@ -388,7 +399,9 @@ export default class CanvasRenderer implements IRenderer {
         context.drawImage(
           clippedCanvas,
           Math.floor(position.x),
-          Math.floor(position.y)
+          Math.floor(position.y),
+          scaledWidth,
+          scaledHeight
         );
 
         context.restore();
@@ -409,23 +422,30 @@ export default class CanvasRenderer implements IRenderer {
         );
         const imageSource = filledTexture || textureData;
 
-        // Apply flip transforms and draw
+        // Calculate scaled dimensions
+        const scaledWidth = width * scale.x;
+        const scaledHeight = height * scale.y;
+
+        // Apply flip transforms and draw with scale
         if (flipH || flipV) {
-          const scaleX = flipH ? -1 : 1;
-          const scaleY = flipV ? -1 : 1;
-          context.scale(scaleX, scaleY);
+          const flipScaleX = flipH ? -1 : 1;
+          const flipScaleY = flipV ? -1 : 1;
+          context.translate(Math.floor(position.x), Math.floor(position.y));
+          context.scale(flipScaleX, flipScaleY);
           context.drawImage(
             imageSource,
-            scaleX * Math.floor(position.x),
-            Math.floor(position.y),
-            scaleX * width,
-            height
+            0,
+            0,
+            flipScaleX * scaledWidth,
+            flipScaleY * scaledHeight
           );
         } else {
           context.drawImage(
             imageSource,
             Math.floor(position.x),
-            Math.floor(position.y)
+            Math.floor(position.y),
+            scaledWidth,
+            scaledHeight
           );
         }
 
@@ -447,7 +467,10 @@ export default class CanvasRenderer implements IRenderer {
       texture.height,
       sprite.opacity,
       sprite.fillColor,
-      sprite.clipRegion
+      sprite.clipRegion,
+      false,
+      false,
+      sprite.scale
     );
   }
 
@@ -469,7 +492,8 @@ export default class CanvasRenderer implements IRenderer {
       sprite.fillColor,
       sprite.clipRegion,
       sprite.flipH,
-      sprite.flipV
+      sprite.flipV,
+      sprite.scale
     );
   }
 

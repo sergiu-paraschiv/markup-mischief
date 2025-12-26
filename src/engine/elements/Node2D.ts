@@ -25,6 +25,7 @@ export default class Node2D extends CanvasItem {
   private _position: Vector;
   private _translation: Vector;
   private _opacity = 1.0;
+  private _scale: Vector = new Vector(1, 1);
   private _fillColor: string | undefined = undefined;
   public clipRegion: ClipMask | ClipMask[] | undefined = undefined;
 
@@ -48,6 +49,22 @@ export default class Node2D extends CanvasItem {
     this._opacity = value;
   }
 
+  get scale(): Vector {
+    let accumulatedScale = this._scale;
+    const parent = Query.parentByType(Node2D, this);
+    if (parent) {
+      accumulatedScale = new Vector(
+        accumulatedScale.x * parent.scale.x,
+        accumulatedScale.y * parent.scale.y
+      );
+    }
+    return accumulatedScale;
+  }
+
+  set scale(value: Vector) {
+    this._scale = value;
+  }
+
   get position() {
     const ownPosition = this._position.add(this._translation);
     const positionedParent = Query.parentByType(Node2D, this);
@@ -66,7 +83,16 @@ export default class Node2D extends CanvasItem {
   }
 
   get fillColor(): string | undefined {
-    return this._fillColor;
+    // If this node has a fill color set, use it
+    if (this._fillColor !== undefined) {
+      return this._fillColor;
+    }
+    // Otherwise, inherit from parent
+    const parent = Query.parentByType(Node2D, this);
+    if (parent) {
+      return parent.fillColor;
+    }
+    return undefined;
   }
 
   set fillColor(color: string | undefined) {

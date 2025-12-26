@@ -3,14 +3,27 @@ import { Node2D, Sprite } from '@engine/elements';
 import { CharsMap, Char, AssetsMap } from '@engine/loaders';
 import { Texture } from '@engine/loaders';
 
+type TextStyle = 'regular' | 'hero';
+
+const STYLE_CONFIG = {
+  regular: {
+    charsMapKey: 'Chars',
+  },
+  hero: {
+    charsMapKey: 'CharsHero',
+  },
+};
+
 export default class Text extends Node2D {
   private _width = 0;
   private _height = 0;
   private letterSpacing: number;
+  private style: TextStyle;
 
-  constructor(text?: string, letterSpacing = 1) {
+  constructor(text?: string, letterSpacing = 1, style: TextStyle = 'regular') {
     super();
     this.letterSpacing = letterSpacing;
+    this.style = style;
     if (text) {
       this.setText(text);
     }
@@ -64,11 +77,15 @@ export default class Text extends Node2D {
 
   public setText(text: string): void {
     const charsMap = GlobalContext.get<CharsMap>('chars');
+    const config = STYLE_CONFIG[this.style];
     const chars = text.toLowerCase().split('');
 
     const textures: Texture[] = chars
       .map(char => {
-        return charsMap['Chars'][char] || charsMap['Chars'][Char.UNKNOWN];
+        return (
+          charsMap[config.charsMapKey][char] ||
+          charsMap[config.charsMapKey][Char.UNKNOWN]
+        );
       })
       .filter(item => item !== undefined);
 
