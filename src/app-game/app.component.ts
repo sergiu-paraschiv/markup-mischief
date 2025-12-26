@@ -14,10 +14,11 @@ import { Debugger } from '@debugger';
 import {
   LoadingScene,
   MainMenuScene,
-  GameLevelScene,
+  HTMLLevelScene,
+  CSSLevelScene,
   LEVELS,
 } from '@game/scenes';
-import { LevelProgressionManager } from '@game/progression';
+import { LevelProgressionManager, GameMode } from '@game/progression';
 
 import ASSETS from '../assets.json';
 
@@ -32,7 +33,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   @ViewChild('canvas') canvasElement: ElementRef<HTMLCanvasElement> | undefined;
 
   private renderer?: CanvasRenderer;
-  private viewport = new Vector(512, 384);
+  private viewport = new Vector(768, 512);
   private resizeListener?: () => void;
 
   constructor() {
@@ -73,7 +74,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     const dbgr = new Debugger(gameElement);
     dbgr.attachTo(engine);
     // dbgr.enableGridLines = true;
-    // dbgr.enablePhysicsDebugLines = true;
+    dbgr.enablePhysicsDebugLines = true;
     // dbgr.enableHoverHighlight = true;
     // dbgr.enableFlexDebugLines = true;
     dbgr.enableRenderGraph = true;
@@ -92,11 +93,15 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     // Get progression manager
     const progression = LevelProgressionManager.getInstance();
 
-    // Create level selection menu with Continue/New Game
-    const createLevelsMenu = () => {
+    // Create level selection menu with Continue/New Game for a specific mode
+    const createLevelsMenu = (mode: GameMode) => {
+      // Set the mode in progression manager
+      progression.setMode(mode);
+
       const levelMenuItems = [];
       const currentLevel = progression.getCurrentLevel();
-      const totalLevels = LEVELS.levels.length;
+      const levels = mode === 'html' ? LEVELS.htmlLevels : LEVELS.cssLevels;
+      const totalLevels = levels.length;
       const allLevelsComplete = currentLevel > totalLevels;
 
       // Show "All Levels Complete" or "Continue" based on progress
@@ -109,7 +114,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         levelMenuItems.push({
           label: `Continue - Level ${currentLevel}`,
           action: () => {
-            loadLevel(currentLevel);
+            loadLevel(currentLevel, mode);
           },
         });
       }
@@ -119,7 +124,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         label: progression.hasSavedProgress() ? 'New Game' : 'Start Game',
         action: () => {
           progression.resetProgress();
-          loadLevel(1);
+          loadLevel(1, mode);
         },
       });
 
@@ -129,24 +134,27 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     };
 
     // Helper function to load a level with proper callbacks
-    const loadLevel = (levelId: number) => {
-      const currentLevelIndex = LEVELS.levels.findIndex(l => l.id === levelId);
-      const hasNextLevel = currentLevelIndex < LEVELS.levels.length - 1;
+    const loadLevel = (levelId: number, mode: GameMode) => {
+      const levels = mode === 'html' ? LEVELS.htmlLevels : LEVELS.cssLevels;
+      const currentLevelIndex = levels.findIndex(l => l.id === levelId);
+      const hasNextLevel = currentLevelIndex < levels.length - 1;
+
+      const SceneClass = mode === 'html' ? HTMLLevelScene : CSSLevelScene;
 
       engine.loadScene(
-        new GameLevelScene(
+        new SceneClass(
           levelId,
           () => {
             // onExit: return to levels menu (recreate to show updated progression)
-            engine.loadScene(createLevelsMenu());
+            engine.loadScene(createLevelsMenu(mode));
           },
           () => {
             if (hasNextLevel) {
-              const nextLevel = LEVELS.levels[currentLevelIndex + 1];
-              loadLevel(nextLevel.id);
+              const nextLevel = levels[currentLevelIndex + 1];
+              loadLevel(nextLevel.id, mode);
             } else {
               // Last level completed, return to menu
-              engine.loadScene(createLevelsMenu());
+              engine.loadScene(createLevelsMenu(mode));
             }
           },
           hasNextLevel
@@ -160,7 +168,14 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         label: 'HTML Mode',
         action: () => {
           // Recreate levels menu each time to show current progression state
-          engine.loadScene(createLevelsMenu());
+          engine.loadScene(createLevelsMenu('html'));
+        },
+      },
+      {
+        label: 'CSS Mode',
+        action: () => {
+          // Recreate levels menu each time to show current progression state
+          engine.loadScene(createLevelsMenu('css'));
         },
       },
     ]);

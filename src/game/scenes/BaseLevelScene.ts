@@ -12,13 +12,13 @@ import { LevelBuilder } from './level/LevelBuilder';
 import { WinConditionChecker } from './level/WinConditionChecker';
 import { PlayerTagInteraction } from './level/PlayerTagInteraction';
 import { GameUIManager } from './level/GameUIManager';
-import { LevelProgressionManager } from '@game/progression';
+import { LevelProgressionManager, type GameMode } from '@game/progression';
 
 /**
- * Main game level scene
- * Orchestrates level building, UI, player-tag interactions, and win conditions
+ * Base class for game level scenes
+ * Handles common functionality for both HTML and CSS game modes
  */
-export default class GameLevelScene extends Scene {
+export abstract class BaseLevelScene extends Scene {
   private currentLevel: LevelData;
   private onExit?: () => void;
   private onWin?: () => void;
@@ -31,6 +31,16 @@ export default class GameLevelScene extends Scene {
   private winChecker: WinConditionChecker | undefined;
   private tagInteraction: PlayerTagInteraction | undefined;
 
+  /**
+   * Subclasses must specify which game mode they implement
+   */
+  protected abstract getMode(): GameMode;
+
+  /**
+   * Subclasses must specify which level array to use from levels.json
+   */
+  protected abstract getLevelArray(levelsData: LevelsData): LevelData[];
+
   constructor(
     levelId = 1,
     onExit?: () => void,
@@ -40,7 +50,8 @@ export default class GameLevelScene extends Scene {
     super();
 
     const levelsData = LEVELS_DATA as LevelsData;
-    const level = levelsData.levels.find(l => l.id === levelId);
+    const levels = this.getLevelArray(levelsData);
+    const level = levels.find(l => l.id === levelId);
 
     if (!level) {
       throw new Error(`Level with id ${levelId} not found`);
@@ -58,6 +69,7 @@ export default class GameLevelScene extends Scene {
     const levelBuilder = new LevelBuilder(
       this,
       this.currentLevel,
+      this.getMode(),
       () => this.dropping
     );
     this.player = levelBuilder.build();

@@ -19,7 +19,8 @@ export interface LevelData {
 }
 
 export interface LevelsData {
-  levels: LevelData[];
+  htmlLevels: LevelData[];
+  cssLevels: LevelData[];
 }
 
 /**
