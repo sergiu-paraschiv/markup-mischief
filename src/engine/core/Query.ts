@@ -45,9 +45,8 @@ export default class Query {
 
     // Traverse and collect elements with their accumulated depth
     function collectWithDepth(currentNode: Element, accumulatedDepth: number) {
-      for (const childData of currentNode.childrenWithDepth) {
-        const child = childData.element;
-        const childDepth = accumulatedDepth + childData.depth;
+      for (const child of currentNode.children) {
+        const childDepth = accumulatedDepth + child.depth;
 
         // Skip invisible elements and their children if requested
         if (skipInvisible && !child.isVisible) {

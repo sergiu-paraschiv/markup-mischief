@@ -4,18 +4,14 @@ import ElementRemovedEvent from './ElementRemovedEvent';
 import EventEmitter from './EventEmitter';
 import ElementAttachedEvent from './ElementAttachedEvent';
 
-export interface ZSortedElement<T = Element> {
-  element: T;
-  depth: number;
-}
-
 export default class Element extends EventEmitter {
   private _parent?: Element;
-  private _children: ZSortedElement[] = [];
+  private _children: Element[] = [];
   private _depthSortedChildrenCache?: Element[];
   private _childrenCacheDirty = true;
 
   private _visible = true;
+  private _depth = 0;
 
   constructor(children?: Element[]) {
     super();
@@ -42,19 +38,32 @@ export default class Element extends EventEmitter {
     return true;
   }
 
-  get childrenWithDepth() {
-    return this._children;
+  get depth(): number {
+    return this._depth;
+  }
+
+  set depth(newDepth: number) {
+    if (this._depth === newDepth) {
+      return;
+    }
+
+    this._depth = newDepth;
+
+    // Mark parent's cache as dirty when depth changes
+    if (this._parent) {
+      this._parent._childrenCacheDirty = true;
+    }
   }
 
   get children() {
-    return this._children.map(child => child.element);
+    return this._children;
   }
 
   get depthSortedChildren() {
     if (this._childrenCacheDirty || !this._depthSortedChildrenCache) {
-      this._depthSortedChildrenCache = this._children
-        .sort((a, b) => a.depth - b.depth)
-        .map(child => child.element);
+      this._depthSortedChildrenCache = [...this._children].sort(
+        (a, b) => a.depth - b.depth
+      );
       this._childrenCacheDirty = false;
     }
     return this._depthSortedChildrenCache;
@@ -87,10 +96,8 @@ export default class Element extends EventEmitter {
   }
 
   addChild(child: Element, depth = 0): void {
-    this._children.push({
-      element: child,
-      depth,
-    });
+    this._children.push(child);
+    child._depth = depth;
     this._childrenCacheDirty = true;
     child.parent = this;
     child.dispatchEvent(new ElementAddedEvent());
@@ -98,7 +105,7 @@ export default class Element extends EventEmitter {
 
   removeChild(child: Element): void {
     this._children = this._children.filter(
-      searchedChild => searchedChild.element !== child
+      searchedChild => searchedChild !== child
     );
     this._childrenCacheDirty = true;
     child.dispatchEvent(new ElementRemovedEvent());
@@ -107,9 +114,9 @@ export default class Element extends EventEmitter {
 
   removeAllChildren(): void {
     this._children.forEach(child => {
-      child.element.dispatchEvent(new ElementRemovedEvent());
-      child.element.removeAllChildren();
-      child.element.clearParent();
+      child.dispatchEvent(new ElementRemovedEvent());
+      child.removeAllChildren();
+      child.clearParent();
     });
     this._children = [];
     this._childrenCacheDirty = true;
@@ -149,7 +156,7 @@ export default class Element extends EventEmitter {
         event.destroy();
       }
       for (const child of this._children) {
-        child.element.dispatchEvent(event);
+        child.dispatchEvent(event);
         if (event.propagationStopped) {
           return;
         }

@@ -34,7 +34,8 @@ export default class Tag extends DynamicBody {
 
   setHighlight(highlight: boolean): void {
     this.slice.fillColor = highlight ? '#ffffff' : undefined;
-    this.slice.opacity = highlight ? 0.7 : 1;
+    this.slice.opacity = highlight ? 0.8 : 1;
+    this.depth = highlight ? 10 : 5;
   }
 
   override get width() {
