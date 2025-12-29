@@ -7,6 +7,7 @@ import EventEmitter from './EventEmitter';
 import WorkLoop from './WorkLoop';
 import ElementAddedEvent from './ElementAddedEvent';
 import ElementRemovedEvent from './ElementRemovedEvent';
+import ElementAttachedEvent from './ElementAttachedEvent';
 import GlobalContext from './GlobalContext';
 
 export {
@@ -20,4 +21,5 @@ export {
   ElementAddedEvent,
   ElementRemovedEvent,
   GlobalContext,
+  ElementAttachedEvent,
 };

@@ -31,6 +31,12 @@ export class MouseMoveEvent extends InputEvent {
 }
 
 export default class Mouse extends InputDevice {
+  private static lastPosition: Vector | null = null;
+
+  static getLastPosition(): Vector | null {
+    return Mouse.lastPosition;
+  }
+
   constructor(
     container: HTMLElement,
     private readonly getLocalPoint: (point: Vector) => Vector
@@ -63,8 +69,8 @@ export default class Mouse extends InputDevice {
   }
 
   private moveEventHandler(event: MouseEvent) {
-    this.dispatchEvent(
-      new MouseMoveEvent(this.getLocalPoint(new Vector(event.x, event.y)))
-    );
+    const localPoint = this.getLocalPoint(new Vector(event.x, event.y));
+    Mouse.lastPosition = localPoint;
+    this.dispatchEvent(new MouseMoveEvent(localPoint));
   }
 }

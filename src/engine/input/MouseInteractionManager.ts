@@ -1,6 +1,15 @@
-import { EventEmitter, Event, Vector } from '@engine/core';
+import {
+  EventEmitter,
+  Event,
+  Vector,
+  ElementAttachedEvent,
+} from '@engine/core';
 import { Node2D } from '@engine/elements';
-import { MouseInputEvent, MouseMoveEvent, MouseButtonAction } from './Mouse';
+import Mouse, {
+  MouseInputEvent,
+  MouseMoveEvent,
+  MouseButtonAction,
+} from './Mouse';
 import {
   MouseEnterEvent,
   MouseLeaveEvent,
@@ -9,6 +18,7 @@ import {
 
 export default class MouseInteractionManager extends EventEmitter {
   private isHovered = false;
+  private hasCheckedInitialPosition = false;
 
   constructor(private readonly _target: Node2D) {
     super();
@@ -20,6 +30,9 @@ export default class MouseInteractionManager extends EventEmitter {
   }
 
   private setupListeners(): void {
+    // Listen for when the element is added to the tree
+    this.target.on(ElementAttachedEvent, this.handleElementAdded.bind(this));
+
     // Listen to mouse move events from the root
     this.target.rootElement.on(MouseMoveEvent, this.handleMouseMove.bind(this));
 
@@ -28,6 +41,25 @@ export default class MouseInteractionManager extends EventEmitter {
       MouseInputEvent,
       this.handleMouseInput.bind(this)
     );
+  }
+
+  private handleElementAdded(): void {
+    // Check initial position once when element is added to tree
+    if (!this.hasCheckedInitialPosition) {
+      this.hasCheckedInitialPosition = true;
+      setTimeout(() => {
+        this.checkInitialPosition();
+      }, 15);
+    }
+  }
+
+  private checkInitialPosition(): void {
+    // Check if mouse is already over the target when initialized
+    const lastPosition = Mouse.getLastPosition();
+    if (lastPosition && this.isPointInBounds(lastPosition)) {
+      this.isHovered = true;
+      this.handleEvent(new MouseEnterEvent(lastPosition));
+    }
   }
 
   private handleMouseMove(event: Event): void {
@@ -69,6 +101,7 @@ export default class MouseInteractionManager extends EventEmitter {
 
   public destroy(): void {
     // Clean up event listeners
+    this.target.off(ElementAttachedEvent, this.handleElementAdded.bind(this));
     this.target.rootElement.off(
       MouseMoveEvent,
       this.handleMouseMove.bind(this)

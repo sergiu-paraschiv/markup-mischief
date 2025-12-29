@@ -2,6 +2,7 @@ import Event, { EventPhase } from './Event';
 import ElementAddedEvent from './ElementAddedEvent';
 import ElementRemovedEvent from './ElementRemovedEvent';
 import EventEmitter from './EventEmitter';
+import ElementAttachedEvent from './ElementAttachedEvent';
 
 export interface ZSortedElement<T = Element> {
   element: T;
@@ -70,6 +71,7 @@ export default class Element extends EventEmitter {
       );
     }
     this._parent = newParent;
+    this.dispatchEvent(new ElementAttachedEvent());
   }
 
   get rootElement(): Element {
