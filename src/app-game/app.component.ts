@@ -16,6 +16,7 @@ import {
   MainMenuScene,
   GameLevelScene,
   LEVELS,
+  type MenuItem,
 } from '@game/scenes';
 import { LevelProgressionManager, GameMode } from '@game/progression';
 
@@ -73,7 +74,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     const dbgr = new Debugger(gameElement);
     dbgr.attachTo(engine);
     // dbgr.enableGridLines = true;
-    // dbgr.enablePhysicsDebugLines = true;
+    dbgr.enablePhysicsDebugLines = true;
     // dbgr.enableHoverHighlight = true;
     // dbgr.enableFlexDebugLines = true;
     dbgr.enableRenderGraph = true;
@@ -97,7 +98,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       // Set the mode in progression manager
       progression.setMode(mode);
 
-      const levelMenuItems = [];
+      const levelMenuItems: MenuItem[] = [];
       const currentLevel = progression.getCurrentLevel();
       const levels = mode === 'html' ? LEVELS.htmlLevels : LEVELS.cssLevels;
       const totalLevels = levels.length;
@@ -106,11 +107,12 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       // Show "All Levels Complete" or "Continue" based on progress
       if (allLevelsComplete) {
         levelMenuItems.push({
-          label: 'All Levels Complete!',
-          // No action - will display as text instead of button
+          type: 'text',
+          text: 'All Levels Complete!',
         });
       } else if (progression.hasSavedProgress()) {
         levelMenuItems.push({
+          type: 'button',
           label: `Continue - Level ${currentLevel}`,
           action: () => {
             loadLevel(currentLevel, mode);
@@ -120,6 +122,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
       // Always show "New Game" (or "Start Game" if no progress)
       levelMenuItems.push({
+        type: 'button',
         label: progression.hasSavedProgress() ? 'New Game' : 'Start Game',
         action: () => {
           progression.resetProgress();
@@ -161,22 +164,27 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     };
 
     // Create main menu scene
-    const mainMenuScene = new MainMenuScene([
-      {
-        label: 'HTML Mode',
-        action: () => {
-          // Recreate levels menu each time to show current progression state
-          engine.loadScene(createLevelsMenu('html'));
+    const mainMenuScene = new MainMenuScene(
+      [
+        {
+          type: 'button',
+          label: 'HTML Mode',
+          action: () => {
+            // Recreate levels menu each time to show current progression state
+            engine.loadScene(createLevelsMenu('html'));
+          },
         },
-      },
-      {
-        label: 'CSS Mode',
-        action: () => {
-          // Recreate levels menu each time to show current progression state
-          engine.loadScene(createLevelsMenu('css'));
+        {
+          type: 'button',
+          label: 'CSS Mode',
+          action: () => {
+            // Recreate levels menu each time to show current progression state
+            engine.loadScene(createLevelsMenu('css'));
+          },
         },
-      },
-    ]);
+      ],
+      undefined
+    );
 
     engine.loadScene(mainMenuScene);
   }

@@ -7,7 +7,7 @@ export default class CaptainClownNose extends Character {
       initialPosition,
       'Captain Clown Nose',
       Pointing.RIGHT,
-      new Vector(-10, 0)
+      new Vector(0, 0)
     );
   }
 }

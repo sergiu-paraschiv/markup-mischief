@@ -4,7 +4,7 @@ import Layout9Slice from './Layout9Slice';
 import {
   Character,
   Pointing,
-  PinkStar,
+  Player1,
   CharacterDropEvent,
   CharacterGrabEvent,
   CaptainClownNose,
@@ -29,7 +29,7 @@ export {
   CharacterDropEvent,
   CharacterGrabEvent,
   CaptainClownNose,
-  PinkStar,
+  Player1,
   Button,
   Tag,
   Wall,

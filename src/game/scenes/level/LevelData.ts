@@ -98,7 +98,7 @@ export const CSS_LEFT_PLATFORM_CONFIG: PlatformConfig = {
     sectionWidth: 32, // 1 tile per section in CSS mode
     verticalSpacing: 32,
   },
-  playerStartGrid: { x: 2, y: 0 },
+  playerStartGrid: { x: 4, y: 0 },
 };
 
 /**
@@ -121,7 +121,7 @@ export const CSS_RIGHT_PLATFORM_CONFIG: PlatformConfig = {
     sectionWidth: 32, // 1 tile per section in CSS mode
     verticalSpacing: 32,
   },
-  playerStartGrid: { x: 2, y: 0 },
+  playerStartGrid: { x: 4, y: 0 },
 };
 
 /**

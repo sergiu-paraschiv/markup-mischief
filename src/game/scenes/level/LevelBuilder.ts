@@ -3,7 +3,6 @@ import { SpriteMash, SpriteMashData } from '@engine/elements';
 import { StaticBody } from '@engine/physics';
 import {
   Character,
-  PinkStar,
   CaptainClownNose,
   Tag,
   Wall,
@@ -21,6 +20,7 @@ import {
 import { PLAYER_DEPTH, TAG_DEPTH, PLAYER_OUTLINE_DEPTH } from './constants';
 import BOARD_BACKGROUND_DATA from './Board_Background.json';
 import BOARD_CSS_BACKGROUND_OVERLAU_DATA from './Board_CSS_BackgroundOverlay.json';
+import CharacterSelectionManager from '../../CharacterSelectionManager';
 
 const LEVEL_WIDTH = 24;
 const LEVEL_HEIGHT = 16;
@@ -148,7 +148,9 @@ export class LevelBuilder {
   }
 
   private buildPlayers(): { player1: Character; player2?: Character } {
-    const player1 = new PinkStar(
+    const characterManager = CharacterSelectionManager.getInstance();
+
+    const player1 = characterManager.createSelectedCharacter(
       gridToPixel(
         this.htmlPlatformConfig.playerStartGrid,
         this.htmlPlatformConfig
@@ -158,7 +160,7 @@ export class LevelBuilder {
     // Add ghost at a higher depth so it renders on top of tags
     this.scene.addChild(player1.ghost, PLAYER_OUTLINE_DEPTH);
 
-    // In CSS mode, add the second character
+    // In CSS mode, add the second character (always Captain Clown Nose for player 2)
     if (this.cssPlatformConfig && this.levelData.css) {
       const player2 = new CaptainClownNose(
         gridToPixel(

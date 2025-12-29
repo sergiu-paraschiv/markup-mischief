@@ -1,6 +1,8 @@
 import { GlobalContext, Scene, Vector } from '@engine/core';
 import { Node2D } from '@engine/elements';
 import { Button, HtmlPreview, LayoutFlex, Text } from '@game/entities';
+import CharacterPicker from './CharacterPicker';
+
 import { LevelData } from './LevelData';
 import { MENU_DEPTH } from './constants';
 import SolutionBoard from './SolutionBoard';
@@ -33,6 +35,7 @@ export class GameUIManager {
   // Callbacks
   private onExit?: () => void;
   private onWin?: () => void;
+  private onCharacterChange?: () => void;
   private hasNextLevel: boolean;
 
   constructor(
@@ -40,13 +43,15 @@ export class GameUIManager {
     levelData: LevelData,
     onExit?: () => void,
     onWin?: () => void,
-    hasNextLevel = false
+    hasNextLevel = false,
+    onCharacterChange?: () => void
   ) {
     this.scene = scene;
     this.levelData = levelData;
     this.onExit = onExit;
     this.onWin = onWin;
     this.hasNextLevel = hasNextLevel;
+    this.onCharacterChange = onCharacterChange;
     this.viewport = GlobalContext.get<Vector>('viewport');
   }
 
@@ -186,12 +191,14 @@ export class GameUIManager {
 
     const menu = new MainMenu(new Vector(0, 0), [
       {
+        type: 'button',
         label: 'Continue',
         action: () => {
           this.hidePauseMenu();
         },
       },
       {
+        type: 'button',
         label: 'Exit',
         action: () => {
           this.hidePauseMenu();
@@ -200,12 +207,29 @@ export class GameUIManager {
           }
         },
       },
+      {
+        type: 'custom',
+        element: new CharacterPicker(() => {
+          if (this.onCharacterChange) {
+            this.onCharacterChange();
+          }
+        }),
+      },
     ]);
+
+    // Create container for character picker and menu
+    const pauseContent = new LayoutFlex(
+      new Vector(0, 0),
+      new Vector(menu.width, menu.height)
+    );
+    pauseContent.flexDirection = 'column';
+    pauseContent.alignItems = 'center';
+    pauseContent.addChild(menu);
 
     const menuLayout = new LayoutFlex(new Vector(0, 0), this.viewport);
     menuLayout.justifyContent = 'center';
     menuLayout.alignItems = 'center';
-    menuLayout.addChild(menu);
+    menuLayout.addChild(pauseContent);
 
     this.pauseMenu = menuLayout;
     this.scene.addChild(this.pauseMenu, MENU_DEPTH);
@@ -241,6 +265,7 @@ export class GameUIManager {
     // Show "All Levels Complete!" text if no next level, otherwise "Next level" button
     if (this.hasNextLevel && this.onWin) {
       buttons.push({
+        type: 'button',
         label: 'Next level',
         action: () => {
           if (this.onWin) {
@@ -250,12 +275,13 @@ export class GameUIManager {
       });
     } else if (!this.hasNextLevel) {
       buttons.push({
-        label: 'All Levels Complete!',
-        // No action - displays as text
+        type: 'text',
+        text: 'All Levels Complete!',
       });
     }
 
     buttons.push({
+      type: 'button',
       label: 'Exit',
       action: () => {
         if (this.onExit) {

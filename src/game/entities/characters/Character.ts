@@ -26,7 +26,7 @@ export default class Character extends CharacterController {
 
   constructor(
     initialPosition: Vector,
-    private assetName: string,
+    protected assetName: string,
     private spritePointing: Pointing = Pointing.LEFT,
     private spriteOffset = new Vector(0, 0)
   ) {
@@ -39,7 +39,7 @@ export default class Character extends CharacterController {
     this.ghost = new Node2D();
     this.ghost.isVisible = false;
 
-    this.setColliderOffset(new Vector(38, 4));
+    this.setColliderOffset(new Vector(0, 4));
     this.setColliderDimensions(new Vector(20, 28));
     this.switchStance(0);
     this._pointing = Pointing.RIGHT;
@@ -61,7 +61,11 @@ export default class Character extends CharacterController {
     this.ghost.position = this.position;
   }
 
-  protected override switchStance(currentTime: number) {
+  public setSpriteOffset(spriteOffset: Vector) {
+    this.spriteOffset = spriteOffset;
+  }
+
+  protected override switchStance(currentTime: number, force = false) {
     const assets = GlobalContext.get<AssetsMap>('assets');
 
     let newStance = Stance.IDLE;
@@ -100,14 +104,20 @@ export default class Character extends CharacterController {
       newStance = Stance.RUNNING;
     }
 
-    if (newStance !== this.activeStance) {
+    if (newStance !== this.activeStance || force) {
       this.activeStanceStartTime = currentTime;
       this.activeStance = newStance;
 
       this.gfx.removeAllChildren();
-      this.gfx.addChild(
-        new AnimatedSprite(assets[this.assetName].animations[newStance])
+      const sprite = new AnimatedSprite(
+        assets[this.assetName].animations[newStance]
       );
+      const translation = new Vector(
+        -sprite.width / 2 + this.collider.dimensions.width / 2,
+        0
+      );
+      this.gfx.translation = translation;
+      this.ghost.translation = translation;
 
       this.ghost.removeAllChildren();
 
@@ -117,6 +127,8 @@ export default class Character extends CharacterController {
       ghostSprite.opacity = 0.5;
       ghostSprite.fillColor = 'rgba(0, 0, 0, 1)';
       this.ghost.addChild(ghostSprite);
+
+      this.gfx.addChild(sprite);
     }
 
     if (this.gfx.children.length === 1) {

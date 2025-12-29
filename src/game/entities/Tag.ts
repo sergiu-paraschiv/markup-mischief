@@ -6,6 +6,7 @@ import Layout3Slice from './Layout3Slice';
 
 export default class Tag extends DynamicBody {
   private slice: Layout3Slice;
+  private _initialDepth: number | undefined;
 
   constructor(
     initialPosition: Vector,
@@ -35,7 +36,12 @@ export default class Tag extends DynamicBody {
   setHighlight(highlight: boolean): void {
     this.slice.fillColor = highlight ? '#ffffff' : undefined;
     this.slice.opacity = highlight ? 0.8 : 1;
-    this.depth = highlight ? 10 : 5;
+
+    if (this._initialDepth === undefined) {
+      this._initialDepth = this.depth;
+    }
+
+    this.depth = highlight ? this._initialDepth + 5 : this._initialDepth;
   }
 
   override get width() {

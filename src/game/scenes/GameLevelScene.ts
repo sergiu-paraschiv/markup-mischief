@@ -1,5 +1,5 @@
 import { Scene, Event } from '@engine/core';
-import { CharacterGrabEvent, Character } from '@game/entities';
+import { CharacterGrabEvent, Character, Player1 } from '@game/entities';
 import { TickEvent } from '@engine/renderer';
 import { KeyboardInputEvent, KeyAction } from '@engine/input';
 import { LevelData, LevelsData } from './level/LevelData';
@@ -9,6 +9,7 @@ import { WinConditionChecker } from './level/WinConditionChecker';
 import { PlayerTagInteraction } from './level/PlayerTagInteraction';
 import { GameUIManager } from './level/GameUIManager';
 import { LevelProgressionManager, type GameMode } from '@game/progression';
+import { CharacterSelectionManager } from '@game';
 
 /**
  * Base class for game level scenes
@@ -76,7 +77,8 @@ export default class GameLevelScene extends Scene {
       this.currentLevel,
       this.onExit,
       this.onWin,
-      this.hasNextLevel
+      this.hasNextLevel,
+      () => this.changePlayer1Character()
     );
     this.uiManager.initialize();
 
@@ -171,5 +173,14 @@ export default class GameLevelScene extends Scene {
     if (this.tagInteraction) {
       this.tagInteraction.setPlayer(this.activePlayer);
     }
+  }
+
+  public changePlayer1Character(): void {
+    if (!this.player1 || !(this.player1 instanceof Player1)) return;
+
+    // Get the selected character type and update the player's asset
+    const characterManager = CharacterSelectionManager.getInstance();
+    const selectedType = characterManager.getSelectedCharacterType();
+    this.player1.setCharacterType(selectedType);
   }
 }

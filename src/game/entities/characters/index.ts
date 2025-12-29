@@ -1,7 +1,7 @@
 import Character, { Pointing } from './Character';
 import { CharacterDropEvent, CharacterGrabEvent } from './CharacterController';
 import CaptainClownNose from './CaptainClownNose';
-import PinkStar from './PinkStar';
+import Player1 from './Player1';
 
 export {
   Character,
@@ -9,5 +9,5 @@ export {
   CharacterDropEvent,
   CharacterGrabEvent,
   CaptainClownNose,
-  PinkStar,
+  Player1,
 };

@@ -9,11 +9,21 @@ import {
   Box,
 } from '@game/entities';
 
-export interface MenuItem {
-  label: string;
-  action?: () => void;
-  variant?: ButtonVariant;
-}
+export type MenuItem =
+  | {
+      type: 'button';
+      label: string;
+      action?: () => void;
+      variant?: ButtonVariant;
+    }
+  | {
+      type: 'text';
+      text: string;
+    }
+  | {
+      type: 'custom';
+      element: Node2D;
+    };
 
 export default class MainMenu extends Node2D {
   private board: Node2D;
@@ -44,8 +54,7 @@ export default class MainMenu extends Node2D {
     for (const menuItem of menuItems) {
       let element: Node2D;
 
-      if (menuItem.action) {
-        // Create button if action is provided
+      if (menuItem.type === 'button') {
         const buttonText = new Text(menuItem.label);
         const button = new Button(
           new Vector(0, 0),
@@ -54,9 +63,10 @@ export default class MainMenu extends Node2D {
         );
         button.action = menuItem.action;
         element = button;
+      } else if (menuItem.type === 'text') {
+        element = new Text(menuItem.text, 0);
       } else {
-        // Create text-only display if no action
-        element = new Text(menuItem.label, 0);
+        element = menuItem.element;
       }
 
       menuElements.push(element);

@@ -1,1 +1,3 @@
-export {};
+import CharacterSelectionManager from './CharacterSelectionManager';
+
+export { CharacterSelectionManager };
