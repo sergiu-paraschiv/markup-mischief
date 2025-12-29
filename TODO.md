@@ -13,6 +13,6 @@
 [x] save progression somewhere
 [x] "CSS mode"
 [x] add all levels
-[ ] mobile on-screen buttons
-[ ] use Dust Particles aseprite for character animations
+[x] use Dust Particles aseprite for character animations
 [ ] sound
+[ ] mobile on-screen buttons

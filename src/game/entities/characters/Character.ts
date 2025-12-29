@@ -18,6 +18,7 @@ export enum Pointing {
 
 export default class Character extends CharacterController {
   private readonly gfx: Node2D;
+  private readonly dustGfx: Node2D;
   public readonly ghost: Node2D;
   private activeStance: Stance | undefined;
   private activeStanceStartTime = 0;
@@ -33,6 +34,9 @@ export default class Character extends CharacterController {
     super(initialPosition);
 
     this.gfx = new Node2D();
+    this.dustGfx = new Node2D();
+
+    this.addChild(this.dustGfx);
     this.addChild(this.gfx);
 
     // Ghost is created but not added as child - it will be added to the scene separately
@@ -129,6 +133,32 @@ export default class Character extends CharacterController {
       this.ghost.addChild(ghostSprite);
 
       this.gfx.addChild(sprite);
+
+      this.dustGfx.removeAllChildren();
+      // Add dust particles for running, jumping, and falling
+      const dustAsset = assets['The Crusty Crew Dust Particles'];
+      if (
+        dustAsset &&
+        (newStance === Stance.RUNNING ||
+          newStance === Stance.JUMPING ||
+          newStance === Stance.FALLING)
+      ) {
+        const dustAnimation = dustAsset.animations[newStance];
+        if (dustAnimation) {
+          const dustSprite = new AnimatedSprite(dustAnimation);
+          // Position at the bottom center of the character
+          dustSprite.translation = new Vector(
+            -dustSprite.width / 2 + this.collider.dimensions.width / 2,
+            32 - dustSprite.height
+          );
+          if (newStance === Stance.RUNNING) {
+            dustSprite.animation.repeat = AnimationRepeat.Default;
+          } else {
+            dustSprite.animation.repeat = AnimationRepeat.Once;
+          }
+          this.dustGfx.addChild(dustSprite);
+        }
+      }
     }
 
     if (this.gfx.children.length === 1) {
@@ -139,6 +169,11 @@ export default class Character extends CharacterController {
       } else {
         sp.translation = new Vector(0, -32).sub(this.spriteOffset);
       }
+    }
+
+    if (this.dustGfx.children.length === 1) {
+      const sp = this.dustGfx?.children[0] as AnimatedSprite;
+      sp.flipH = this._pointing === Pointing.LEFT;
     }
 
     if (this.ghost.children.length === 1) {
