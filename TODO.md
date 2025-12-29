@@ -12,7 +12,7 @@
 [x] more levels
 [x] save progression somewhere
 [x] "CSS mode"
-[ ] add all levels
+[x] add all levels
 [ ] mobile on-screen buttons
 [ ] use Dust Particles aseprite for character animations
 [ ] sound

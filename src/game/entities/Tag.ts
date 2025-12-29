@@ -14,14 +14,15 @@ export default class Tag extends DynamicBody {
   ) {
     super(initialPosition);
     const assets = GlobalContext.get<AssetsMap>('assets');
+    const tilemap = assets['Paper'].tilemaps['Paper'];
 
     const ts = new Text(text);
 
     this.slice = new Layout3Slice(
       ts.width + 6,
-      assets['Paper'].tilemaps['Paper'].get(1),
-      assets['Paper'].tilemaps['Paper'].get(2),
-      assets['Paper'].tilemaps['Paper'].get(3)
+      tilemap.get(1),
+      tilemap.get(2),
+      tilemap.get(3)
     );
 
     this.addChild(this.slice);
@@ -29,6 +30,10 @@ export default class Tag extends DynamicBody {
     ts.position = new Vector(3, 3);
 
     this.addChild(ts);
+  }
+
+  setHighlight(highlight: boolean): void {
+    this.slice.fillColor = highlight ? '#ffffff' : undefined;
   }
 
   override get width() {

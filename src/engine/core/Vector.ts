@@ -54,6 +54,13 @@ export default class Vector {
   public get normal() {
     return new Vector(normal(this.x), normal(this.y));
   }
+
+  /**
+   * Returns the length (magnitude) of the vector
+   */
+  length(): number {
+    return Math.sqrt(this.x * this.x + this.y * this.y);
+  }
 }
 
 function normal(n: number) {

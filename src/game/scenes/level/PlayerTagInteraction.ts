@@ -8,6 +8,7 @@ export class PlayerTagInteraction {
   private scene: Scene;
   private player: Character;
   private grabbedTag?: Tag;
+  private highlightedTag?: Tag;
 
   constructor(scene: Scene, player: Character) {
     this.scene = scene;
@@ -27,18 +28,72 @@ export class PlayerTagInteraction {
     if (this.grabbedTag) {
       this.releaseTag();
     } else {
-      // Try to grab a tag in front of the player
-      const tag = this.player.checkFutureIntersection(
-        new Vector(0, 1),
-        collider => collider instanceof Tag
-      );
-      if (tag) {
-        this.grabbedTag = tag as Tag;
+      // Try to grab the closest tag among all intersecting tags
+      const closestTag = this.findClosestIntersectingTag();
+      if (closestTag) {
+        this.grabbedTag = closestTag;
       }
     }
 
     // Wake up all tags to ensure physics updates
     Query.childrenByType(Tag, this.scene).forEach(tag => tag.wakeUp());
+  }
+
+  /**
+   * Finds the closest tag to the player's center among all intersecting tags
+   */
+  private findClosestIntersectingTag(): Tag | undefined {
+    // Check for future intersection (one frame ahead)
+    const intersectingTags = this.player.checkAllFutureIntersections(
+      new Vector(0, 1),
+      collider => collider instanceof Tag
+    ) as Tag[];
+
+    if (intersectingTags.length === 0) {
+      return undefined;
+    }
+
+    if (intersectingTags.length === 1) {
+      return intersectingTags[0];
+    }
+
+    // Find the tag closest to the player's center
+    const playerCenter = this.player.position
+      .add(this.player.colliderOffset)
+      .add(
+        new Vector(
+          this.player.collider.dimensions.width / 2,
+          this.player.collider.dimensions.height / 2
+        )
+      );
+
+    let closestTag = intersectingTags[0];
+    let closestDistance = this.getTagCenterDistance(
+      intersectingTags[0],
+      playerCenter
+    );
+
+    for (let i = 1; i < intersectingTags.length; i++) {
+      const tag = intersectingTags[i];
+      const distance = this.getTagCenterDistance(tag, playerCenter);
+
+      if (distance < closestDistance) {
+        closestDistance = distance;
+        closestTag = tag;
+      }
+    }
+
+    return closestTag;
+  }
+
+  /**
+   * Calculates the distance from a tag's center to a point
+   */
+  private getTagCenterDistance(tag: Tag, point: Vector): number {
+    const tagCenter = tag.position.add(
+      new Vector(tag.width / 2, tag.height / 2)
+    );
+    return tagCenter.sub(point).length();
   }
 
   /**
@@ -57,6 +112,31 @@ export class PlayerTagInteraction {
 
     this.player.updateGhostPosition();
     this.updateGhostVisibility();
+    this.updateHighlight();
+  }
+
+  /**
+   * Updates the highlight on the tag that would be picked up when pressing space
+   */
+  private updateHighlight(): void {
+    // Clear previous highlight
+    if (this.highlightedTag) {
+      this.highlightedTag.setHighlight(false);
+      this.highlightedTag = undefined;
+    }
+
+    // Don't highlight if already holding a tag
+    if (this.grabbedTag) {
+      return;
+    }
+
+    // Find the closest intersecting tag that would be picked up
+    const closestTag = this.findClosestIntersectingTag();
+
+    if (closestTag) {
+      this.highlightedTag = closestTag;
+      this.highlightedTag.setHighlight(true);
+    }
   }
 
   /**
