@@ -7,16 +7,20 @@ import {
   CaptainClownNose,
   Tag,
   Wall,
+  Platform,
 } from '@game/entities';
 import {
   LevelData,
-  gridToPixelHtml,
-  gridToPixelCss,
+  gridToPixel,
   generateRandomTagPositions,
+  HTML_PLATFORM_CONFIG,
+  CSS_LEFT_PLATFORM_CONFIG,
+  CSS_RIGHT_PLATFORM_CONFIG,
+  PlatformConfig,
 } from './LevelData';
 import { PLAYER_DEPTH, TAG_DEPTH, PLAYER_OUTLINE_DEPTH } from './constants';
-import HTML_BOARD_DATA from './BoardHTML.json';
-import CSS_BOARD_DATA from './BoardCSS.json';
+import BOARD_BACKGROUND_DATA from './Board_Background.json';
+import BOARD_CSS_BACKGROUND_OVERLAU_DATA from './Board_CSS_BackgroundOverlay.json';
 
 const LEVEL_WIDTH = 24;
 const LEVEL_HEIGHT = 16;
@@ -26,25 +30,28 @@ type LevelMode = 'html' | 'css';
 /**
  * Builds and populates a level from level data.
  *
- * Level coordinates use a grid-based system:
- * - X axis: 0-4 (5 sections of 64px each for wider tag spacing)
- * - Y axis: 0-5 (6 platforms, with 0 being ground level)
- * - Total tag positions: 5x5 = 25 (excluding ground)
- *
- * Grid coordinates are automatically converted to pixel coordinates based on:
- * - LEVEL_HEIGHT constant for calculating ground position
- * - Platform spacing of 64px vertically
- * - Section width of 64px horizontally
+ * Uses platform configurations to automatically generate platforms and
+ * determine valid tag positions. Platform layouts are defined in LevelData.ts.
  */
 export class LevelBuilder {
   private scene: Scene;
   private levelData: LevelData;
   private mode: LevelMode;
+  private htmlPlatformConfig: PlatformConfig;
+  private cssPlatformConfig: PlatformConfig | undefined;
 
   constructor(scene: Scene, levelData: LevelData, mode: LevelMode) {
     this.scene = scene;
     this.levelData = levelData;
     this.mode = mode;
+
+    // Set platform configs based on mode
+    if (mode === 'html') {
+      this.htmlPlatformConfig = HTML_PLATFORM_CONFIG;
+    } else {
+      this.htmlPlatformConfig = CSS_LEFT_PLATFORM_CONFIG;
+      this.cssPlatformConfig = CSS_RIGHT_PLATFORM_CONFIG;
+    }
   }
 
   /**
@@ -60,12 +67,14 @@ export class LevelBuilder {
   }
 
   private buildBackground(): void {
-    const board = SpriteMash.fromData(
-      this.mode === 'html'
-        ? (HTML_BOARD_DATA as SpriteMashData)
-        : (CSS_BOARD_DATA as SpriteMashData)
+    this.scene.addChild(
+      SpriteMash.fromData(BOARD_BACKGROUND_DATA as SpriteMashData)
     );
-    this.scene.addChild(board);
+    if (this.mode === 'css') {
+      this.scene.addChild(
+        SpriteMash.fromData(BOARD_CSS_BACKGROUND_OVERLAU_DATA as SpriteMashData)
+      );
+    }
   }
 
   private buildWalls(): void {
@@ -98,8 +107,8 @@ export class LevelBuilder {
     // Bottom-right corner wall
     this.scene.addChild(
       makeEdgeWall(
-        new Vector(32 * (LEVEL_WIDTH - 6), 32 * (LEVEL_HEIGHT - 3)),
-        new Vector(32 * 5, 32 * 2)
+        new Vector(32 * (LEVEL_WIDTH - 4), 32 * (LEVEL_HEIGHT - 3)),
+        new Vector(32 * 3, 32 * 2)
       )
     );
 
@@ -107,7 +116,7 @@ export class LevelBuilder {
       // Middle wall
       this.scene.addChild(
         makeEdgeWall(
-          new Vector(32 * 9, 0),
+          new Vector(32 * 11, 0),
           new Vector(32, 32 * (LEVEL_HEIGHT - 1))
         )
       );
@@ -115,47 +124,47 @@ export class LevelBuilder {
   }
 
   private buildPlatforms(): void {
-    if (this.mode === 'html') {
-      for (let i = LEVEL_HEIGHT - 6; i <= LEVEL_HEIGHT - 2; i += 1) {
+    // Build HTML/left side platforms
+    this.htmlPlatformConfig.platforms.forEach(platform => {
+      this.scene.addChild(
+        makePlatformWall(
+          new Vector(32 * platform.x, 32 * platform.y),
+          new Vector(32 * platform.width, 1)
+        )
+      );
+    });
+
+    // Build CSS/right side platforms if in CSS mode
+    if (this.cssPlatformConfig) {
+      this.cssPlatformConfig.platforms.forEach(platform => {
         this.scene.addChild(
           makePlatformWall(
-            new Vector(32 * 3, 2 + 32 * i),
-            new Vector(32 * 10, 1)
+            new Vector(32 * platform.x, 32 * platform.y),
+            new Vector(32 * platform.width, 1)
           )
         );
-      }
-    } else {
-      for (let i = LEVEL_HEIGHT - 6; i <= LEVEL_HEIGHT - 2; i += 1) {
-        this.scene.addChild(
-          makePlatformWall(new Vector(32, 2 + 32 * i), new Vector(32 * 8, 1))
-        );
-      }
-      for (let i = LEVEL_HEIGHT - 6; i <= LEVEL_HEIGHT - 2; i += 1) {
-        this.scene.addChild(
-          makePlatformWall(
-            new Vector(32 * 10, 2 + 32 * i),
-            new Vector(32 * 9, 1)
-          )
-        );
-      }
+      });
     }
   }
 
   private buildPlayers(): { player1: Character; player2?: Character } {
-    // Player always starts at x=2, y=0 (center of 5 sections)
-    const defaultPlayerStart = { x: 2, y: 0 };
-
     const player1 = new PinkStar(
-      gridToPixelHtml(defaultPlayerStart, LEVEL_HEIGHT)
+      gridToPixel(
+        this.htmlPlatformConfig.playerStartGrid,
+        this.htmlPlatformConfig
+      )
     );
     this.scene.addChild(player1, PLAYER_DEPTH);
     // Add ghost at a higher depth so it renders on top of tags
     this.scene.addChild(player1.ghost, PLAYER_OUTLINE_DEPTH);
 
     // In CSS mode, add the second character
-    if (this.mode === 'css' && this.levelData.css) {
+    if (this.cssPlatformConfig && this.levelData.css) {
       const player2 = new CaptainClownNose(
-        gridToPixelCss(defaultPlayerStart, LEVEL_HEIGHT, true)
+        gridToPixel(
+          this.cssPlatformConfig.playerStartGrid,
+          this.cssPlatformConfig
+        )
       );
       this.scene.addChild(player2, PLAYER_DEPTH);
       this.scene.addChild(player2.ghost, PLAYER_OUTLINE_DEPTH);
@@ -169,7 +178,8 @@ export class LevelBuilder {
   private buildTags(): void {
     // Generate random positions for HTML tags
     const htmlPositions = generateRandomTagPositions(
-      this.levelData.html.tags.length
+      this.levelData.html.tags.length,
+      this.htmlPlatformConfig
     );
 
     // Shuffle tags to ensure they don't start in solution order
@@ -179,7 +189,7 @@ export class LevelBuilder {
     shuffledHtmlTags.forEach((tagText, index) => {
       this.scene.addChild(
         makeTagTile(
-          gridToPixelHtml(htmlPositions[index], LEVEL_HEIGHT),
+          gridToPixel(htmlPositions[index], this.htmlPlatformConfig),
           tagText,
           'html'
         ),
@@ -188,9 +198,10 @@ export class LevelBuilder {
     });
 
     // Add CSS tags (only in CSS mode)
-    if (this.mode === 'css' && this.levelData.css) {
+    if (this.cssPlatformConfig && this.levelData.css) {
       const cssPositions = generateRandomTagPositions(
-        this.levelData.css.tags.length
+        this.levelData.css.tags.length,
+        this.cssPlatformConfig
       );
 
       const shuffledCssTags = this.shuffleArray([...this.levelData.css.tags]);
@@ -198,7 +209,7 @@ export class LevelBuilder {
       shuffledCssTags.forEach((tagText, index) => {
         this.scene.addChild(
           makeTagTile(
-            gridToPixelCss(cssPositions[index], LEVEL_HEIGHT, true),
+            gridToPixel(cssPositions[index], this.cssPlatformConfig!),
             tagText,
             'css'
           ),
@@ -235,11 +246,10 @@ export function makeEdgeWall(position: Vector, size: Vector): StaticBody {
  * Factory function to create one-way platform walls
  * Characters can drop through and jump through from below
  */
-export function makePlatformWall(position: Vector, size: Vector): StaticBody {
-  const body = new StaticBody(position);
-  body.addChild(new Wall(position, size));
+export function makePlatformWall(position: Vector, size: Vector) {
+  const platform = new Platform(position, size);
 
-  body.filterCollisionFn = ({ collider, velocity }) => {
+  platform.filterCollisionFn = ({ collider, velocity }) => {
     // Check if the specific character is dropping, not a shared flag
     if (collider instanceof Character && collider.isDropping) {
       return false;
@@ -252,7 +262,7 @@ export function makePlatformWall(position: Vector, size: Vector): StaticBody {
     return true;
   };
 
-  return body;
+  return platform;
 }
 
 /**

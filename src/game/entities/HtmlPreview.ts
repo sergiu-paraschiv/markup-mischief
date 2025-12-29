@@ -38,6 +38,11 @@ export default class HtmlPreview extends Node2D {
     // Clear the canvas
     this.context.clearRect(0, 0, this.width, this.height);
 
+    const finalHTML = this.htmlContent.replaceAll(
+      '<img/>',
+      '<img src="/sample-img.png" />'
+    );
+
     // Wrap HTML in a minimal document with basic styling
     const wrappedHtml = `
       <!DOCTYPE html>
@@ -55,12 +60,18 @@ export default class HtmlPreview extends Node2D {
               color: blue;
               text-decoration: underline;
             }
+            
+            img {
+              width: 50px;
+              height: 50px;
+              border: 1px solid #000000;
+            }
 
             /* User-provided CSS */
             ${this.cssContent}
           </style>
         </head>
-        <body>${this.htmlContent}</body>
+        <body>${finalHTML}</body>
       </html>
     `;
 

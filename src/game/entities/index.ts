@@ -17,6 +17,7 @@ import HtmlPreview from './HtmlPreview';
 import PaperBoard from './PaperBoard';
 import Board from './Board';
 import Box from './Box';
+import Platform from './Platform';
 
 export {
   LayoutFlex,
@@ -36,6 +37,7 @@ export {
   PaperBoard,
   Board,
   Box,
+  Platform,
 };
 
 export type { ButtonVariant };

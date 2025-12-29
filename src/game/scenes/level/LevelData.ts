@@ -2,19 +2,36 @@ import { Vector } from '@engine/core';
 
 /**
  * Grid-based position using logical coordinates.
- *
- * For HTML mode:
- * - X axis: 0-4 representing 5 sections (wider to prevent tag overlap), left to right
- * - Y axis: 0-5 representing 6 platforms stacked vertically, bottom to top
- *   - y=0: ground/floor platform
- *   - y=1-5: elevated platforms above ground
- * - Total positions: 5x5 = 25 possible tag locations (excluding ground)
- *
- * Default player start: x=2, y=0 (center of ground platform)
+ * Grid dimensions are determined by the platform configuration.
  */
 export interface PositionData {
-  x: number; // 0-4 for HTML mode
-  y: number; // 0-5 for platforms
+  x: number;
+  y: number;
+}
+
+/**
+ * Defines a single platform in the level.
+ */
+export interface PlatformDefinition {
+  x: number; // X position in tiles
+  y: number; // Y position in tiles
+  width: number; // Width in tiles
+}
+
+/**
+ * Configuration for platform layout in a game mode.
+ */
+export interface PlatformConfig {
+  platforms: PlatformDefinition[];
+  gridConfig: {
+    xMin: number; // Minimum X grid coordinate
+    xMax: number; // Maximum X grid coordinate (inclusive)
+    yMin: number; // Minimum Y grid coordinate
+    yMax: number; // Maximum Y grid coordinate (inclusive)
+    sectionWidth: number; // Width of each grid section in pixels
+    verticalSpacing: number; // Vertical spacing between platforms in pixels
+  };
+  playerStartGrid: PositionData; // Player start position in grid coordinates
 }
 
 export interface CodeSection {
@@ -33,94 +50,140 @@ export interface LevelsData {
   cssLevels: LevelData[];
 }
 
-/**
- * Converts grid coordinates to pixel coordinates for HTML mode.
- *
- * The conversion is based on the game board structure:
- * - Platforms start at X = 96px (32 * 3) and are 320px wide total (10 tiles)
- * - 5 horizontal sections means each section is 64px wide (2 tiles)
- * - Ground platform (y=0) is at the bottom, just above the bottom edge wall
- * - Each platform level is 64px apart vertically
- *
- * @param position Grid position (x: 0-4, y: 0-5)
- * @param levelHeight Total height of the level in tiles (typically 16)
- * @returns Pixel position as a Vector
- */
-export function gridToPixelHtml(
-  position: PositionData,
-  levelHeight: number
-): Vector {
-  const GRID_SIZE = 32;
-  const SECTION_WIDTH = 64; // 2 tiles per section for wider spacing
-  const HTML_PLATFORM_START_X = 96; // 32 * 3
-
-  // Platform Y positions (top surface where tags should sit)
-  // Platforms are built at: i = LEVEL_HEIGHT - 6 to LEVEL_HEIGHT - 2
-  // Platform Y = 2 + 32 * i
-  // For LEVEL_HEIGHT = 16: i = 10,11,12,13,14 (5 platforms)
-  // Y positions: 322, 354, 386, 418, 450
-  // Grid y=0 (ground) is the lowest platform (i=14, Y=450)
-  // Grid y=1-5 are the platforms above: i=13,12,11,10 + one more above
-
-  const pixelX = HTML_PLATFORM_START_X + position.x * SECTION_WIDTH;
-
-  // Map grid y to platform index: y=0 -> i=14, y=1 -> i=13, etc.
-  const lastPlatformIndex = levelHeight - 2; // i = 14
-  const platformIndex = lastPlatformIndex - position.y;
-  const platformY = 2 + GRID_SIZE * platformIndex;
-  const TAG_OFFSET = 20; // Spawn slightly above platform surface
-  const pixelY = platformY - TAG_OFFSET;
-
-  return new Vector(pixelX, pixelY);
-}
+// Level constants
+const GRID_SIZE = 32;
+const TAG_OFFSET = 20; // Spawn slightly above platform surface
 
 /**
- * Converts grid coordinates to pixel coordinates for CSS mode.
- * CSS mode has two separate play areas divided by a middle wall.
+ * Platform configuration for HTML mode
+ */
+export const HTML_PLATFORM_CONFIG: PlatformConfig = {
+  platforms: [
+    // 6 platforms from bottom to top (i = 14 down to 9)
+    { x: 5, y: 14, width: 10 },
+    { x: 5, y: 13, width: 10 },
+    { x: 5, y: 12, width: 10 },
+    { x: 5, y: 11, width: 10 },
+    { x: 5, y: 10, width: 10 },
+    { x: 5, y: 9, width: 10 },
+  ],
+  gridConfig: {
+    xMin: 0,
+    xMax: 4, // 5 sections (0-4)
+    yMin: 0,
+    yMax: 5, // 6 platforms (0-5)
+    sectionWidth: 64, // 2 tiles per section
+    verticalSpacing: 32, // One tile per platform level
+  },
+  playerStartGrid: { x: 2, y: 0 },
+};
+
+/**
+ * Platform configuration for CSS mode (left side - HTML)
+ */
+export const CSS_LEFT_PLATFORM_CONFIG: PlatformConfig = {
+  platforms: [
+    { x: 1, y: 14, width: 10 },
+    { x: 1, y: 13, width: 10 },
+    { x: 1, y: 12, width: 10 },
+    { x: 1, y: 11, width: 10 },
+    { x: 1, y: 10, width: 10 },
+    { x: 1, y: 9, width: 10 },
+  ],
+  gridConfig: {
+    xMin: 0,
+    xMax: 9, // 10 tiles width (0-9)
+    yMin: 0,
+    yMax: 5, // 6 platforms (0-5)
+    sectionWidth: 32, // 1 tile per section in CSS mode
+    verticalSpacing: 32,
+  },
+  playerStartGrid: { x: 2, y: 0 },
+};
+
+/**
+ * Platform configuration for CSS mode (right side - CSS)
+ */
+export const CSS_RIGHT_PLATFORM_CONFIG: PlatformConfig = {
+  platforms: [
+    { x: 12, y: 14, width: 10 },
+    { x: 12, y: 13, width: 10 },
+    { x: 12, y: 12, width: 8 },
+    { x: 12, y: 11, width: 8 },
+    { x: 12, y: 10, width: 8 },
+    { x: 12, y: 9, width: 8 },
+  ],
+  gridConfig: {
+    xMin: 0,
+    xMax: 7, // Up to 8 tiles for shorter platforms, 10 for longer
+    yMin: 0,
+    yMax: 5, // 6 platforms (0-5)
+    sectionWidth: 32, // 1 tile per section in CSS mode
+    verticalSpacing: 32,
+  },
+  playerStartGrid: { x: 2, y: 0 },
+};
+
+/**
+ * Converts grid coordinates to pixel coordinates based on platform configuration.
  *
- * @param position Grid position
- * @param levelHeight Total height of the level in tiles (typically 16)
- * @param isRightSide Whether this is for the right side (CSS) or left side (HTML)
+ * @param position Grid position (y=0 is ground/bottom, increasing y goes up)
+ * @param config Platform configuration
  * @returns Pixel position as a Vector
  */
-export function gridToPixelCss(
+export function gridToPixel(
   position: PositionData,
-  levelHeight: number,
-  isRightSide: boolean
+  config: PlatformConfig
 ): Vector {
-  const GRID_SIZE = 32;
-  const PLATFORM_SPACING = 64;
-  const LEFT_PLATFORM_START_X = 32;
-  const RIGHT_PLATFORM_START_X = 320; // 32 * 10
+  const { gridConfig, platforms } = config;
 
-  // Calculate ground level Y position (just above bottom edge wall)
-  const groundY = GRID_SIZE * (levelHeight - 1) - GRID_SIZE;
+  // Find the platform for this Y level
+  // position.y=0 should map to the first platform (bottom), position.y=5 to the last (top)
+  const platformIndex = position.y;
+  const platform = platforms[platformIndex];
 
-  const pixelX =
-    (isRightSide ? RIGHT_PLATFORM_START_X : LEFT_PLATFORM_START_X) +
-    position.x * GRID_SIZE;
-  const pixelY = groundY - position.y * PLATFORM_SPACING;
+  if (!platform) {
+    throw new Error(
+      `No platform found for grid position y=${position.y} (platform index ${platformIndex})`
+    );
+  }
+
+  // Calculate pixel X position
+  const pixelX = platform.x * GRID_SIZE + position.x * gridConfig.sectionWidth;
+
+  // Calculate pixel Y position
+  const pixelY = platform.y * GRID_SIZE - TAG_OFFSET;
 
   return new Vector(pixelX, pixelY);
 }
 
 /**
  * Generates random grid positions for tags, ensuring no duplicates.
- * Tags are placed on platforms y=0-4 and x=0-4.
- * This gives 25 possible positions (5x5 grid).
  *
  * @param tagCount Number of tags to place
+ * @param config Platform configuration defining valid grid bounds
  * @returns Array of random, unique grid positions
  */
-export function generateRandomTagPositions(tagCount: number): PositionData[] {
+export function generateRandomTagPositions(
+  tagCount: number,
+  config: PlatformConfig
+): PositionData[] {
   const positions: PositionData[] = [];
   const usedPositions = new Set<string>();
+  const { gridConfig } = config;
+
+  const xRange = gridConfig.xMax - gridConfig.xMin + 1;
+  const yRange = gridConfig.yMax - gridConfig.yMin + 1;
+
+  if (tagCount > xRange * yRange) {
+    throw new Error(
+      `Cannot place ${tagCount} tags in a ${xRange}x${yRange} grid (max ${xRange * yRange} positions)`
+    );
+  }
 
   while (positions.length < tagCount) {
-    // Random platform (0-4, using all 5 platforms)
-    const y = Math.floor(Math.random() * 5);
-    // Random x position (0-4)
-    const x = Math.floor(Math.random() * 5);
+    const y = Math.floor(Math.random() * yRange) + gridConfig.yMin;
+    const x = Math.floor(Math.random() * xRange) + gridConfig.xMin;
 
     const key = `${x},${y}`;
     if (!usedPositions.has(key)) {

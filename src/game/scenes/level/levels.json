@@ -741,5 +741,25 @@
       }
     }
   ],
-  "cssLevels": []
+  "cssLevels": [
+    {
+      "id": 1,
+      "name": "Green Link Styling",
+      "html": {
+        "tags": [
+          "<a>",
+          "text",
+          "</a>"
+        ]
+      },
+      "css": {
+        "tags": [
+          "a{",
+          "color:",
+          "green;",
+          "}"
+        ]
+      }
+    }
+  ]
 }

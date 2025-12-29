@@ -90,7 +90,7 @@ export class GameUIManager {
   private createTopRightUI(): void {
     this.htmlPreview = new HtmlPreview(
       new Vector(0, 0),
-      new Vector(100, 100),
+      new Vector(200, 160),
       ''
     );
 
@@ -102,6 +102,7 @@ export class GameUIManager {
       this.solutionToggleButtonText,
       'secondary'
     );
+    this.solutionToggleButton.translation = new Vector(-4, -24);
     this.solutionToggleButton.action = () => {
       this.showSolutionToggle = !this.showSolutionToggle;
       // Update button text based on toggle state
@@ -116,7 +117,7 @@ export class GameUIManager {
     this.targetLayout.flexDirection = 'column';
     this.targetLayout.justifyContent = 'flex-start';
     this.targetLayout.alignItems = 'flex-end';
-    this.targetLayout.padding = new Vector(8, 8);
+    this.targetLayout.padding = new Vector(20, 20);
     this.targetLayout.gap = 4;
 
     this.targetLayout.addChild(solutionBoard);
