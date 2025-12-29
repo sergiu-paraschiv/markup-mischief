@@ -3,7 +3,7 @@ import { Node2D } from '@engine/elements';
 import { Layout9Slice } from '@game/entities';
 import { AssetsMap } from '@engine/loaders';
 
-import PaperBoard from './PaperBoard';
+import PaperBoard, { PaperBoardVariant } from './PaperBoard';
 
 type BoardVariant = 'primary' | 'secondary';
 
@@ -41,7 +41,8 @@ export default class Board extends Node2D {
     position: Vector,
     size: Vector,
     variant: BoardVariant = 'primary',
-    outlined = false
+    outlined = false,
+    paperVariant: PaperBoardVariant = 'default'
   ) {
     super(position);
 
@@ -94,7 +95,7 @@ export default class Board extends Node2D {
     );
 
     // Create paper overlay
-    this.paper = new PaperBoard(new Vector(0, 0), size);
+    this.paper = new PaperBoard(new Vector(0, 0), size, paperVariant);
 
     this.addChild(this.board);
     this.addChild(this.paper);

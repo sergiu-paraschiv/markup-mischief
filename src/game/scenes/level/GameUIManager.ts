@@ -59,7 +59,11 @@ export class GameUIManager {
    * Creates the UI layout in bottom-right corner (menu button, level name)
    */
   private createBottomRightUI(): void {
-    this.levelNameText = new Text(this.levelData.name, 0, 'hero');
+    this.levelNameText = new Text(
+      `Level ${this.levelData.id} - ${this.levelData.name}`,
+      0,
+      'hero'
+    );
 
     const menuButtonText = new Text('Menu');
     this.menuButton = new Button(new Vector(0, 0), menuButtonText);
@@ -74,7 +78,7 @@ export class GameUIManager {
     this.uiLayout.flexDirection = 'column';
     this.uiLayout.justifyContent = 'flex-end';
     this.uiLayout.alignItems = 'flex-end';
-    this.uiLayout.padding = new Vector(8, 8);
+    this.uiLayout.padding = new Vector(8, 0);
     this.uiLayout.gap = 6;
 
     // Add elements to layout

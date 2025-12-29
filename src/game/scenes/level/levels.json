@@ -760,6 +760,1435 @@
           "}"
         ]
       }
+    },
+    {
+      "id": 2,
+      "name": "Red Span",
+      "html": {
+        "tags": [
+          "<span>",
+          "text",
+          "</span>"
+        ]
+      },
+      "css": {
+        "tags": [
+          "span{",
+          "color:",
+          "red;",
+          "}"
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "name": "Orange Highlight",
+      "html": {
+        "tags": [
+          "text",
+          "<span>",
+          "text",
+          "</span>",
+          "text"
+        ]
+      },
+      "css": {
+        "tags": [
+          "span{",
+          "color:",
+          "orange;",
+          "}"
+        ]
+      }
+    },
+    {
+      "id": 4,
+      "name": "Blue Division",
+      "html": {
+        "tags": [
+          "text",
+          "<div>",
+          "text",
+          "</div>",
+          "text"
+        ]
+      },
+      "css": {
+        "tags": [
+          "div{",
+          "color:",
+          "blue;",
+          "}"
+        ]
+      }
+    },
+    {
+      "id": 5,
+      "name": "Italic Block",
+      "html": {
+        "tags": [
+          "<div>",
+          "text",
+          "<br/>",
+          "text",
+          "</div>"
+        ]
+      },
+      "css": {
+        "tags": [
+          "div{",
+          "font-style:",
+          "italic;",
+          "}"
+        ]
+      }
+    },
+    {
+      "id": 6,
+      "name": "Green Italic Section",
+      "html": {
+        "tags": [
+          "<div>",
+          "text",
+          "<p>",
+          "text",
+          "</p>",
+          "</div>"
+        ]
+      },
+      "css": {
+        "tags": [
+          "div{",
+          "font-style:",
+          "italic;",
+          "color:",
+          "green;",
+          "}"
+        ]
+      }
+    },
+    {
+      "id": 7,
+      "name": "Big Normal Span",
+      "html": {
+        "tags": [
+          "<em>",
+          "text",
+          "<span>",
+          "text",
+          "</span>",
+          "text",
+          "</em>"
+        ]
+      },
+      "css": {
+        "tags": [
+          "span{",
+          "font-style:",
+          "normal;",
+          "font-size:",
+          "40px;",
+          "}"
+        ]
+      }
+    },
+    {
+      "id": 8,
+      "name": "Tiny Blue Emphasis",
+      "html": {
+        "tags": [
+          "text",
+          "<em>",
+          "text",
+          "</em>",
+          "text"
+        ]
+      },
+      "css": {
+        "tags": [
+          "em{",
+          "color:",
+          "blue;",
+          "font-size:",
+          "10px;",
+          "}"
+        ]
+      }
+    },
+    {
+      "id": 9,
+      "name": "Yellow Background",
+      "html": {
+        "tags": [
+          "<div>",
+          "text",
+          "text",
+          "</div>"
+        ]
+      },
+      "css": {
+        "tags": [
+          "div{",
+          "background:",
+          "yellow;",
+          "font-size:",
+          "40px;",
+          "}"
+        ]
+      }
+    },
+    {
+      "id": 10,
+      "name": "Red Right Align",
+      "html": {
+        "tags": [
+          "<div>",
+          "text",
+          "<br/>",
+          "text",
+          "</div>"
+        ]
+      },
+      "css": {
+        "tags": [
+          "div{",
+          "background:",
+          "red;",
+          "text-align:",
+          "right;",
+          "}"
+        ]
+      }
+    },
+    {
+      "id": 11,
+      "name": "Centered Transparent",
+      "html": {
+        "tags": [
+          "<div>",
+          "<img/>",
+          "<br/>",
+          "text",
+          "</div>"
+        ]
+      },
+      "css": {
+        "tags": [
+          "div{",
+          "text-align:",
+          "center;",
+          "opacity:",
+          "0.5;",
+          "}"
+        ]
+      }
+    },
+    {
+      "id": 12,
+      "name": "Faded Wide Image",
+      "html": {
+        "tags": [
+          "<h2>",
+          "text",
+          "</h2>",
+          "<img/>"
+        ]
+      },
+      "css": {
+        "tags": [
+          "img{",
+          "opacity:",
+          "0.25;",
+          "width:",
+          "100%;",
+          "}"
+        ]
+      }
+    },
+    {
+      "id": 13,
+      "name": "Block Image Quarter",
+      "html": {
+        "tags": [
+          "text",
+          "<img/>",
+          "text"
+        ]
+      },
+      "css": {
+        "tags": [
+          "img{",
+          "display:",
+          "block;",
+          "width:",
+          "25%;",
+          "}"
+        ]
+      }
+    },
+    {
+      "id": 14,
+      "name": "Block Span Fade",
+      "html": {
+        "tags": [
+          "text",
+          "<span>",
+          "text",
+          "</span>",
+          "text"
+        ]
+      },
+      "css": {
+        "tags": [
+          "span{",
+          "display:",
+          "block;",
+          "opacity:",
+          "0.25;",
+          "}"
+        ]
+      }
+    },
+    {
+      "id": 15,
+      "name": "Inline Green Div",
+      "html": {
+        "tags": [
+          "text",
+          "<div>",
+          "text",
+          "</div>",
+          "text"
+        ]
+      },
+      "css": {
+        "tags": [
+          "div{",
+          "background:",
+          "green;",
+          "display:",
+          "inline;",
+          "}"
+        ]
+      }
+    },
+    {
+      "id": 16,
+      "name": "Hidden Image",
+      "html": {
+        "tags": [
+          "<h1>",
+          "text",
+          "</h1>",
+          "<img/>"
+        ]
+      },
+      "css": {
+        "tags": [
+          "h1{",
+          "font-style:",
+          "italic;",
+          "}",
+          "img{",
+          "display:",
+          "none;",
+          "}"
+        ]
+      }
+    },
+    {
+      "id": 17,
+      "name": "Big Link Only",
+      "html": {
+        "tags": [
+          "<a>",
+          "text",
+          "</a>",
+          "<div>",
+          "<img/>",
+          "text",
+          "</div>"
+        ]
+      },
+      "css": {
+        "tags": [
+          "a{",
+          "font-size:",
+          "40px;",
+          "}",
+          "div{",
+          "display:",
+          "none;",
+          "}"
+        ]
+      }
+    },
+    {
+      "id": 18,
+      "name": "Sized Header Right Para",
+      "html": {
+        "tags": [
+          "<h1>",
+          "text",
+          "</h1>",
+          "<p>",
+          "text",
+          "</p>"
+        ]
+      },
+      "css": {
+        "tags": [
+          "h1{",
+          "font-size:",
+          "20px;",
+          "}",
+          "p{",
+          "text-align:",
+          "right;",
+          "}"
+        ]
+      }
+    },
+    {
+      "id": 19,
+      "name": "Half Button Faded Para",
+      "html": {
+        "tags": [
+          "<button>",
+          "text",
+          "</button>",
+          "<p>",
+          "text",
+          "</p>"
+        ]
+      },
+      "css": {
+        "tags": [
+          "button{",
+          "height:",
+          "50%;",
+          "}",
+          "p{",
+          "opacity:",
+          "0.25;",
+          "}"
+        ]
+      }
+    },
+    {
+      "id": 20,
+      "name": "Wide Buttons Green Em",
+      "html": {
+        "tags": [
+          "<button>",
+          "text",
+          "</button>",
+          "<em>",
+          "text",
+          "</em>",
+          "<button>",
+          "text",
+          "</button>"
+        ]
+      },
+      "css": {
+        "tags": [
+          "button{",
+          "width:",
+          "100%;",
+          "}",
+          "em{",
+          "color:",
+          "green;",
+          "}"
+        ]
+      }
+    },
+    {
+      "id": 21,
+      "name": "Orange Padded Center",
+      "html": {
+        "tags": [
+          "<hr/>",
+          "<div>",
+          "text",
+          "</div>",
+          "<hr/>"
+        ]
+      },
+      "css": {
+        "tags": [
+          "div{",
+          "background:",
+          "orange;",
+          "text-align:",
+          "center;",
+          "padding:",
+          "10px;",
+          "}"
+        ]
+      }
+    },
+    {
+      "id": 22,
+      "name": "Black Box White Text",
+      "html": {
+        "tags": [
+          "text",
+          "<hr/>",
+          "<p>",
+          "text",
+          "</p>"
+        ]
+      },
+      "css": {
+        "tags": [
+          "p{",
+          "background:",
+          "black;",
+          "color:",
+          "white;",
+          "padding:",
+          "20px;",
+          "}"
+        ]
+      }
+    },
+    {
+      "id": 23,
+      "name": "Block Italic Padded Strong",
+      "html": {
+        "tags": [
+          "<strong>",
+          "text",
+          "</strong>",
+          "<strong>",
+          "text",
+          "</strong>"
+        ]
+      },
+      "css": {
+        "tags": [
+          "strong{",
+          "display:",
+          "block;",
+          "font-style:",
+          "italic;",
+          "padding:",
+          "40px;",
+          "}"
+        ]
+      }
+    },
+    {
+      "id": 24,
+      "name": "Red Margin Right Divs",
+      "html": {
+        "tags": [
+          "<div>",
+          "text",
+          "</div>",
+          "<div>",
+          "text",
+          "</div>"
+        ]
+      },
+      "css": {
+        "tags": [
+          "div{",
+          "background:",
+          "red;",
+          "margin:",
+          "40px;",
+          "text-align:",
+          "right;",
+          "}"
+        ]
+      }
+    },
+    {
+      "id": 25,
+      "name": "Faded Margin Images",
+      "html": {
+        "tags": [
+          "text",
+          "<hr/>",
+          "<img/>",
+          "<img/>",
+          "<br/>",
+          "<img/>"
+        ]
+      },
+      "css": {
+        "tags": [
+          "img{",
+          "margin:",
+          "20px;",
+          "opacity:",
+          "0.5;",
+          "width:",
+          "40px;",
+          "}"
+        ]
+      }
+    },
+    {
+      "id": 26,
+      "name": "Block Span Trio",
+      "html": {
+        "tags": [
+          "<span>",
+          "text",
+          "</span>",
+          "<span>",
+          "text",
+          "</span>",
+          "<span>",
+          "text",
+          "</span>"
+        ]
+      },
+      "css": {
+        "tags": [
+          "span{",
+          "display:",
+          "block;",
+          "font-size:",
+          "10px;",
+          "margin:",
+          "40px;",
+          "}"
+        ]
+      }
+    },
+    {
+      "id": 27,
+      "name": "Inline Black Boxes",
+      "html": {
+        "tags": [
+          "<h2>",
+          "text",
+          "</h2>",
+          "<div>",
+          "</div>",
+          "<div>",
+          "</div>",
+          "<div>",
+          "</div>"
+        ]
+      },
+      "css": {
+        "tags": [
+          "div{",
+          "background:",
+          "black;",
+          "display:",
+          "inline;",
+          "margin:",
+          "10px;",
+          "padding:",
+          "10px;",
+          "}"
+        ]
+      }
+    },
+    {
+      "id": 28,
+      "name": "Big Red Half Button",
+      "html": {
+        "tags": [
+          "<button>",
+          "text",
+          "<p>",
+          "text",
+          "</p>",
+          "</button>"
+        ]
+      },
+      "css": {
+        "tags": [
+          "button{",
+          "color:",
+          "red;",
+          "font-size:",
+          "40px;",
+          "height:",
+          "100%;",
+          "width:",
+          "50%;",
+          "}"
+        ]
+      }
+    },
+    {
+      "id": 29,
+      "name": "Faded Tiny Image",
+      "html": {
+        "tags": [
+          "<img/>",
+          "<strong>",
+          "<a>",
+          "text",
+          "</a>",
+          "</strong>"
+        ]
+      },
+      "css": {
+        "tags": [
+          "img{",
+          "opacity:",
+          "0.25;",
+          "height:",
+          "20px;",
+          "width:",
+          "100%;",
+          "}"
+        ]
+      }
+    },
+    {
+      "id": 30,
+      "name": "Orange Scroll Box",
+      "html": {
+        "tags": [
+          "<div>",
+          "<h2>",
+          "text",
+          "</h2>",
+          "<img/>",
+          "</div>"
+        ]
+      },
+      "css": {
+        "tags": [
+          "div{",
+          "background:",
+          "orange;",
+          "height:",
+          "25%;",
+          "overflow:",
+          "scroll;",
+          "}"
+        ]
+      }
+    },
+    {
+      "id": 31,
+      "name": "Green Hidden Overflow",
+      "html": {
+        "tags": [
+          "<div>",
+          "<img/>",
+          "</div>",
+          "<button>",
+          "text",
+          "</button>"
+        ]
+      },
+      "css": {
+        "tags": [
+          "div{",
+          "background:",
+          "green;",
+          "height:",
+          "40px;",
+          "overflow:",
+          "hidden;",
+          "}",
+          "button{",
+          "font-size:",
+          "10px;",
+          "}"
+        ]
+      }
+    },
+    {
+      "id": 32,
+      "name": "Black Half Box Small Images",
+      "html": {
+        "tags": [
+          "<div>",
+          "<img/>",
+          "</div>",
+          "<p>",
+          "<img/>",
+          "</p>"
+        ]
+      },
+      "css": {
+        "tags": [
+          "div{",
+          "background:",
+          "black;",
+          "width:",
+          "50%;",
+          "height:",
+          "50%;",
+          "}",
+          "img{",
+          "width:",
+          "50%;",
+          "}"
+        ]
+      }
+    },
+    {
+      "id": 33,
+      "name": "Blue Padded Right Button",
+      "html": {
+        "tags": [
+          "<div>",
+          "<button>",
+          "text",
+          "text",
+          "</button>",
+          "</div>"
+        ]
+      },
+      "css": {
+        "tags": [
+          "div{",
+          "background:",
+          "blue;",
+          "padding:",
+          "10px;",
+          "text-align:",
+          "right;",
+          "}",
+          "button{",
+          "width:",
+          "50%;",
+          "}"
+        ]
+      }
+    },
+    {
+      "id": 34,
+      "name": "Big Red Center Blue Em",
+      "html": {
+        "tags": [
+          "<div>",
+          "text",
+          "<br/>",
+          "text",
+          "<br/>",
+          "<em>",
+          "text",
+          "</em>",
+          "</div>"
+        ]
+      },
+      "css": {
+        "tags": [
+          "div{",
+          "color:",
+          "red;",
+          "font-size:",
+          "40px;",
+          "text-align:",
+          "center;",
+          "}",
+          "em{",
+          "color:",
+          "blue;",
+          "}"
+        ]
+      }
+    },
+    {
+      "id": 35,
+      "name": "Faded Padded Right Left Header",
+      "html": {
+        "tags": [
+          "<div>",
+          "text",
+          "<h1>",
+          "text",
+          "</h1>",
+          "text",
+          "</div>"
+        ]
+      },
+      "css": {
+        "tags": [
+          "div{",
+          "padding:",
+          "20px;",
+          "opacity:",
+          "0.5;",
+          "text-align:",
+          "right;",
+          "}",
+          "h1{",
+          "text-align:",
+          "left;",
+          "}"
+        ]
+      }
+    },
+    {
+      "id": 36,
+      "name": "Yellow List Faded Small Image",
+      "html": {
+        "tags": [
+          "<ul>",
+          "<li>",
+          "text",
+          "</li>",
+          "<li>",
+          "text",
+          "</li>",
+          "<li>",
+          "<img/>",
+          "</li>",
+          "</ul>"
+        ]
+      },
+      "css": {
+        "tags": [
+          "ul{",
+          "background:",
+          "yellow;",
+          "margin:",
+          "40px;",
+          "}",
+          "img{",
+          "opacity:",
+          "0.5;",
+          "width:",
+          "25%;",
+          "}"
+        ]
+      }
+    },
+    {
+      "id": 37,
+      "name": "Orange Padded Red Margin List",
+      "html": {
+        "tags": [
+          "<ol>",
+          "<li>",
+          "text",
+          "</li>",
+          "<li>",
+          "text",
+          "</li>",
+          "</ol>"
+        ]
+      },
+      "css": {
+        "tags": [
+          "ol{",
+          "background:",
+          "orange;",
+          "padding:",
+          "40px;",
+          "}",
+          "li{",
+          "margin:",
+          "20px;",
+          "background:",
+          "red;",
+          "}"
+        ]
+      }
+    },
+    {
+      "id": 38,
+      "name": "Green List Red Italic Nested",
+      "html": {
+        "tags": [
+          "<ol>",
+          "<li>",
+          "text",
+          "</li>",
+          "<ul>",
+          "<li>",
+          "text",
+          "</li>",
+          "</ul>",
+          "</ol>"
+        ]
+      },
+      "css": {
+        "tags": [
+          "ol",
+          "{",
+          "color:",
+          "green;",
+          "width:",
+          "50%;",
+          "}",
+          "ul",
+          "{",
+          "color:",
+          "red;",
+          "font-style:",
+          "italic;",
+          "}"
+        ]
+      }
+    },
+    {
+      "id": 39,
+      "name": "Yellow Padded Orange List",
+      "html": {
+        "tags": [
+          "<div>",
+          "<ul>",
+          "<li>",
+          "text",
+          "</li>",
+          "<li>",
+          "text",
+          "</li>",
+          "</ul>",
+          "</div>"
+        ]
+      },
+      "css": {
+        "tags": [
+          "div{",
+          "background:",
+          "yellow;",
+          "padding:",
+          "20px;",
+          "}",
+          "ul{",
+          "background:",
+          "orange;",
+          "padding:",
+          "40px;",
+          "}"
+        ]
+      }
+    },
+    {
+      "id": 40,
+      "name": "Half Rule Inline Blue List",
+      "html": {
+        "tags": [
+          "<hr/>",
+          "<ul>",
+          "<li>",
+          "text",
+          "</li>",
+          "<li>",
+          "text",
+          "</li>",
+          "</ul>",
+          "<hr/>"
+        ]
+      },
+      "css": {
+        "tags": [
+          "hr",
+          "{",
+          "height:",
+          "10px;",
+          "width:",
+          "50%;",
+          "}",
+          "li",
+          "{",
+          "color:",
+          "blue;",
+          "display:",
+          "inline;",
+          "}"
+        ]
+      }
+    },
+    {
+      "id": 41,
+      "name": "Green Half Box Hidden Span",
+      "html": {
+        "tags": [
+          "<div>",
+          "<button>",
+          "text",
+          "</button>",
+          "<span>",
+          "text",
+          "</span>",
+          "</div>"
+        ]
+      },
+      "css": {
+        "tags": [
+          "div{",
+          "background:",
+          "green;",
+          "height:",
+          "50%;",
+          "}",
+          "button{",
+          "height:",
+          "50%;",
+          "}",
+          "span{",
+          "display:",
+          "none;",
+          "}"
+        ]
+      }
+    },
+    {
+      "id": 42,
+      "name": "Right Para Black Button No Rule",
+      "html": {
+        "tags": [
+          "<p>",
+          "text",
+          "</p>",
+          "<button>",
+          "text",
+          "</button>",
+          "<p>",
+          "text",
+          "</p>",
+          "<hr/>"
+        ]
+      },
+      "css": {
+        "tags": [
+          "p{",
+          "text-align:",
+          "right;",
+          "}",
+          "button{",
+          "background:",
+          "black;",
+          "color:",
+          "white;",
+          "}",
+          "hr{",
+          "display:",
+          "none;",
+          "}"
+        ]
+      }
+    },
+    {
+      "id": 43,
+      "name": "Center Header Black Bars Margin Image",
+      "html": {
+        "tags": [
+          "<h2>",
+          "text",
+          "text",
+          "</h2>",
+          "<div>",
+          "</div>",
+          "<img/>",
+          "<div>",
+          "</div>"
+        ]
+      },
+      "css": {
+        "tags": [
+          "h2{",
+          "text-align:",
+          "center;",
+          "}",
+          "div{",
+          "background:",
+          "black;",
+          "height:",
+          "40px;",
+          "}",
+          "img{",
+          "margin:",
+          "10px;",
+          "}"
+        ]
+      }
+    },
+    {
+      "id": 44,
+      "name": "Blue Para Italic Strong Big Faded Spans",
+      "html": {
+        "tags": [
+          "<p>",
+          "<strong>",
+          "text",
+          "<span>",
+          "text",
+          "</span>",
+          "</strong>",
+          "text",
+          "<span>",
+          "text",
+          "</span>",
+          "text",
+          "</p>"
+        ]
+      },
+      "css": {
+        "tags": [
+          "p{",
+          "color:",
+          "blue;",
+          "}",
+          "strong{",
+          "font-style:",
+          "italic;",
+          "}",
+          "span{",
+          "font-size:",
+          "40px;",
+          "opacity:",
+          "0.25;",
+          "}"
+        ]
+      }
+    },
+    {
+      "id": 45,
+      "name": "Red Link Scroll Images",
+      "html": {
+        "tags": [
+          "<a>",
+          "text",
+          "</a>",
+          "<div>",
+          "<img/>",
+          "<img/>",
+          "<img/>",
+          "</div>"
+        ]
+      },
+      "css": {
+        "tags": [
+          "a{",
+          "background:",
+          "red;",
+          "}",
+          "div{",
+          "overflow:",
+          "scroll;",
+          "height:",
+          "50px;",
+          "}",
+          "img{",
+          "margin:",
+          "20px;",
+          "}"
+        ]
+      }
+    },
+    {
+      "id": 46,
+      "name": "Hidden Image Center Small Header",
+      "html": {
+        "tags": [
+          "<div>",
+          "<img/>",
+          "</div>",
+          "<h2>",
+          "<a>",
+          "text",
+          "</a>",
+          "</h2>"
+        ]
+      },
+      "css": {
+        "tags": [
+          "div{",
+          "overflow:",
+          "hidden;",
+          "height:",
+          "40px;",
+          "}",
+          "img{",
+          "width:",
+          "100%;",
+          "}",
+          "h2{",
+          "font-size:",
+          "20px;",
+          "text-align:",
+          "center;",
+          "}"
+        ]
+      }
+    },
+    {
+      "id": 47,
+      "name": "Block Padded Links Half Rule Green Em",
+      "html": {
+        "tags": [
+          "<a>",
+          "text",
+          "</a>",
+          "<a>",
+          "text",
+          "</a>",
+          "<hr/>",
+          "<em>",
+          "text",
+          "</em>",
+          "text",
+          "<em>",
+          "text",
+          "</em>"
+        ]
+      },
+      "css": {
+        "tags": [
+          "a{",
+          "display:",
+          "block;",
+          "padding:",
+          "20px;",
+          "}",
+          "hr{",
+          "width:",
+          "50%;",
+          "}",
+          "em{",
+          "font-style:",
+          "normal;",
+          "color:",
+          "green;",
+          "}"
+        ]
+      }
+    },
+    {
+      "id": 48,
+      "name": "Yellow Padded Div Inline Yellow List",
+      "html": {
+        "tags": [
+          "<div>",
+          "text",
+          "</div>",
+          "<ul>",
+          "<li>",
+          "text",
+          "</li>",
+          "<li>",
+          "text",
+          "</li>",
+          "<li>",
+          "text",
+          "</li>",
+          "<li>",
+          "text",
+          "</li>",
+          "</ul>"
+        ]
+      },
+      "css": {
+        "tags": [
+          "div{",
+          "background:",
+          "yellow;",
+          "padding:",
+          "20px;",
+          "}",
+          "ul{",
+          "width:",
+          "50%;",
+          "}",
+          "li{",
+          "background:",
+          "yellow;",
+          "display:",
+          "inline;",
+          "}"
+        ]
+      }
+    },
+    {
+      "id": 49,
+      "name": "Orange List Padded Button Black Italic Span",
+      "html": {
+        "tags": [
+          "<ul>",
+          "<li>",
+          "text",
+          "</li>",
+          "<li>",
+          "<button>",
+          "text",
+          "<img/>",
+          "</button>",
+          "</li>",
+          "<li>",
+          "<span>",
+          "text",
+          "</span>",
+          "</li>",
+          "</ul>"
+        ]
+      },
+      "css": {
+        "tags": [
+          "ul{",
+          "color:",
+          "orange;",
+          "}",
+          "button{",
+          "text-align:",
+          "left;",
+          "padding:",
+          "10px;",
+          "}",
+          "span{",
+          "color:",
+          "black;",
+          "font-style:",
+          "italic;",
+          "}"
+        ]
+      }
+    },
+    {
+      "id": 50,
+      "name": "Black Box White List Green Nested",
+      "html": {
+        "tags": [
+          "<div>",
+          "<ol>",
+          "<li>",
+          "text",
+          "</li>",
+          "<li>",
+          "text",
+          "</li>",
+          "<ul>",
+          "<li>",
+          "text",
+          "</li>",
+          "<li>",
+          "text",
+          "</li>",
+          "</ul>",
+          "</ol>",
+          "</div>"
+        ]
+      },
+      "css": {
+        "tags": [
+          "div{",
+          "background:",
+          "black;",
+          "height:",
+          "50%;",
+          "}",
+          "ol{",
+          "background:",
+          "white;",
+          "width:",
+          "50%;",
+          "}",
+          "ul{",
+          "background:",
+          "green;",
+          "}"
+        ]
+      }
     }
   ]
 }

@@ -3,27 +3,60 @@ import { Node2D } from '@engine/elements';
 import { Layout9Slice } from '@game/entities';
 import { AssetsMap } from '@engine/loaders';
 
+export type PaperBoardVariant = 'default' | 'white';
+
+const TILE_INDEXES = {
+  default: {
+    topLeft: 33,
+    topCenter: 34,
+    topRight: 35,
+    middleLeft: 45,
+    middleCenter: 46,
+    middleRight: 47,
+    bottomLeft: 57,
+    bottomCenter: 58,
+    bottomRight: 59,
+  },
+  white: {
+    topLeft: 41,
+    topCenter: 42,
+    topRight: 43,
+    middleLeft: 53,
+    middleCenter: 54,
+    middleRight: 55,
+    bottomLeft: 65,
+    bottomCenter: 66,
+    bottomRight: 67,
+  },
+};
+
 export default class PaperBoard extends Node2D {
   private board: Node2D;
 
-  constructor(position: Vector, size: Vector) {
+  constructor(
+    position: Vector,
+    size: Vector,
+    variant: PaperBoardVariant = 'default'
+  ) {
     super(position);
 
     const assets = GlobalContext.get<AssetsMap>('assets');
     const tilemap =
       assets['Wood and Paper UI - Boards'].tilemaps['Wood and Paper'];
 
+    const tiles = TILE_INDEXES[variant];
+
     this.board = new Layout9Slice(
       size,
-      tilemap.get(33),
-      tilemap.get(34),
-      tilemap.get(35),
-      tilemap.get(41),
-      tilemap.get(42),
-      tilemap.get(43),
-      tilemap.get(49),
-      tilemap.get(50),
-      tilemap.get(51)
+      tilemap.get(tiles.topLeft),
+      tilemap.get(tiles.topCenter),
+      tilemap.get(tiles.topRight),
+      tilemap.get(tiles.middleLeft),
+      tilemap.get(tiles.middleCenter),
+      tilemap.get(tiles.middleRight),
+      tilemap.get(tiles.bottomLeft),
+      tilemap.get(tiles.bottomCenter),
+      tilemap.get(tiles.bottomRight)
     );
 
     this.addChild(this.board);

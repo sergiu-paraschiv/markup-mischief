@@ -13,7 +13,8 @@ export default class SolutionBoard extends Node2D {
       new Vector(0, 0),
       htmlPreview.size.add(padding.mul(2)),
       'secondary',
-      false
+      false,
+      'white'
     );
     htmlPreview.position = padding;
     this.board.addChild(htmlPreview);
