@@ -52,7 +52,7 @@ export class PlayerTagInteraction {
         .add(this.player.colliderOffset)
         .add(new Vector(this.player.collider.dimensions.width / 2, 0))
         .sub(new Vector(this.grabbedTag.width / 2, 0))
-        .add(new Vector(this.player.pointing === Pointing.LEFT ? -6 : 6, 8));
+        .add(new Vector(this.player.pointing === Pointing.LEFT ? -6 : 6, 4));
     }
 
     this.player.updateGhostPosition();

@@ -33,7 +33,8 @@ export class WinConditionChecker {
 
   isCorrect(): boolean {
     const html = this.getCurrentHtml();
-    const htmlCorrect = html === this.levelData.html.solution;
+    const htmlSolution = this.getHtmlSolution();
+    const htmlCorrect = html === htmlSolution;
 
     // In HTML mode, only check HTML solution
     if (!this.isCssMode) {
@@ -42,9 +43,8 @@ export class WinConditionChecker {
 
     // In CSS mode, check both HTML and CSS solutions
     const css = this.getCurrentCss();
-    const cssCorrect = this.levelData.css
-      ? css === this.levelData.css.solution
-      : true;
+    const cssSolution = this.getCssSolution();
+    const cssCorrect = this.levelData.css ? css === cssSolution : true;
 
     return htmlCorrect && cssCorrect;
   }
@@ -68,10 +68,10 @@ export class WinConditionChecker {
   }
 
   getHtmlSolution(): string {
-    return this.levelData.html.solution;
+    return this.levelData.html.tags.join(' ');
   }
 
   getCssSolution(): string {
-    return this.levelData.css?.solution || '';
+    return this.levelData.css?.tags.join(' ') || '';
   }
 }

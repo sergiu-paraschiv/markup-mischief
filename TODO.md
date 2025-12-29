@@ -11,7 +11,7 @@
 [x] GUI: (1) start game -> pick level -> win screen, (2) in-game exit, (3) rendered view / rendered solution view
 [x] more levels
 [x] save progression somewhere
-[ ] "CSS mode"
+[x] "CSS mode"
 [ ] add all levels
 [ ] mobile on-screen buttons
 [ ] use Dust Particles aseprite for character animations

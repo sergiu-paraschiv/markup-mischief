@@ -2,240 +2,744 @@
   "htmlLevels": [
     {
       "id": 1,
-      "name": "Level 1 - Emphasis",
+      "name": "Link It Up",
       "html": {
-        "playerStart": {
-          "x": 64,
-          "y": 64
-        },
         "tags": [
-          {
-            "position": {
-              "x": 50,
-              "y": 32
-            },
-            "text": "<em>"
-          },
-          {
-            "position": {
-              "x": 130,
-              "y": 32
-            },
-            "text": "</em>"
-          },
-          {
-            "position": {
-              "x": 180,
-              "y": 32
-            },
-            "text": "text"
-          }
-        ],
-        "solution": "<em> text </em>"
+          "<a>",
+          "text",
+          "</a>"
+        ]
       }
     },
     {
       "id": 2,
-      "name": "Level 2 - Strong Tag",
+      "name": "Emphasis Required",
       "html": {
-        "playerStart": {
-          "x": 96,
-          "y": 64
-        },
         "tags": [
-          {
-            "position": {
-              "x": 280,
-              "y": 96
-            },
-            "text": "text"
-          },
-          {
-            "position": {
-              "x": 50,
-              "y": 160
-            },
-            "text": "</strong>"
-          },
-          {
-            "position": {
-              "x": 200,
-              "y": 224
-            },
-            "text": "bold"
-          },
-          {
-            "position": {
-              "x": 150,
-              "y": 288
-            },
-            "text": "<strong>"
-          }
-        ],
-        "solution": "<strong> bold text </strong>"
+          "<em>",
+          "text",
+          "</em>"
+        ]
       }
     },
     {
       "id": 3,
-      "name": "Level 3 - Nested Tags",
+      "name": "Strong Foundation",
       "html": {
-        "playerStart": {
-          "x": 128,
-          "y": 64
-        },
         "tags": [
-          {
-            "position": {
-              "x": 400,
-              "y": 96
-            },
-            "text": "</p>"
-          },
-          {
-            "position": {
-              "x": 160,
-              "y": 128
-            },
-            "text": "nested"
-          },
-          {
-            "position": {
-              "x": 240,
-              "y": 160
-            },
-            "text": "</em>"
-          },
-          {
-            "position": {
-              "x": 80,
-              "y": 192
-            },
-            "text": "<em>"
-          },
-          {
-            "position": {
-              "x": 320,
-              "y": 224
-            },
-            "text": "<p>"
-          }
-        ],
-        "solution": "<p> <em> nested </em> </p>"
+          "<strong>",
+          "text",
+          "</strong>"
+        ]
       }
     },
     {
       "id": 4,
-      "name": "Level 4 - Link Tag",
+      "name": "Emphatic Links",
       "html": {
-        "playerStart": {
-          "x": 64,
-          "y": 96
-        },
         "tags": [
-          {
-            "position": {
-              "x": 260,
-              "y": 160
-            },
-            "text": "here"
-          },
-          {
-            "position": {
-              "x": 340,
-              "y": 192
-            },
-            "text": "</a>"
-          },
-          {
-            "position": {
-              "x": 100,
-              "y": 224
-            },
-            "text": "<a>"
-          },
-          {
-            "position": {
-              "x": 180,
-              "y": 256
-            },
-            "text": "click"
-          }
-        ],
-        "solution": "<a> click here </a>"
+          "<em>",
+          "<a>",
+          "text",
+          "</a>",
+          "</em>"
+        ]
+      }
+    },
+    {
+      "id": 5,
+      "name": "Bold Connections",
+      "html": {
+        "tags": [
+          "<strong>",
+          "<a>",
+          "text",
+          "</a>",
+          "</strong>"
+        ]
+      }
+    },
+    {
+      "id": 6,
+      "name": "Strongly Emphasized",
+      "html": {
+        "tags": [
+          "<strong>",
+          "<em>",
+          "text",
+          "</em>",
+          "</strong>"
+        ]
+      }
+    },
+    {
+      "id": 7,
+      "name": "Double Trouble",
+      "html": {
+        "tags": [
+          "<a>",
+          "text",
+          "</a>",
+          "<em>",
+          "text",
+          "</em>"
+        ]
+      }
+    },
+    {
+      "id": 8,
+      "name": "Bold & Linked",
+      "html": {
+        "tags": [
+          "<strong>",
+          "text",
+          "</strong>",
+          "<a>",
+          "text",
+          "</a>"
+        ]
+      }
+    },
+    {
+      "id": 9,
+      "name": "Nested Navigation",
+      "html": {
+        "tags": [
+          "<em>",
+          "text",
+          "<a>",
+          "text",
+          "</a>",
+          "</em>"
+        ]
+      }
+    },
+    {
+      "id": 10,
+      "name": "Emphasis Sandwich",
+      "html": {
+        "tags": [
+          "<em>",
+          "text",
+          "<strong>",
+          "text",
+          "</strong>",
+          "</em>"
+        ]
+      }
+    },
+    {
+      "id": 11,
+      "name": "Line Break Basics",
+      "html": {
+        "tags": [
+          "text",
+          "<br/>",
+          "text"
+        ]
+      }
+    },
+    {
+      "id": 12,
+      "name": "Triple Line Stack",
+      "html": {
+        "tags": [
+          "text",
+          "<br/>",
+          "text",
+          "<br/>",
+          "text"
+        ]
+      }
+    },
+    {
+      "id": 13,
+      "name": "Link Break",
+      "html": {
+        "tags": [
+          "<a>",
+          "text",
+          "</a>",
+          "<br/>",
+          "text"
+        ]
+      }
+    },
+    {
+      "id": 14,
+      "name": "Emphasized Lines",
+      "html": {
+        "tags": [
+          "text",
+          "<br/>",
+          "<em>",
+          "text",
+          "</em>"
+        ]
+      }
+    },
+    {
+      "id": 15,
+      "name": "Strong Line Break",
+      "html": {
+        "tags": [
+          "<strong>",
+          "text",
+          "<br/>",
+          "text",
+          "</strong>"
+        ]
+      }
+    },
+    {
+      "id": 16,
+      "name": "Paragraph Intro",
+      "html": {
+        "tags": [
+          "text",
+          "<p>",
+          "text",
+          "</p>"
+        ]
+      }
+    },
+    {
+      "id": 17,
+      "name": "Paragraph Sandwich",
+      "html": {
+        "tags": [
+          "text",
+          "<p>",
+          "text",
+          "</p>",
+          "text"
+        ]
+      }
+    },
+    {
+      "id": 18,
+      "name": "Emphasis and Paragraph",
+      "html": {
+        "tags": [
+          "<em>",
+          "text",
+          "</em>",
+          "<p>",
+          "text",
+          "text",
+          "</p>"
+        ]
+      }
+    },
+    {
+      "id": 19,
+      "name": "Paragraph Powerhouse",
+      "html": {
+        "tags": [
+          "text",
+          "<p>",
+          "<strong>",
+          "text",
+          "text",
+          "text",
+          "</strong>",
+          "</p>"
+        ]
+      }
+    },
+    {
+      "id": 20,
+      "name": "Breaking Paragraphs",
+      "html": {
+        "tags": [
+          "text",
+          "<p>",
+          "text",
+          "<br/>",
+          "text",
+          "</p>"
+        ]
+      }
+    },
+    {
+      "id": 21,
+      "name": "Image Debut",
+      "html": {
+        "tags": [
+          "<img/>",
+          "<p>",
+          "text",
+          "text",
+          "</p>"
+        ]
+      }
+    },
+    {
+      "id": 22,
+      "name": "Picture Perfect Break",
+      "html": {
+        "tags": [
+          "<img/>",
+          "<p>",
+          "text",
+          "<br/>",
+          "text",
+          "</p>"
+        ]
+      }
+    },
+    {
+      "id": 23,
+      "name": "Linked Image Break",
+      "html": {
+        "tags": [
+          "<a>",
+          "text",
+          "</a>",
+          "<br/>",
+          "<img/>"
+        ]
+      }
+    },
+    {
+      "id": 24,
+      "name": "Clickable Image Link",
+      "html": {
+        "tags": [
+          "<a>",
+          "<img/>",
+          "<br/>",
+          "text",
+          "</a>"
+        ]
+      }
+    },
+    {
+      "id": 25,
+      "name": "Double Vision",
+      "html": {
+        "tags": [
+          "<img/>",
+          "text",
+          "<p>",
+          "<img/>",
+          "text",
+          "</p>"
+        ]
+      }
+    },
+    {
+      "id": 26,
+      "name": "Main Heading",
+      "html": {
+        "tags": [
+          "<h1>",
+          "text",
+          "</h1>",
+          "text"
+        ]
+      }
+    },
+    {
+      "id": 27,
+      "name": "Heading Hierarchy",
+      "html": {
+        "tags": [
+          "<h1>",
+          "text",
+          "</h1>",
+          "<h2>",
+          "text",
+          "</h2>"
+        ]
+      }
+    },
+    {
+      "id": 28,
+      "name": "Emphasized Heading",
+      "html": {
+        "tags": [
+          "<h1>",
+          "<em>",
+          "text",
+          "</em>",
+          "</h1>",
+          "<img/>"
+        ]
+      }
+    },
+    {
+      "id": 29,
+      "name": "Visual Story",
+      "html": {
+        "tags": [
+          "<h2>",
+          "text",
+          "</h2>",
+          "<img/>",
+          "<p>",
+          "text",
+          "</p>"
+        ]
+      }
+    },
+    {
+      "id": 30,
+      "name": "Linked Heading Strong",
+      "html": {
+        "tags": [
+          "<h2>",
+          "<a>",
+          "text",
+          "</a>",
+          "</h2>",
+          "<strong>",
+          "text",
+          "</strong>"
+        ]
+      }
+    },
+    {
+      "id": 31,
+      "name": "Horizontal Divide",
+      "html": {
+        "tags": [
+          "text",
+          "<hr/>",
+          "text"
+        ]
+      }
+    },
+    {
+      "id": 32,
+      "name": "Rule and Break",
+      "html": {
+        "tags": [
+          "text",
+          "<hr/>",
+          "text",
+          "<br/>",
+          "text"
+        ]
+      }
+    },
+    {
+      "id": 33,
+      "name": "Boxed Image",
+      "html": {
+        "tags": [
+          "<p>",
+          "<img/>",
+          "</p>",
+          "text",
+          "<hr/>",
+          "text"
+        ]
+      }
+    },
+    {
+      "id": 34,
+      "name": "Rule Sandwich",
+      "html": {
+        "tags": [
+          "<hr/>",
+          "<img/>",
+          "<hr/>",
+          "text",
+          "<p>",
+          "text",
+          "</p>"
+        ]
+      }
+    },
+    {
+      "id": 35,
+      "name": "Linked Picture Division",
+      "html": {
+        "tags": [
+          "text",
+          "<hr/>",
+          "<a>",
+          "<img/>",
+          "</a>",
+          "<br/>",
+          "text"
+        ]
+      }
+    },
+    {
+      "id": 36,
+      "name": "Button Basics",
+      "html": {
+        "tags": [
+          "<button>",
+          "text",
+          "</button>",
+          "<br/>",
+          "<img/>"
+        ]
+      }
+    },
+    {
+      "id": 37,
+      "name": "Strong Button",
+      "html": {
+        "tags": [
+          "<button>",
+          "<strong>",
+          "text",
+          "</strong>",
+          "</button>"
+        ]
+      }
+    },
+    {
+      "id": 38,
+      "name": "Button Duo",
+      "html": {
+        "tags": [
+          "<button>",
+          "text",
+          "</button>",
+          "<button>",
+          "text",
+          "<p>",
+          "text",
+          "</p>",
+          "</button>"
+        ]
+      }
+    },
+    {
+      "id": 39,
+      "name": "Fancy Button",
+      "html": {
+        "tags": [
+          "<button>",
+          "<img/>",
+          "<br/>",
+          "<em>",
+          "text",
+          "</em>",
+          "</button>"
+        ]
+      }
+    },
+    {
+      "id": 40,
+      "name": "List Inception",
+      "html": {
+        "tags": [
+          "<ul>",
+          "<li>",
+          "text",
+          "</li>",
+          "</ul>"
+        ]
+      }
+    },
+    {
+      "id": 41,
+      "name": "Double List Items",
+      "html": {
+        "tags": [
+          "<ul>",
+          "<li>",
+          "text",
+          "</li>",
+          "<li>",
+          "text",
+          "</li>",
+          "</ul>"
+        ]
+      }
+    },
+    {
+      "id": 42,
+      "name": "Ordered Start",
+      "html": {
+        "tags": [
+          "<ol>",
+          "<li>",
+          "text",
+          "</li>",
+          "</ol>"
+        ]
+      }
+    },
+    {
+      "id": 43,
+      "name": "Numbered Pair",
+      "html": {
+        "tags": [
+          "<ol>",
+          "<li>",
+          "text",
+          "</li>",
+          "<li>",
+          "text",
+          "</li>",
+          "</ol>"
+        ]
+      }
+    },
+    {
+      "id": 44,
+      "name": "Linked List Item",
+      "html": {
+        "tags": [
+          "<ol>",
+          "<li>",
+          "text",
+          "</li>",
+          "<li>",
+          "<a>",
+          "text",
+          "</a>",
+          "</li>",
+          "</ol>"
+        ]
+      }
+    },
+    {
+      "id": 45,
+      "name": "Strong List Entry",
+      "html": {
+        "tags": [
+          "<ul>",
+          "<li>",
+          "<strong>",
+          "text",
+          "</strong>",
+          "</li>",
+          "<li>",
+          "text",
+          "</li>",
+          "</ul>"
+        ]
+      }
+    },
+    {
+      "id": 46,
+      "name": "Triple Ordered",
+      "html": {
+        "tags": [
+          "<ol>",
+          "<li>",
+          "text",
+          "</li>",
+          "<li>",
+          "text",
+          "</li>",
+          "<li>",
+          "text",
+          "</li>",
+          "</ol>"
+        ]
+      }
+    },
+    {
+      "id": 47,
+      "name": "Content Explosion",
+      "html": {
+        "tags": [
+          "<img/>",
+          "<ul>",
+          "<li>",
+          "text",
+          "</li>",
+          "<li>",
+          "text",
+          "</li>",
+          "</ul>",
+          "<p>",
+          "text",
+          "</p>",
+          "text"
+        ]
+      }
+    },
+    {
+      "id": 48,
+      "name": "Emphasized List Section",
+      "html": {
+        "tags": [
+          "<h2>",
+          "text",
+          "</h2>",
+          "<ol>",
+          "<em>",
+          "<li>",
+          "text",
+          "</li>",
+          "<li>",
+          "text",
+          "</li>",
+          "</em>",
+          "</ol>",
+          "<hr/>",
+          "text"
+        ]
+      }
+    },
+    {
+      "id": 49,
+      "name": "Complex Navigation",
+      "html": {
+        "tags": [
+          "<h1>",
+          "text",
+          "</h1>",
+          "<ul>",
+          "<li>",
+          "<a>",
+          "<strong>",
+          "text",
+          "</strong>",
+          "</a>",
+          "</li>",
+          "<li>",
+          "text",
+          "<em>",
+          "text",
+          "<br/>",
+          "text",
+          "</em>",
+          "text",
+          "</li>",
+          "</ul>"
+        ]
+      }
+    },
+    {
+      "id": 50,
+      "name": "Nested List Mastery",
+      "html": {
+        "tags": [
+          "<ol>",
+          "<li>",
+          "text",
+          "</li>",
+          "<li>",
+          "text",
+          "</li>",
+          "<ul>",
+          "<li>",
+          "text",
+          "</li>",
+          "<li>",
+          "text",
+          "</li>",
+          "</ul>",
+          "<li>",
+          "<button>",
+          "text",
+          "</button>",
+          "</li>",
+          "</ol>"
+        ]
       }
     }
   ],
-  "cssLevels": [
-    {
-      "id": 1,
-      "name": "Level 1 - Emphasis",
-      "html": {
-        "playerStart": {
-          "x": 64,
-          "y": 64
-        },
-        "tags": [
-          {
-            "position": {
-              "x": 50,
-              "y": 32
-            },
-            "text": "<a>"
-          },
-          {
-            "position": {
-              "x": 130,
-              "y": 32
-            },
-            "text": "</a>"
-          },
-          {
-            "position": {
-              "x": 180,
-              "y": 32
-            },
-            "text": "text"
-          }
-        ],
-        "solution": "<a> text </a>"
-      },
-      "css": {
-        "playerStart": {
-          "x": 400,
-          "y": 64
-        },
-        "tags": [
-          {
-            "position": {
-              "x": 350,
-              "y": 32
-            },
-            "text": "green;"
-          },
-          {
-            "position": {
-              "x": 410,
-              "y": 32
-            },
-            "text": "a{"
-          },
-          {
-            "position": {
-              "x": 480,
-              "y": 32
-            },
-            "text": "}"
-          },
-          {
-            "position": {
-              "x": 480,
-              "y": 32
-            },
-            "text": "color:"
-          }
-        ],
-        "solution": "a{ color: green; }"
-      }
-    }
-  ]
+  "cssLevels": []
 }

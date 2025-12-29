@@ -8,7 +8,12 @@ import {
   Tag,
   Wall,
 } from '@game/entities';
-import { LevelData, positionToVector } from './LevelData';
+import {
+  LevelData,
+  gridToPixelHtml,
+  gridToPixelCss,
+  generateRandomTagPositions,
+} from './LevelData';
 import { PLAYER_DEPTH, TAG_DEPTH, PLAYER_OUTLINE_DEPTH } from './constants';
 import HTML_BOARD_DATA from './BoardHTML.json';
 import CSS_BOARD_DATA from './BoardCSS.json';
@@ -19,7 +24,17 @@ const LEVEL_HEIGHT = 16;
 type LevelMode = 'html' | 'css';
 
 /**
- * Builds and populates a level from level data
+ * Builds and populates a level from level data.
+ *
+ * Level coordinates use a grid-based system:
+ * - X axis: 0-4 (5 sections of 64px each for wider tag spacing)
+ * - Y axis: 0-5 (6 platforms, with 0 being ground level)
+ * - Total tag positions: 5x5 = 25 (excluding ground)
+ *
+ * Grid coordinates are automatically converted to pixel coordinates based on:
+ * - LEVEL_HEIGHT constant for calculating ground position
+ * - Platform spacing of 64px vertically
+ * - Section width of 64px horizontally
  */
 export class LevelBuilder {
   private scene: Scene;
@@ -127,8 +142,11 @@ export class LevelBuilder {
   }
 
   private buildPlayers(): { player1: Character; player2?: Character } {
+    // Player always starts at x=2, y=0 (center of 5 sections)
+    const defaultPlayerStart = { x: 2, y: 0 };
+
     const player1 = new PinkStar(
-      positionToVector(this.levelData.html.playerStart)
+      gridToPixelHtml(defaultPlayerStart, LEVEL_HEIGHT)
     );
     this.scene.addChild(player1, PLAYER_DEPTH);
     // Add ghost at a higher depth so it renders on top of tags
@@ -137,7 +155,7 @@ export class LevelBuilder {
     // In CSS mode, add the second character
     if (this.mode === 'css' && this.levelData.css) {
       const player2 = new CaptainClownNose(
-        positionToVector(this.levelData.css.playerStart)
+        gridToPixelCss(defaultPlayerStart, LEVEL_HEIGHT, true)
       );
       this.scene.addChild(player2, PLAYER_DEPTH);
       this.scene.addChild(player2.ghost, PLAYER_OUTLINE_DEPTH);
@@ -149,23 +167,57 @@ export class LevelBuilder {
   }
 
   private buildTags(): void {
-    // Add HTML tags (always present)
-    this.levelData.html.tags.forEach(tagData => {
+    // Generate random positions for HTML tags
+    const htmlPositions = generateRandomTagPositions(
+      this.levelData.html.tags.length
+    );
+
+    // Shuffle tags to ensure they don't start in solution order
+    const shuffledHtmlTags = this.shuffleArray([...this.levelData.html.tags]);
+
+    // Add HTML tags at random positions
+    shuffledHtmlTags.forEach((tagText, index) => {
       this.scene.addChild(
-        makeTagTile(positionToVector(tagData.position), tagData.text, 'html'),
+        makeTagTile(
+          gridToPixelHtml(htmlPositions[index], LEVEL_HEIGHT),
+          tagText,
+          'html'
+        ),
         TAG_DEPTH
       );
     });
 
     // Add CSS tags (only in CSS mode)
     if (this.mode === 'css' && this.levelData.css) {
-      this.levelData.css.tags.forEach(tagData => {
+      const cssPositions = generateRandomTagPositions(
+        this.levelData.css.tags.length
+      );
+
+      const shuffledCssTags = this.shuffleArray([...this.levelData.css.tags]);
+
+      shuffledCssTags.forEach((tagText, index) => {
         this.scene.addChild(
-          makeTagTile(positionToVector(tagData.position), tagData.text, 'css'),
+          makeTagTile(
+            gridToPixelCss(cssPositions[index], LEVEL_HEIGHT, true),
+            tagText,
+            'css'
+          ),
           TAG_DEPTH
         );
       });
     }
+  }
+
+  /**
+   * Shuffles an array using Fisher-Yates algorithm
+   */
+  private shuffleArray<T>(array: T[]): T[] {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
   }
 }
 
