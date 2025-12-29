@@ -30,48 +30,84 @@ export default class CharacterController extends DynamicBody {
     // this.setMaxVelocity(new Vector(96, 0));
 
     this.input = new InputState(this);
+    // UP controls (ArrowUp or W)
     this.input.setOn(CharacterInput.UP).when({
       type: KeyboardInputEvent,
       condition: event =>
         event.action === KeyAction.DOWN && event.key === 'ArrowUp',
+    });
+    this.input.setOn(CharacterInput.UP).when({
+      type: KeyboardInputEvent,
+      condition: event => event.action === KeyAction.DOWN && event.key === 'w',
     });
     this.input.setOff(CharacterInput.UP).when({
       type: KeyboardInputEvent,
       condition: event =>
         event.action === KeyAction.UP && event.key === 'ArrowUp',
     });
+    this.input.setOff(CharacterInput.UP).when({
+      type: KeyboardInputEvent,
+      condition: event => event.action === KeyAction.UP && event.key === 'w',
+    });
 
+    // DROP controls (ArrowDown or S)
     this.input.setOn(CharacterInput.DROP).when({
       type: KeyboardInputEvent,
       condition: event =>
         event.action === KeyAction.DOWN && event.key === 'ArrowDown',
+    });
+    this.input.setOn(CharacterInput.DROP).when({
+      type: KeyboardInputEvent,
+      condition: event => event.action === KeyAction.DOWN && event.key === 's',
     });
     this.input.setOff(CharacterInput.DROP).when({
       type: KeyboardInputEvent,
       condition: event =>
         event.action === KeyAction.UP && event.key === 'ArrowDown',
     });
+    this.input.setOff(CharacterInput.DROP).when({
+      type: KeyboardInputEvent,
+      condition: event => event.action === KeyAction.UP && event.key === 's',
+    });
 
+    // LEFT controls (ArrowLeft or A)
     this.input.setOn(CharacterInput.LEFT).when({
       type: KeyboardInputEvent,
       condition: event =>
         event.action === KeyAction.DOWN && event.key === 'ArrowLeft',
+    });
+    this.input.setOn(CharacterInput.LEFT).when({
+      type: KeyboardInputEvent,
+      condition: event => event.action === KeyAction.DOWN && event.key === 'a',
     });
     this.input.setOff(CharacterInput.LEFT).when({
       type: KeyboardInputEvent,
       condition: event =>
         event.action === KeyAction.UP && event.key === 'ArrowLeft',
     });
+    this.input.setOff(CharacterInput.LEFT).when({
+      type: KeyboardInputEvent,
+      condition: event => event.action === KeyAction.UP && event.key === 'a',
+    });
 
+    // RIGHT controls (ArrowRight or D)
     this.input.setOn(CharacterInput.RIGHT).when({
       type: KeyboardInputEvent,
       condition: event =>
         event.action === KeyAction.DOWN && event.key === 'ArrowRight',
     });
+    this.input.setOn(CharacterInput.RIGHT).when({
+      type: KeyboardInputEvent,
+      condition: event => event.action === KeyAction.DOWN && event.key === 'd',
+    });
     this.input.setOff(CharacterInput.RIGHT).when({
       type: KeyboardInputEvent,
       condition: event =>
         event.action === KeyAction.UP && event.key === 'ArrowRight',
+    });
+    this.input.setOff(CharacterInput.RIGHT).when({
+      type: KeyboardInputEvent,
+      condition: event => event.action === KeyAction.UP && event.key === 'd',
     });
 
     this.input.setOn(CharacterInput.GRAB).when({
