@@ -9,5 +9,7 @@ export default class CaptainClownNose extends Character {
       Pointing.RIGHT,
       new Vector(0, 0)
     );
+
+    this.setColliderDimensions(new Vector(16, 28));
   }
 }

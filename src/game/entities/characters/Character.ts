@@ -44,7 +44,7 @@ export default class Character extends CharacterController {
     this.ghost.isVisible = false;
 
     this.setColliderOffset(new Vector(0, 4));
-    this.setColliderDimensions(new Vector(20, 28));
+
     this.switchStance(0);
     this._pointing = Pointing.RIGHT;
   }

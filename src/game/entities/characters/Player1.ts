@@ -18,9 +18,9 @@ export default class Player1 extends Character {
   setCharacterType(characterType: CharacterType) {
     this.assetName = CHARACTER_ASSET_MAP[characterType];
     if (characterType === 'Crabby') {
-      this.setColliderDimensions(new Vector(40, 28));
+      this.setColliderDimensions(new Vector(22, 28));
     } else {
-      this.setColliderDimensions(new Vector(20, 28));
+      this.setColliderDimensions(new Vector(18, 28));
     }
     this.switchStance(0, true);
   }
