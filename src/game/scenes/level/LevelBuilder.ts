@@ -16,6 +16,7 @@ import {
   CSS_LEFT_PLATFORM_CONFIG,
   CSS_RIGHT_PLATFORM_CONFIG,
   PlatformConfig,
+  PositionData,
 } from './LevelData';
 import { PLAYER_DEPTH, TAG_DEPTH, PLAYER_OUTLINE_DEPTH } from './constants';
 import BOARD_BACKGROUND_DATA from './Board_Background.json';
@@ -180,18 +181,15 @@ export class LevelBuilder {
   }
 
   private buildTags(): void {
-    // Shuffle tags to ensure they don't start in solution order
-    const shuffledHtmlTags = this.shuffleArray([...this.levelData.html.tags]);
+    // Generate HTML tags with positions that don't match the solution
+    const { tags: htmlTags, positions: htmlPositions } =
+      this.generateNonWinningTagLayout(
+        this.levelData.html.tags,
+        this.htmlPlatformConfig
+      );
 
-    // Generate random positions for HTML tags (pass tag texts to determine space requirements)
-    const htmlPositions = generateRandomTagPositions(
-      shuffledHtmlTags.length,
-      this.htmlPlatformConfig,
-      shuffledHtmlTags
-    );
-
-    // Add HTML tags at random positions
-    shuffledHtmlTags.forEach((tagText, index) => {
+    // Add HTML tags at the generated positions
+    htmlTags.forEach((tagText, index) => {
       this.scene.addChild(
         makeTagTile(
           gridToPixel(htmlPositions[index], this.htmlPlatformConfig),
@@ -204,15 +202,13 @@ export class LevelBuilder {
 
     // Add CSS tags (only in CSS mode)
     if (this.cssPlatformConfig && this.levelData.css) {
-      const shuffledCssTags = this.shuffleArray([...this.levelData.css.tags]);
+      const { tags: cssTags, positions: cssPositions } =
+        this.generateNonWinningTagLayout(
+          this.levelData.css.tags,
+          this.cssPlatformConfig
+        );
 
-      const cssPositions = generateRandomTagPositions(
-        shuffledCssTags.length,
-        this.cssPlatformConfig,
-        shuffledCssTags
-      );
-
-      shuffledCssTags.forEach((tagText, index) => {
+      cssTags.forEach((tagText, index) => {
         this.scene.addChild(
           makeTagTile(
             gridToPixel(cssPositions[index], this.cssPlatformConfig!),
@@ -226,15 +222,115 @@ export class LevelBuilder {
   }
 
   /**
+   * Generates tag layout (shuffled tags + random positions) that doesn't result in winning state.
+   * Keeps trying until the spatial arrangement differs from the solution.
+   */
+  private generateNonWinningTagLayout(
+    solutionTags: string[],
+    config: PlatformConfig
+  ): { tags: string[]; positions: PositionData[] } {
+    const maxAttempts = 100;
+    let attempts = 0;
+
+    while (attempts < maxAttempts) {
+      attempts++;
+
+      // Shuffle tags
+      const shuffledTags = this.shuffleArray([...solutionTags]);
+
+      // Generate random positions
+      const positions = generateRandomTagPositions(
+        shuffledTags.length,
+        config,
+        shuffledTags
+      );
+
+      // Sort positions spatially (same logic as WinConditionChecker)
+      const sortedIndices = this.getSpatialSortOrder(positions, config);
+
+      // Create the spatially sorted tag sequence
+      const spatialSequence = sortedIndices.map(idx => shuffledTags[idx]);
+
+      // Check if spatial sequence matches solution
+      if (!this.arraysEqual(spatialSequence, solutionTags)) {
+        return { tags: shuffledTags, positions };
+      }
+    }
+
+    // Fallback: if we can't find a non-winning layout after many attempts,
+    // just return a shuffled version (very unlikely for this to match spatially)
+    console.warn(
+      'Could not generate non-winning layout after max attempts, using shuffled fallback'
+    );
+    const shuffledTags = this.shuffleArray([...solutionTags]);
+    const positions = generateRandomTagPositions(
+      shuffledTags.length,
+      config,
+      shuffledTags
+    );
+    return { tags: shuffledTags, positions };
+  }
+
+  /**
+   * Returns indices sorted by spatial position (Y first with tolerance, then X)
+   * Mimics the sorting logic from WinConditionChecker
+   */
+  private getSpatialSortOrder(
+    positions: PositionData[],
+    config: PlatformConfig
+  ): number[] {
+    const rowTolerance = 16; // Same as WinConditionChecker
+    const pixelPositions = positions.map(pos => gridToPixel(pos, config));
+
+    // Create array of indices
+    const indices = positions.map((_, idx) => idx);
+
+    // Sort indices based on spatial position
+    return indices.sort((aIdx, bIdx) => {
+      const a = pixelPositions[aIdx];
+      const b = pixelPositions[bIdx];
+      const yDiff = Math.abs(a.y - b.y);
+
+      // If Y positions are within tolerance, sort by X
+      if (yDiff < rowTolerance) {
+        return a.x - b.x;
+      }
+
+      // Different rows - sort by Y
+      return a.y - b.y;
+    });
+  }
+
+  /**
    * Shuffles an array using Fisher-Yates algorithm
+   * Ensures the shuffled array is different from the original
    */
   private shuffleArray<T>(array: T[]): T[] {
     const shuffled = [...array];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
+    let attempts = 0;
+    const maxAttempts = 100;
+
+    // Keep shuffling until we get a different order
+    do {
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      attempts++;
+    } while (this.arraysEqual(shuffled, array) && attempts < maxAttempts);
+
     return shuffled;
+  }
+
+  /**
+   * Checks if two arrays are equal
+   */
+  private arraysEqual<T>(arr1: T[], arr2: T[]): boolean {
+    if (arr1.length !== arr2.length) return false;
+    for (let i = 0; i < arr1.length; i++) {
+      if (arr1[i] !== arr2[i]) return false;
+    }
+    return true;
   }
 }
 

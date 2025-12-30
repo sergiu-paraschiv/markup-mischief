@@ -1,5 +1,6 @@
 import { Node2D } from '@engine/elements';
 import { Vector } from '@engine/core';
+import { KeyboardInputEvent, KeyAction } from '@engine/input';
 import {
   LayoutFlex,
   Button,
@@ -29,6 +30,8 @@ export default class MainMenu extends Node2D {
   private board: Node2D;
   private menuLayout: LayoutFlex;
   private overlayDiv: HTMLDivElement;
+  private buttons: Button[] = [];
+  private currentFocusIndex = 0;
 
   constructor(
     position: Vector,
@@ -73,6 +76,7 @@ export default class MainMenu extends Node2D {
         );
         button.action = menuItem.action;
         element = button;
+        this.buttons.push(button);
       } else if (menuItem.type === 'text') {
         element = new Text(menuItem.text, 0);
       } else {
@@ -147,6 +151,70 @@ export default class MainMenu extends Node2D {
     // Update overlay size to match the board
     this.overlayDiv.style.width = `${this.board.width}px`;
     this.overlayDiv.style.height = `${this.board.height}px`;
+
+    // Set up keyboard navigation
+    this.on(KeyboardInputEvent, this.handleKeyboardInput.bind(this));
+
+    // Auto-focus first button if any exist
+    if (this.buttons.length > 0) {
+      this.setFocusedButton(0);
+    }
+  }
+
+  private handleKeyboardInput(event: KeyboardInputEvent): void {
+    if (event.action !== KeyAction.DOWN || this.buttons.length === 0) {
+      return;
+    }
+
+    switch (event.key) {
+      case 'ArrowUp':
+      case 'w':
+        this.moveFocusUp();
+        break;
+      case 'ArrowDown':
+      case 's':
+        this.moveFocusDown();
+        break;
+      case 'Enter':
+      case ' ':
+        this.activateFocusedButton();
+        break;
+    }
+  }
+
+  private moveFocusUp(): void {
+    const newIndex =
+      this.currentFocusIndex > 0
+        ? this.currentFocusIndex - 1
+        : this.buttons.length - 1;
+    this.setFocusedButton(newIndex);
+  }
+
+  private moveFocusDown(): void {
+    const newIndex =
+      this.currentFocusIndex < this.buttons.length - 1
+        ? this.currentFocusIndex + 1
+        : 0;
+    this.setFocusedButton(newIndex);
+  }
+
+  private setFocusedButton(index: number): void {
+    // Unfocus previous button
+    if (this.buttons[this.currentFocusIndex]) {
+      this.buttons[this.currentFocusIndex].setFocused(false);
+    }
+
+    // Focus new button
+    this.currentFocusIndex = index;
+    if (this.buttons[this.currentFocusIndex]) {
+      this.buttons[this.currentFocusIndex].setFocused(true);
+    }
+  }
+
+  private activateFocusedButton(): void {
+    if (this.buttons[this.currentFocusIndex]) {
+      this.buttons[this.currentFocusIndex].activate();
+    }
   }
 
   override get width() {

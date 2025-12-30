@@ -15,6 +15,7 @@ export type ButtonVariant = 'primary' | 'secondary';
 
 const OUTLINE_DEFAULT = 'rgba(0, 0, 0, 0.3)';
 const OUTLINE_HOVER = 'rgba(255, 255, 255, 0.3)';
+const OUTLINE_FOCUSED = 'rgba(100, 150, 255, 0.6)';
 
 const TILE_INDEXES = {
   primary: {
@@ -39,6 +40,8 @@ export default class Button extends Node2D {
   private textDefaultPosition: Vector;
   public readonly mouseInteraction: MouseInteractionManager;
   public action: ActionFn | undefined = undefined;
+  private _isFocused = false;
+  private _isHovered = false;
 
   constructor(
     initialPosition: Vector,
@@ -127,26 +130,53 @@ export default class Button extends Node2D {
   }
 
   private handleMouseEnter(): void {
-    this.outline.fillColor = OUTLINE_HOVER;
-    this.background.isVisible = false;
-    this.hoverBackground.isVisible = true;
-    this.textComponent.position = new Vector(
-      this.textDefaultPosition.x,
-      this.textDefaultPosition.y + 1
-    );
+    this._isHovered = true;
+    this.updateVisualState();
   }
 
   private handleMouseLeave(): void {
-    this.outline.fillColor = OUTLINE_DEFAULT;
-    this.background.isVisible = true;
-    this.hoverBackground.isVisible = false;
-    this.textComponent.position = this.textDefaultPosition;
+    this._isHovered = false;
+    this.updateVisualState();
   }
 
-  private handleMouseClick(): void {
+  private updateVisualState(): void {
+    const isActive = this._isFocused || this._isHovered;
+
+    if (isActive) {
+      this.outline.fillColor = this._isFocused
+        ? OUTLINE_FOCUSED
+        : OUTLINE_HOVER;
+      this.background.isVisible = false;
+      this.hoverBackground.isVisible = true;
+      this.textComponent.position = new Vector(
+        this.textDefaultPosition.x,
+        this.textDefaultPosition.y + 1
+      );
+    } else {
+      this.outline.fillColor = OUTLINE_DEFAULT;
+      this.background.isVisible = true;
+      this.hoverBackground.isVisible = false;
+      this.textComponent.position = this.textDefaultPosition;
+    }
+  }
+
+  public setFocused(focused: boolean): void {
+    this._isFocused = focused;
+    this.updateVisualState();
+  }
+
+  public get isFocused(): boolean {
+    return this._isFocused;
+  }
+
+  public activate(): void {
     if (this.action) {
       this.action();
     }
+  }
+
+  private handleMouseClick(): void {
+    this.activate();
   }
 
   override get width() {
