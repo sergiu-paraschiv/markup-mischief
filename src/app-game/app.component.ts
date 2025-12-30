@@ -56,7 +56,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     // Calculate initial zoom
     const zoom = this.calculateZoom(gameElement);
 
-    this.renderer = new CanvasRenderer(canvasElement, zoom);
+    this.renderer = new CanvasRenderer(canvasElement, gameElement, zoom);
 
     const engine = new Engine(
       this.viewport,

@@ -31,7 +31,7 @@ export class AppComponent implements AfterViewInit {
       throw new Error('Game canvas not found!');
     }
 
-    const renderer = new CanvasRenderer(canvasElement, 2);
+    const renderer = new CanvasRenderer(canvasElement, gameElement, 2);
 
     const engine = new Engine(
       new Vector(768, 512),

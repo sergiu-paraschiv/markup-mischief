@@ -13,6 +13,7 @@ import { globalCanvasPool, type CanvasPurpose } from './CanvasPool';
 import { globalRenderCache } from './RenderCache';
 
 export default class CanvasRenderer {
+  private rootDOM: HTMLElement;
   private canvas: HTMLCanvasElement;
   private context: CanvasRenderingContext2D;
 
@@ -27,11 +28,17 @@ export default class CanvasRenderer {
   private prevRenderCount = 0;
   private prevCacheHitCount = 0;
 
+  // Track attached DOM elements
+  private attachedDOMElements = new Set<HTMLElement>();
+
   constructor(
     canvas: HTMLCanvasElement,
+    rootDOM: HTMLElement,
     private zoom: number
   ) {
     this.workLoop = new WorkLoop(this.render.bind(this));
+
+    this.rootDOM = rootDOM;
 
     this.canvas = canvas;
     this.canvas.style.display = 'block';
@@ -611,6 +618,9 @@ export default class CanvasRenderer {
 
     this.rootElement.dispatchEvent(new TickEvent(currentTime));
 
+    // Track which DOM elements are still in the render tree
+    const visibleItemsWithDOM = new Set<HTMLElement>();
+
     // Use skipInvisible optimization to avoid traversing invisible subtrees
     for (const item of Query.childrenByType(
       CanvasItem,
@@ -634,12 +644,28 @@ export default class CanvasRenderer {
         if (cacheKey) {
           // Use cached rendering
           this.renderCachedItem(this.context, item, cacheKey);
+
+          // Update DOM positioning if this item has attachedDOM
+          this.updateDOMElementPosition(item);
+          if (item.attachedDOM) {
+            visibleItemsWithDOM.add(item.attachedDOM);
+          }
+
           continue;
         }
       }
 
       this.renderCanvasItem(this.context, item, false);
+
+      // Update DOM positioning if this item has attachedDOM
+      this.updateDOMElementPosition(item);
+      if (item.attachedDOM) {
+        visibleItemsWithDOM.add(item.attachedDOM);
+      }
     }
+
+    // Clean up DOM elements that are no longer visible
+    this.cleanupDetachedDOMElements(visibleItemsWithDOM);
 
     // Release all temp canvases after rendering is complete
     globalCanvasPool.releaseAll();
@@ -661,5 +687,62 @@ export default class CanvasRenderer {
     }
 
     return this.itemHasCachedParent(parent);
+  }
+
+  private updateDOMElementPosition(item: CanvasItem): void {
+    if (!item.attachedDOM) {
+      return;
+    }
+
+    const domElement = item.attachedDOM;
+
+    if (!this.attachedDOMElements.has(domElement)) {
+      // Set up the DOM element for absolute positioning
+      domElement.style.position = 'absolute';
+
+      this.rootDOM.appendChild(domElement);
+      this.attachedDOMElements.add(domElement);
+    }
+
+    // Get the item's position in canvas coordinates
+    let canvasPosition = new Vector(0, 0);
+    if (item instanceof Node2D) {
+      canvasPosition = item.position;
+    }
+
+    // Get the canvas position on the page (accounts for flex centering)
+    const canvasRect = this.canvas.getBoundingClientRect();
+    const rootRect = this.rootDOM.getBoundingClientRect();
+
+    // Convert canvas coordinates to screen coordinates
+    const screenX =
+      canvasPosition.x * this.zoom + canvasRect.left - rootRect.left;
+    const screenY =
+      canvasPosition.y * this.zoom + canvasRect.top - rootRect.top;
+
+    // Apply the position to the DOM element
+    domElement.style.left = `${screenX}px`;
+    domElement.style.top = `${screenY}px`;
+
+    // Apply zoom scaling via transform
+    domElement.style.transform = `scale(${this.zoom})`;
+    domElement.style.transformOrigin = 'top left';
+
+    // Handle visibility
+    domElement.style.display = item.isVisible ? 'block' : 'none';
+  }
+
+  private cleanupDetachedDOMElements(
+    visibleItemsWithDOM: Set<HTMLElement>
+  ): void {
+    // Remove DOM elements that are no longer in the render tree
+    for (const domElement of this.attachedDOMElements) {
+      if (!visibleItemsWithDOM.has(domElement)) {
+        if (domElement.parentElement === this.rootDOM) {
+          this.rootDOM.removeChild(domElement);
+        }
+        this.attachedDOMElements.delete(domElement);
+      }
+    }
   }
 }

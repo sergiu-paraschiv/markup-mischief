@@ -35,7 +35,7 @@ const TILE_INDEXES = {
 export default class Board extends Node2D {
   private outline?: Node2D;
   private board: Node2D;
-  private paper: Node2D;
+  public readonly paper: Node2D;
 
   constructor(
     position: Vector,

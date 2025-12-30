@@ -106,12 +106,12 @@ export const CSS_LEFT_PLATFORM_CONFIG: PlatformConfig = {
  */
 export const CSS_RIGHT_PLATFORM_CONFIG: PlatformConfig = {
   platforms: [
-    { x: 12, y: 14, width: 10 },
-    { x: 12, y: 13, width: 10 },
-    { x: 12, y: 12, width: 8 },
-    { x: 12, y: 11, width: 8 },
-    { x: 12, y: 10, width: 8 },
-    { x: 12, y: 9, width: 8 },
+    { x: 12, y: 9, width: 10 },
+    { x: 12, y: 10, width: 10 },
+    { x: 12, y: 11, width: 10 },
+    { x: 12, y: 12, width: 10 },
+    { x: 12, y: 13, width: 8 },
+    { x: 12, y: 14, width: 8 },
   ],
   gridConfig: {
     xMin: 0,

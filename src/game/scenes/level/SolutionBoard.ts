@@ -3,7 +3,7 @@ import { Node2D } from '@engine/elements';
 import { HtmlPreview, Board } from '@game/entities';
 
 export default class SolutionBoard extends Node2D {
-  private board: Node2D;
+  private board: Board;
 
   constructor(position: Vector, htmlPreview: HtmlPreview) {
     super(position);
@@ -17,7 +17,7 @@ export default class SolutionBoard extends Node2D {
       'white'
     );
     htmlPreview.position = padding;
-    this.board.addChild(htmlPreview);
+    this.board.paper.addChild(htmlPreview);
 
     this.addChild(this.board);
   }

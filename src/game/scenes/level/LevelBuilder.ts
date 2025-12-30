@@ -67,9 +67,11 @@ export class LevelBuilder {
   }
 
   private buildBackground(): void {
-    this.scene.addChild(
-      SpriteMash.fromData(BOARD_BACKGROUND_DATA as SpriteMashData)
+    const boardBg = SpriteMash.fromData(
+      BOARD_BACKGROUND_DATA as SpriteMashData
     );
+
+    this.scene.addChild(boardBg);
     if (this.mode === 'css') {
       this.scene.addChild(
         SpriteMash.fromData(BOARD_CSS_BACKGROUND_OVERLAU_DATA as SpriteMashData)
