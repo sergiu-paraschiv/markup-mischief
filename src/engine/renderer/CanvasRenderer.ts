@@ -30,6 +30,7 @@ export default class CanvasRenderer {
 
   // Track attached DOM elements
   private attachedDOMElements = new Set<HTMLElement>();
+  private maskElements = new Set<HTMLElement>();
 
   constructor(
     canvas: HTMLCanvasElement,
@@ -39,6 +40,7 @@ export default class CanvasRenderer {
     this.workLoop = new WorkLoop(this.render.bind(this));
 
     this.rootDOM = rootDOM;
+    this.rootDOM.style.isolation = 'isolate'; // Create stacking context for clipping
 
     this.canvas = canvas;
     this.canvas.style.display = 'block';
@@ -667,6 +669,9 @@ export default class CanvasRenderer {
     // Clean up DOM elements that are no longer visible
     this.cleanupDetachedDOMElements(visibleItemsWithDOM);
 
+    // Apply masking to hide elements behind masks
+    this.applyMasking();
+
     // Release all temp canvases after rendering is complete
     globalCanvasPool.releaseAll();
   }
@@ -695,6 +700,7 @@ export default class CanvasRenderer {
     }
 
     const domElement = item.attachedDOM;
+    const isMaskElement = domElement.hasAttribute('data-mask');
 
     if (!this.attachedDOMElements.has(domElement)) {
       // Set up the DOM element for absolute positioning
@@ -702,12 +708,22 @@ export default class CanvasRenderer {
 
       this.rootDOM.appendChild(domElement);
       this.attachedDOMElements.add(domElement);
+
+      // Track if this is a mask element
+      if (isMaskElement) {
+        this.maskElements.add(domElement);
+      }
     }
 
     // Get the item's position in canvas coordinates
     let canvasPosition = new Vector(0, 0);
+    let width = 0;
+    let height = 0;
+
     if (item instanceof Node2D) {
       canvasPosition = item.position;
+      width = item.width;
+      height = item.height;
     }
 
     // Get the canvas position on the page (accounts for flex centering)
@@ -723,6 +739,14 @@ export default class CanvasRenderer {
     // Apply the position to the DOM element
     domElement.style.left = `${screenX}px`;
     domElement.style.top = `${screenY}px`;
+
+    // Store dimensions as data attributes for clip-path calculation
+    if (isMaskElement) {
+      domElement.dataset['maskX'] = screenX.toString();
+      domElement.dataset['maskY'] = screenY.toString();
+      domElement.dataset['maskWidth'] = (width * this.zoom).toString();
+      domElement.dataset['maskHeight'] = (height * this.zoom).toString();
+    }
 
     // Apply zoom scaling via transform
     domElement.style.transform = `scale(${this.zoom})`;
@@ -742,6 +766,124 @@ export default class CanvasRenderer {
           this.rootDOM.removeChild(domElement);
         }
         this.attachedDOMElements.delete(domElement);
+        this.maskElements.delete(domElement);
+      }
+    }
+  }
+
+  private applyMasking(): void {
+    // Build clip-path polygon that excludes mask element areas
+    if (this.maskElements.size === 0) {
+      // No masks, remove any existing clip-path from all elements
+      for (const domElement of this.attachedDOMElements) {
+        if (!domElement.hasAttribute('data-mask')) {
+          domElement.style.clipPath = '';
+          domElement.style.visibility = '';
+        }
+      }
+      return;
+    }
+
+    // Build an array of mask rectangles
+    const maskRects: {
+      x: number;
+      y: number;
+      width: number;
+      height: number;
+    }[] = [];
+
+    for (const maskElement of this.maskElements) {
+      if (maskElement.style.display === 'none') continue;
+
+      const x = parseFloat(maskElement.dataset['maskX'] || '0');
+      const y = parseFloat(maskElement.dataset['maskY'] || '0');
+      const width = parseFloat(maskElement.dataset['maskWidth'] || '0');
+      const height = parseFloat(maskElement.dataset['maskHeight'] || '0');
+
+      maskRects.push({ x, y, width, height });
+    }
+
+    // Apply clip-path to all non-mask elements
+    for (const domElement of this.attachedDOMElements) {
+      if (domElement.hasAttribute('data-mask')) continue;
+
+      if (maskRects.length === 0) {
+        domElement.style.clipPath = '';
+        domElement.style.visibility = '';
+        continue;
+      }
+
+      // Build a polygon that covers the entire viewport except mask areas
+      // We'll create a polygon that goes around the full area, with cutouts for masks
+      // For simplicity with multiple masks, we'll use CSS subtract() if supported
+      // Otherwise fall back to polygon
+
+      // Get element position from its style (before transform scaling)
+      const elemStyleLeft = parseFloat(domElement.style.left || '0');
+      const elemStyleTop = parseFloat(domElement.style.top || '0');
+
+      // Get element's natural size (from its width/height style or content)
+      const elemRect = domElement.getBoundingClientRect();
+      // Divide by zoom to get the unscaled size
+      const elemWidth = elemRect.width / this.zoom;
+      const elemHeight = elemRect.height / this.zoom;
+
+      const elemLeft = elemStyleLeft;
+      const elemTop = elemStyleTop;
+      const elemRight = elemLeft + elemWidth * this.zoom;
+      const elemBottom = elemTop + elemHeight * this.zoom;
+
+      // Check if element intersects with any mask
+      let hasIntersection = false;
+      for (const maskRect of maskRects) {
+        const maskLeft = maskRect.x;
+        const maskTop = maskRect.y;
+        const maskRight = maskRect.x + maskRect.width;
+        const maskBottom = maskRect.y + maskRect.height;
+
+        if (
+          elemLeft < maskRight &&
+          elemRight > maskLeft &&
+          elemTop < maskBottom &&
+          elemBottom > maskTop
+        ) {
+          hasIntersection = true;
+          // Calculate the intersection rectangle in root coordinates
+          const intersectLeft = Math.max(elemLeft, maskLeft);
+          const intersectTop = Math.max(elemTop, maskTop);
+          const intersectRight = Math.min(elemRight, maskRight);
+          const intersectBottom = Math.min(elemBottom, maskBottom);
+
+          // Convert intersection to element-relative coordinates
+          // Clip-path is applied before transform, so we need to use unscaled coordinates
+          const clipLeft = (intersectLeft - elemLeft) / this.zoom;
+          const clipTop = (intersectTop - elemTop) / this.zoom;
+          const clipRight = (intersectRight - elemLeft) / this.zoom;
+          const clipBottom = (intersectBottom - elemTop) / this.zoom;
+
+          // Use polygon to exclude the intersecting area
+          // Create a polygon that represents: full element minus intersection rectangle
+          const polygon = `polygon(
+            0% 0%,
+            100% 0%,
+            100% 100%,
+            0% 100%,
+            0% 0%,
+            ${clipLeft}px ${clipTop}px,
+            ${clipLeft}px ${clipBottom}px,
+            ${clipRight}px ${clipBottom}px,
+            ${clipRight}px ${clipTop}px,
+            ${clipLeft}px ${clipTop}px
+          )`;
+
+          domElement.style.clipPath = polygon;
+          break; // Only handle first intersection for now
+        }
+      }
+
+      if (!hasIntersection) {
+        domElement.style.clipPath = '';
+        domElement.style.visibility = '';
       }
     }
   }

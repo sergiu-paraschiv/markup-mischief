@@ -69,13 +69,13 @@ export const HTML_PLATFORM_CONFIG: PlatformConfig = {
   ],
   gridConfig: {
     xMin: 0,
-    xMax: 4, // 5 sections (0-4)
+    xMax: 9, // 10 sections (0-9) to match platform width
     yMin: 0,
     yMax: 5, // 6 platforms (0-5)
-    sectionWidth: 64, // 2 tiles per section
+    sectionWidth: 32, // 1 tile per section (same as CSS mode)
     verticalSpacing: 32, // One tile per platform level
   },
-  playerStartGrid: { x: 2, y: 0 },
+  playerStartGrid: { x: 4, y: 0 }, // Center position adjusted for new grid
 };
 
 /**
@@ -106,12 +106,13 @@ export const CSS_LEFT_PLATFORM_CONFIG: PlatformConfig = {
  */
 export const CSS_RIGHT_PLATFORM_CONFIG: PlatformConfig = {
   platforms: [
-    { x: 12, y: 9, width: 10 },
-    { x: 12, y: 10, width: 10 },
-    { x: 12, y: 11, width: 10 },
-    { x: 12, y: 12, width: 10 },
-    { x: 12, y: 13, width: 8 },
+    // 6 platforms ordered from bottom to top (index 0 = bottom, index 5 = top)
     { x: 12, y: 14, width: 8 },
+    { x: 12, y: 13, width: 8 },
+    { x: 12, y: 12, width: 10 },
+    { x: 12, y: 11, width: 10 },
+    { x: 12, y: 10, width: 10 },
+    { x: 12, y: 9, width: 10 },
   ],
   gridConfig: {
     xMin: 0,
@@ -162,11 +163,13 @@ export function gridToPixel(
  *
  * @param tagCount Number of tags to place
  * @param config Platform configuration defining valid grid bounds
+ * @param tagTexts Tag text strings to determine width requirements
  * @returns Array of random, unique grid positions
  */
 export function generateRandomTagPositions(
   tagCount: number,
-  config: PlatformConfig
+  config: PlatformConfig,
+  tagTexts: string[] = []
 ): PositionData[] {
   const positions: PositionData[] = [];
   const usedPositions = new Set<string>();
@@ -181,14 +184,58 @@ export function generateRandomTagPositions(
     );
   }
 
-  while (positions.length < tagCount) {
-    const y = Math.floor(Math.random() * yRange) + gridConfig.yMin;
-    const x = Math.floor(Math.random() * xRange) + gridConfig.xMin;
+  // Place each tag
+  for (let tagIndex = 0; tagIndex < tagCount; tagIndex++) {
+    const tagText = tagTexts[tagIndex] || '';
+    // Determine cells needed based on tag text length:
+    // - Very wide tags (> 9 chars) need 3 cells
+    // - Wide tags (> 4 chars) need 2 cells
+    // - Normal tags (≤ 4 chars) need 1 cell
+    let cellsNeeded = 1;
+    if (tagText.length > 9) {
+      cellsNeeded = 3;
+    } else if (tagText.length > 4) {
+      cellsNeeded = 2;
+    }
 
-    const key = `${x},${y}`;
-    if (!usedPositions.has(key)) {
-      usedPositions.add(key);
-      positions.push({ x, y });
+    let placed = false;
+    let attempts = 0;
+    const maxAttempts = 1000;
+
+    while (!placed && attempts < maxAttempts) {
+      attempts++;
+      const y = Math.floor(Math.random() * yRange) + gridConfig.yMin;
+      const x = Math.floor(Math.random() * xRange) + gridConfig.xMin;
+
+      // Check if this position and the required adjacent cells are available
+      let canPlace = true;
+      for (let i = 0; i < cellsNeeded; i++) {
+        const checkX = x + i;
+        if (checkX > gridConfig.xMax) {
+          canPlace = false;
+          break;
+        }
+        const key = `${checkX},${y}`;
+        if (usedPositions.has(key)) {
+          canPlace = false;
+          break;
+        }
+      }
+
+      if (canPlace) {
+        // Mark all cells occupied by this tag
+        for (let i = 0; i < cellsNeeded; i++) {
+          usedPositions.add(`${x + i},${y}`);
+        }
+        positions.push({ x, y });
+        placed = true;
+      }
+    }
+
+    if (!placed) {
+      throw new Error(
+        `Could not place tag ${tagIndex + 1} of ${tagCount} (text: "${tagText}") after ${maxAttempts} attempts`
+      );
     }
   }
 

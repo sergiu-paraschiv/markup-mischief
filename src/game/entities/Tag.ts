@@ -1,7 +1,7 @@
 import { Vector, GlobalContext } from '@engine/core';
 import { AssetsMap } from '@engine/loaders';
 import { DynamicBody } from '@engine/physics';
-import Text from './Text';
+import HighResText from './HighResText';
 import Layout3Slice from './Layout3Slice';
 
 export default class Tag extends DynamicBody {
@@ -17,10 +17,14 @@ export default class Tag extends DynamicBody {
     const assets = GlobalContext.get<AssetsMap>('assets');
     const tilemap = assets['Paper'].tilemaps['Paper'];
 
-    const ts = new Text(text);
+    const ts = new HighResText(text, {
+      fontFamily: '"Source Code Pro", monospace',
+      fontWeight: '700',
+      color: '#000000',
+    });
 
     this.slice = new Layout3Slice(
-      ts.width + 6,
+      ts.width + 4,
       tilemap.get(1),
       tilemap.get(2),
       tilemap.get(3)
@@ -28,7 +32,7 @@ export default class Tag extends DynamicBody {
 
     this.addChild(this.slice);
 
-    ts.position = new Vector(3, 3);
+    ts.position = new Vector(2, 2);
 
     this.addChild(ts);
   }

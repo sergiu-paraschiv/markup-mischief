@@ -28,6 +28,7 @@ export type MenuItem =
 export default class MainMenu extends Node2D {
   private board: Node2D;
   private menuLayout: LayoutFlex;
+  private overlayDiv: HTMLDivElement;
 
   constructor(
     position: Vector,
@@ -35,6 +36,15 @@ export default class MainMenu extends Node2D {
     backAction?: () => void
   ) {
     super(position);
+
+    // Create a DOM mask to hide attachedDOM elements underneath (like tag text)
+    // This is invisible but tells the renderer to hide intersecting elements
+    this.overlayDiv = document.createElement('div');
+    this.overlayDiv.setAttribute('data-mask', 'true'); // Mark as mask element
+    this.overlayDiv.style.position = 'absolute';
+    this.overlayDiv.style.pointerEvents = 'none';
+    this.overlayDiv.style.visibility = 'hidden'; // Mask itself is invisible
+    this.attachedDOM = this.overlayDiv;
 
     // Create back button if needed
     let backButton: Button | undefined;
@@ -133,6 +143,10 @@ export default class MainMenu extends Node2D {
 
     this.board.addChild(boardContentBox);
     this.addChild(this.board);
+
+    // Update overlay size to match the board
+    this.overlayDiv.style.width = `${this.board.width}px`;
+    this.overlayDiv.style.height = `${this.board.height}px`;
   }
 
   override get width() {

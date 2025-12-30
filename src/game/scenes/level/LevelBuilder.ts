@@ -180,14 +180,15 @@ export class LevelBuilder {
   }
 
   private buildTags(): void {
-    // Generate random positions for HTML tags
-    const htmlPositions = generateRandomTagPositions(
-      this.levelData.html.tags.length,
-      this.htmlPlatformConfig
-    );
-
     // Shuffle tags to ensure they don't start in solution order
     const shuffledHtmlTags = this.shuffleArray([...this.levelData.html.tags]);
+
+    // Generate random positions for HTML tags (pass tag texts to determine space requirements)
+    const htmlPositions = generateRandomTagPositions(
+      shuffledHtmlTags.length,
+      this.htmlPlatformConfig,
+      shuffledHtmlTags
+    );
 
     // Add HTML tags at random positions
     shuffledHtmlTags.forEach((tagText, index) => {
@@ -203,12 +204,13 @@ export class LevelBuilder {
 
     // Add CSS tags (only in CSS mode)
     if (this.cssPlatformConfig && this.levelData.css) {
-      const cssPositions = generateRandomTagPositions(
-        this.levelData.css.tags.length,
-        this.cssPlatformConfig
-      );
-
       const shuffledCssTags = this.shuffleArray([...this.levelData.css.tags]);
+
+      const cssPositions = generateRandomTagPositions(
+        shuffledCssTags.length,
+        this.cssPlatformConfig,
+        shuffledCssTags
+      );
 
       shuffledCssTags.forEach((tagText, index) => {
         this.scene.addChild(

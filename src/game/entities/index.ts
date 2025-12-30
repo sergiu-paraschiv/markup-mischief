@@ -10,6 +10,7 @@ import {
   CaptainClownNose,
 } from './characters';
 import Text from './Text';
+import HighResText from './HighResText';
 import Tag from './Tag';
 import Button, { ButtonVariant } from './Button';
 import Wall from './Wall';
@@ -24,6 +25,7 @@ export {
   Layout3Slice,
   Layout9Slice,
   Text,
+  HighResText,
   Character,
   Pointing,
   CharacterDropEvent,

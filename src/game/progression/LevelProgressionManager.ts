@@ -9,7 +9,6 @@ export type GameMode = 'html' | 'css';
 
 interface ModeProgress {
   currentLevel: number;
-  lastPlayed?: string; // ISO timestamp
 }
 
 interface ProgressionData {
@@ -87,7 +86,6 @@ export class LevelProgressionManager {
    */
   public advanceToNextLevel(): void {
     this.data[this.currentMode].currentLevel++;
-    this.data[this.currentMode].lastPlayed = new Date().toISOString();
     this.saveToStorage();
   }
 
@@ -97,7 +95,6 @@ export class LevelProgressionManager {
   public resetProgress(): void {
     this.data[this.currentMode] = {
       currentLevel: 1,
-      lastPlayed: new Date().toISOString(),
     };
     this.saveToStorage();
   }
@@ -108,7 +105,6 @@ export class LevelProgressionManager {
   public resetProgressForMode(mode: GameMode): void {
     this.data[mode] = {
       currentLevel: 1,
-      lastPlayed: new Date().toISOString(),
     };
     this.saveToStorage();
   }
@@ -121,22 +117,7 @@ export class LevelProgressionManager {
       throw new Error('Level must be at least 1');
     }
     this.data[this.currentMode].currentLevel = level;
-    this.data[this.currentMode].lastPlayed = new Date().toISOString();
     this.saveToStorage();
-  }
-
-  /**
-   * Get the last played timestamp for the active mode
-   */
-  public getLastPlayed(): string | undefined {
-    return this.data[this.currentMode].lastPlayed;
-  }
-
-  /**
-   * Get the last played timestamp for a specific mode
-   */
-  public getLastPlayedForMode(mode: GameMode): string | undefined {
-    return this.data[mode].lastPlayed;
   }
 
   /**
@@ -154,7 +135,6 @@ export class LevelProgressionManager {
           return {
             html: {
               currentLevel: parsed.currentLevel,
-              lastPlayed: parsed.lastPlayed,
             },
             css: {
               currentLevel: 1,
