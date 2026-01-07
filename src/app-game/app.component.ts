@@ -21,7 +21,7 @@ import {
   RegisterScene,
 } from '@game/scenes';
 import { LevelProgressionManager, GameMode } from '@game/progression';
-import { AuthStateManager } from '@game/services';
+import { AuthStateManager, SettingsService } from '@game/services';
 
 import ASSETS from '../assets.json';
 
@@ -133,8 +133,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         },
       });
 
-      return new MainMenuScene(levelMenuItems, () => {
-        engine.loadScene(mainMenuScene);
+      return new MainMenuScene(levelMenuItems, async () => {
+        engine.loadScene(await createMainMenu());
       });
     };
 
@@ -148,9 +148,9 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         new GameLevelScene(
           mode,
           levelId,
-          () => {
-            // onExit: return to levels menu (recreate to show updated progression)
-            engine.loadScene(mainMenuScene);
+          async () => {
+            // onExit: return to main menu
+            engine.loadScene(await createMainMenu());
           },
           () => {
             if (hasNextLevel) {
@@ -173,15 +173,15 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         // Initialize progression after successful registration
         await progression.initialize();
         // Recreate main menu to show logout button
-        engine.loadScene(createMainMenu());
+        engine.loadScene(await createMainMenu());
       },
       onLoginRequest: () => {
         console.log('Login requested from register');
         engine.loadScene(loginScene);
       },
-      onBack: () => {
+      onBack: async () => {
         console.log('Back from register');
-        engine.loadScene(createMainMenu());
+        engine.loadScene(await createMainMenu());
       },
     });
 
@@ -192,20 +192,20 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         // Initialize progression after successful login
         await progression.initialize();
         // Recreate main menu to show logout button
-        engine.loadScene(createMainMenu());
+        engine.loadScene(await createMainMenu());
       },
       onRegisterRequest: () => {
         console.log('Register requested from login');
         engine.loadScene(registerScene);
       },
-      onBack: () => {
+      onBack: async () => {
         console.log('Back from login');
-        engine.loadScene(createMainMenu());
+        engine.loadScene(await createMainMenu());
       },
     });
 
     // Helper function to create main menu with dynamic auth buttons
-    const createMainMenu = () => {
+    const createMainMenu = async () => {
       const menuItems: MenuItem[] = [
         {
           type: 'button',
@@ -236,33 +236,40 @@ export class AppComponent implements AfterViewInit, OnDestroy {
             await AuthStateManager.logout();
             console.log('User logged out');
             // Recreate menu to show login/register buttons
-            engine.loadScene(createMainMenu());
+            engine.loadScene(await createMainMenu());
           },
         });
       } else {
         // User is not logged in - show login and register buttons
-        menuItems.push(
-          {
-            type: 'button',
-            label: 'Login',
-            variant: 'secondary',
-            action: () => {
-              engine.loadScene(loginScene);
-            },
+        menuItems.push({
+          type: 'button',
+          label: 'Login',
+          variant: 'secondary',
+          action: () => {
+            engine.loadScene(loginScene);
           },
-          {
+        });
+
+        // Only show Register button if registration is enabled
+        const isRegistrationEnabled =
+          await SettingsService.isRegistrationEnabled();
+        if (isRegistrationEnabled) {
+          menuItems.push({
             type: 'button',
             label: 'Register',
             variant: 'secondary',
             action: () => {
               engine.loadScene(registerScene);
             },
-          }
-        );
+          });
+        }
       }
 
       return new MainMenuScene(menuItems, undefined);
     };
+
+    // Initialize settings from database
+    await SettingsService.initialize();
 
     // Initialize authentication state (check for existing session)
     await AuthStateManager.initialize();
@@ -280,7 +287,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
     // Create and load main menu scene
     // The menu will show logout if authenticated, or login/register if not
-    const mainMenuScene = createMainMenu();
+    const mainMenuScene = await createMainMenu();
 
     engine.loadScene(mainMenuScene);
   }

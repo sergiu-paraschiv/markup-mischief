@@ -9,6 +9,7 @@ export const APPWRITE_CONFIG = {
   databaseId: '695e1f3c003a73300d66',
   collections: {
     levelProgression: 'level_progression',
+    settings: 'settings',
   },
 } as const;
 
