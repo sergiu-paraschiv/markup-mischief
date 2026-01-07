@@ -236,7 +236,9 @@ export default class Input extends Node2D {
    * Focus the input programmatically
    */
   public focus(): void {
-    this.inputElement.focus();
+    setTimeout(() => {
+      this.inputElement.focus();
+    }, 100);
   }
 
   /**

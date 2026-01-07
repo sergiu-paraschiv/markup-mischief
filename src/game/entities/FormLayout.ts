@@ -42,6 +42,7 @@ export interface FormLayoutConfig {
     width?: number;
     name?: string;
     autocomplete?: AutoFill;
+    autofocus?: boolean;
   }[];
   mainAction: {
     label: string;
@@ -64,6 +65,7 @@ export default class FormLayout extends Node2D {
   private secondaryButtons: Button[] = [];
   private errorPlaceholder: Box;
   private formElement: HTMLFormElement;
+  private autofocusInput: Input | undefined;
 
   constructor(position: Vector, config: FormLayoutConfig) {
     super(position);
@@ -117,6 +119,9 @@ export default class FormLayout extends Node2D {
         name: inputConfig.name,
         autocomplete: inputConfig.autocomplete,
       });
+      if (inputConfig.autofocus) {
+        this.autofocusInput = input;
+      }
       this.inputElements.set(inputConfig.key, input);
       this.formLayout.addChild(input);
 
@@ -280,6 +285,16 @@ export default class FormLayout extends Node2D {
     // LayoutFlex automatically recomputes layout when dimensions are accessed
     // Update board size to match new dimensions
     this.board.setSize(new Vector(this.formBox.width, this.formBox.height));
+  }
+
+  /**
+   * Triggers autofocus on the input marked with autofocus.
+   * Should be called after the scene is loaded and DOM elements are attached.
+   */
+  public triggerAutofocus(): void {
+    if (this.autofocusInput) {
+      this.autofocusInput.focus();
+    }
   }
 
   /**

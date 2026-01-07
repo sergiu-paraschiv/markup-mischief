@@ -15,6 +15,7 @@ export type MenuItem =
       label: string;
       action?: () => void;
       variant?: ButtonVariant;
+      autofocus?: boolean;
     }
   | {
       type: 'text';
@@ -29,6 +30,7 @@ export default class MainMenu extends Node2D {
   private board: Node2D;
   private menuLayout: FixedSizeLayoutFlex;
   private overlayDiv: HTMLDivElement;
+  private autofocusButton: Button | undefined;
 
   constructor(
     position: Vector,
@@ -73,6 +75,11 @@ export default class MainMenu extends Node2D {
         );
         button.action = menuItem.action;
         element = button;
+
+        // Track button marked for autofocus
+        if (menuItem.autofocus) {
+          this.autofocusButton = button;
+        }
       } else if (menuItem.type === 'text') {
         element = new Text(menuItem.text, 0);
       } else {
@@ -147,6 +154,16 @@ export default class MainMenu extends Node2D {
     // Update overlay size to match the board
     this.overlayDiv.style.width = `${this.board.width}px`;
     this.overlayDiv.style.height = `${this.board.height}px`;
+  }
+
+  /**
+   * Triggers autofocus on the button marked with autofocus.
+   * Should be called after the scene is loaded and DOM elements are attached.
+   */
+  public triggerAutofocus(): void {
+    if (this.autofocusButton) {
+      this.autofocusButton.focus();
+    }
   }
 
   override get width() {

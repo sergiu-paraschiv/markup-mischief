@@ -22,7 +22,9 @@ export default class Engine extends EventEmitter {
 
     this.inputDevices.forEach(inputDevice => inputDevice.setRootElement(scene));
 
-    this.handleEvent(new SceneLoadedEvent(scene));
+    const sceneLoadedEvent = new SceneLoadedEvent(scene);
+    this.handleEvent(sceneLoadedEvent);
+    scene.handleEvent(sceneLoadedEvent);
   }
 
   start(maxRenderFps: number, maxPhysicsFps: number): void {

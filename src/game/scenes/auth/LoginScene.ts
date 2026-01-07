@@ -1,6 +1,7 @@
 import { GlobalContext, Scene, Vector } from '@engine/core';
 import { FixedSizeLayoutFlex, FormLayout } from '@game/entities';
 import { AuthStateManager } from '@game/services';
+import { SceneLoadedEvent } from '@engine';
 
 export interface LoginSceneCallbacks {
   onLoginSuccess: () => void;
@@ -29,6 +30,7 @@ export default class LoginScene extends Scene {
           width: 200,
           name: 'email',
           autocomplete: 'username',
+          autofocus: true,
         },
         {
           key: 'password',
@@ -62,6 +64,11 @@ export default class LoginScene extends Scene {
 
     // Handle Enter key to submit (simplified)
     this.setupKeyboardShortcuts();
+
+    // Listen for scene loaded event to trigger autofocus
+    this.on(SceneLoadedEvent, () => {
+      this.formLayout.triggerAutofocus();
+    });
   }
 
   private setupKeyboardShortcuts(): void {

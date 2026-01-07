@@ -196,6 +196,7 @@ export class GameUIManager {
       {
         type: 'button',
         label: 'Continue',
+        autofocus: true,
         action: () => {
           this.hidePauseMenu();
         },
@@ -236,6 +237,9 @@ export class GameUIManager {
 
     this.pauseMenu = menuLayout;
     this.scene.addChild(this.pauseMenu, MENU_DEPTH);
+
+    // Trigger autofocus after the menu is added to the scene
+    menu.triggerAutofocus();
   }
 
   /**
@@ -270,6 +274,7 @@ export class GameUIManager {
       buttons.push({
         type: 'button',
         label: 'Next level',
+        autofocus: true,
         action: () => {
           if (this.onWin) {
             this.onWin();
@@ -286,6 +291,7 @@ export class GameUIManager {
     buttons.push({
       type: 'button',
       label: 'Exit',
+      autofocus: !this.hasNextLevel,
       action: () => {
         if (this.onExit) {
           this.onExit();
@@ -303,6 +309,9 @@ export class GameUIManager {
 
     this.winMenu = menuLayout;
     this.scene.addChild(this.winMenu, MENU_DEPTH);
+
+    // Trigger autofocus after the menu is added to the scene
+    menu.triggerAutofocus();
   }
 
   isPauseMenuShown(): boolean {

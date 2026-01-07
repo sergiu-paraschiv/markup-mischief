@@ -232,6 +232,7 @@ export default class Button extends Node2D {
     button.style.padding = '0';
     button.style.margin = '0';
     button.style.zIndex = '1000';
+    button.style.tabSize = '0';
 
     // Prevent default browser styling
     button.style.appearance = 'none';
@@ -316,6 +317,12 @@ export default class Button extends Node2D {
 
   public get isFocused(): boolean {
     return this._isFocused;
+  }
+
+  public focus(): void {
+    setTimeout(() => {
+      this.buttonElement.focus();
+    }, 100);
   }
 
   public setDisabled(disabled: boolean): void {

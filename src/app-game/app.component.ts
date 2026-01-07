@@ -176,6 +176,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         levelMenuItems.push({
           type: 'button',
           label: `Continue - Level ${currentLevel}`,
+          autofocus: true,
           action: () => {
             loadLevel(currentLevel, mode);
           },
@@ -185,6 +186,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       // Always show "New Game" (or "Start Game" if no progress)
       levelMenuItems.push({
         type: 'button',
+        autofocus: !progression.hasSavedProgress(),
         label: progression.hasSavedProgress() ? 'New Game' : 'Start Game',
         action: async () => {
           await progression.resetProgress();
@@ -271,6 +273,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         menuItems.push({
           type: 'button',
           label: 'HTML Mode',
+          autofocus: true,
           action: () => {
             // Recreate levels menu each time to show current progression state
             engine.loadScene(createLevelsMenu('html'));
@@ -303,6 +306,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
           type: 'button',
           label: 'Login',
           variant: 'primary',
+          autofocus: true,
           action: () => {
             engine.loadScene(loginScene);
           },
