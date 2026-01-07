@@ -12,11 +12,13 @@ export default class Box extends Node2D {
   private content?: Node2D;
   private _margin: Required<BoxSpacing>;
   private _padding: Required<BoxSpacing>;
+  private _gap: number;
 
   constructor(
     position: Vector = new Vector(0, 0),
     margin: BoxSpacing = {},
-    padding: BoxSpacing = {}
+    padding: BoxSpacing = {},
+    gap = 0
   ) {
     super(position);
 
@@ -33,6 +35,8 @@ export default class Box extends Node2D {
       bottom: padding.bottom ?? 0,
       left: padding.left ?? 0,
     };
+
+    this._gap = gap;
   }
 
   setContent(content: Node2D): void {
@@ -49,6 +53,32 @@ export default class Box extends Node2D {
     this.addChild(this.content);
   }
 
+  override addChild(child: Node2D): void {
+    super.addChild(child);
+    this.layoutChildren();
+  }
+
+  override removeChild(child: Node2D): void {
+    super.removeChild(child);
+    this.layoutChildren();
+  }
+
+  /**
+   * Position children vertically with padding and gap
+   */
+  private layoutChildren(): void {
+    const children = this.children.filter(
+      child => child instanceof Node2D
+    ) as Node2D[];
+
+    let currentY = this._padding.top;
+
+    for (const child of children) {
+      child.position = new Vector(this._padding.left, currentY);
+      currentY += child.height + this._gap;
+    }
+  }
+
   get margin(): Required<BoxSpacing> {
     return { ...this._margin };
   }
@@ -57,23 +87,61 @@ export default class Box extends Node2D {
     return { ...this._padding };
   }
 
+  set padding(padding: Required<BoxSpacing>) {
+    this._padding = padding;
+  }
+
+  get gap(): number {
+    return this._gap;
+  }
+
+  set gap(value: number) {
+    this._gap = value;
+  }
+
+  /**
+   * Compute content dimensions from all children
+   */
+  protected computeContentSize(): Vector {
+    const children = this.children.filter(
+      child => child instanceof Node2D
+    ) as Node2D[];
+
+    if (children.length === 0) {
+      return new Vector(0, 0);
+    }
+
+    let maxWidth = 0;
+    let totalHeight = 0;
+
+    for (const child of children) {
+      maxWidth = Math.max(maxWidth, child.width);
+      totalHeight += child.height;
+    }
+
+    // Add gaps between children
+    totalHeight += this._gap * (children.length - 1);
+
+    return new Vector(maxWidth, totalHeight);
+  }
+
   override get width(): number {
-    if (!this.content) return 0;
+    const contentSize = this.computeContentSize();
     return (
       this._margin.left +
       this._padding.left +
-      this.content.width +
+      contentSize.width +
       this._padding.right +
       this._margin.right
     );
   }
 
   override get height(): number {
-    if (!this.content) return 0;
+    const contentSize = this.computeContentSize();
     return (
       this._margin.top +
       this._padding.top +
-      this.content.height +
+      contentSize.height +
       this._padding.bottom +
       this._margin.bottom
     );
@@ -81,16 +149,15 @@ export default class Box extends Node2D {
 
   // Get content size (without padding/margin)
   get contentSize(): Vector {
-    if (!this.content) return new Vector(0, 0);
-    return new Vector(this.content.width, this.content.height);
+    return this.computeContentSize();
   }
 
   // Get inner size (content + padding)
   get innerSize(): Vector {
-    if (!this.content) return new Vector(0, 0);
+    const contentSize = this.computeContentSize();
     return new Vector(
-      this._padding.left + this.content.width + this._padding.right,
-      this._padding.top + this.content.height + this._padding.bottom
+      this._padding.left + contentSize.width + this._padding.right,
+      this._padding.top + contentSize.height + this._padding.bottom
     );
   }
 }

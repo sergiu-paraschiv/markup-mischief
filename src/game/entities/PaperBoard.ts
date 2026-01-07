@@ -31,7 +31,8 @@ const TILE_INDEXES = {
 };
 
 export default class PaperBoard extends Node2D {
-  private board: Node2D;
+  private board: Node2D | undefined;
+  private variant: PaperBoardVariant;
 
   constructor(
     position: Vector,
@@ -39,12 +40,17 @@ export default class PaperBoard extends Node2D {
     variant: PaperBoardVariant = 'default'
   ) {
     super(position);
+    this.variant = variant;
 
+    this.createBoard(size);
+  }
+
+  private createBoard(size: Vector): void {
     const assets = GlobalContext.get<AssetsMap>('assets');
     const tilemap =
       assets['Wood and Paper UI - Boards'].tilemaps['Wood and Paper'];
 
-    const tiles = TILE_INDEXES[variant];
+    const tiles = TILE_INDEXES[this.variant];
 
     this.board = new Layout9Slice(
       size,
@@ -63,10 +69,23 @@ export default class PaperBoard extends Node2D {
   }
 
   override get width() {
-    return this.board.width;
+    return this.board?.width ?? 0;
   }
 
   override get height() {
-    return this.board.height;
+    return this.board?.height ?? 0;
+  }
+
+  /**
+   * Update the paper board size by recreating the Layout9Slice
+   */
+  public setSize(newSize: Vector): void {
+    // Remove old board if it exists
+    if (this.board) {
+      this.removeChild(this.board);
+    }
+
+    // Recreate board with new size
+    this.createBoard(newSize);
   }
 }

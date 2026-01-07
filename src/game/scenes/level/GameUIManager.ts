@@ -1,6 +1,6 @@
 import { GlobalContext, Scene, Vector } from '@engine/core';
 import { Node2D } from '@engine/elements';
-import { Button, HtmlPreview, LayoutFlex, Text } from '@game/entities';
+import { Button, HtmlPreview, FixedSizeLayoutFlex, Text } from '@game/entities';
 import CharacterPicker from './CharacterPicker';
 
 import { LevelData } from './LevelData';
@@ -17,11 +17,11 @@ export class GameUIManager {
   private viewport: Vector;
 
   // UI Elements
-  private uiLayout?: LayoutFlex;
+  private uiLayout?: FixedSizeLayoutFlex;
   private menuButton?: Button;
   private levelNameText?: Text;
   private htmlPreview?: HtmlPreview;
-  private targetLayout?: LayoutFlex;
+  private targetLayout?: FixedSizeLayoutFlex;
   private solutionToggleButton?: Button;
   private solutionToggleButtonText?: Text;
   private pauseMenu?: Node2D;
@@ -72,14 +72,14 @@ export class GameUIManager {
       this.showPauseMenu();
     };
 
-    this.uiLayout = new LayoutFlex(
+    this.uiLayout = new FixedSizeLayoutFlex(
       new Vector(0, this.viewport.height - 60),
       new Vector(this.viewport.width, 60)
     );
     this.uiLayout.flexDirection = 'column';
     this.uiLayout.justifyContent = 'flex-end';
     this.uiLayout.alignItems = 'flex-end';
-    this.uiLayout.padding = new Vector(8, 0);
+    this.uiLayout.padding = { top: 8, right: 0, bottom: 8, left: 0 };
     this.uiLayout.gap = 6;
 
     // Add elements to layout
@@ -118,11 +118,14 @@ export class GameUIManager {
       }
     };
 
-    this.targetLayout = new LayoutFlex(new Vector(0, 0), this.viewport);
+    this.targetLayout = new FixedSizeLayoutFlex(
+      new Vector(0, 0),
+      this.viewport
+    );
     this.targetLayout.flexDirection = 'column';
     this.targetLayout.justifyContent = 'flex-start';
     this.targetLayout.alignItems = 'flex-end';
-    this.targetLayout.padding = new Vector(20, 20);
+    this.targetLayout.padding = { top: 20, right: 20, bottom: 20, left: 20 };
     this.targetLayout.gap = 4;
 
     this.targetLayout.addChild(solutionBoard);
@@ -218,7 +221,7 @@ export class GameUIManager {
     ]);
 
     // Create container for character picker and menu
-    const pauseContent = new LayoutFlex(
+    const pauseContent = new FixedSizeLayoutFlex(
       new Vector(0, 0),
       new Vector(menu.width, menu.height)
     );
@@ -226,7 +229,7 @@ export class GameUIManager {
     pauseContent.alignItems = 'center';
     pauseContent.addChild(menu);
 
-    const menuLayout = new LayoutFlex(new Vector(0, 0), this.viewport);
+    const menuLayout = new FixedSizeLayoutFlex(new Vector(0, 0), this.viewport);
     menuLayout.justifyContent = 'center';
     menuLayout.alignItems = 'center';
     menuLayout.addChild(pauseContent);
@@ -293,7 +296,7 @@ export class GameUIManager {
 
     const menu = new MainMenu(new Vector(0, 0), buttons);
 
-    const menuLayout = new LayoutFlex(new Vector(0, 0), this.viewport);
+    const menuLayout = new FixedSizeLayoutFlex(new Vector(0, 0), this.viewport);
     menuLayout.justifyContent = 'center';
     menuLayout.alignItems = 'center';
     menuLayout.addChild(menu);

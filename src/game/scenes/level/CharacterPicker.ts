@@ -1,13 +1,13 @@
 import { Node2D } from '@engine/elements';
 import { Vector } from '@engine/core';
-import { Button, Text, LayoutFlex } from '@game/entities';
+import { Button, Text, FixedSizeLayoutFlex } from '@game/entities';
 import CharacterSelectionManager, {
   AVAILABLE_CHARACTERS,
 } from '../../CharacterSelectionManager';
 
 export default class CharacterPicker extends Node2D {
   private characterButtons: Button[] = [];
-  private layout: LayoutFlex;
+  private layout: FixedSizeLayoutFlex;
   private selectionManager: CharacterSelectionManager;
   private onChange?: () => void;
 
@@ -43,7 +43,7 @@ export default class CharacterPicker extends Node2D {
     const gap = 8;
     const layoutWidth = totalWidth + gap * (this.characterButtons.length - 1);
 
-    this.layout = new LayoutFlex(
+    this.layout = new FixedSizeLayoutFlex(
       new Vector(0, 0),
       new Vector(layoutWidth, this.characterButtons[0].height)
     );

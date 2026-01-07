@@ -701,18 +701,33 @@ export default class CanvasRenderer {
 
     const domElement = item.attachedDOM;
     const isMaskElement = domElement.hasAttribute('data-mask');
+    const noAutoPosition = domElement.hasAttribute('data-no-auto-position');
 
     if (!this.attachedDOMElements.has(domElement)) {
       // Set up the DOM element for absolute positioning
       domElement.style.position = 'absolute';
 
-      this.rootDOM.appendChild(domElement);
+      // Only append to rootDOM if element doesn't already have a parent
+      // This allows form elements to contain input elements as children
+      if (!domElement.parentElement) {
+        this.rootDOM.appendChild(domElement);
+      }
+
       this.attachedDOMElements.add(domElement);
 
       // Track if this is a mask element
       if (isMaskElement) {
         this.maskElements.add(domElement);
       }
+    }
+
+    // Skip positioning if element has data-no-auto-position attribute
+    if (noAutoPosition) {
+      // Still handle visibility
+      if (item instanceof Node2D) {
+        domElement.style.display = item.isVisible ? 'block' : 'none';
+      }
+      return;
     }
 
     // Get the item's position in canvas coordinates
@@ -803,9 +818,10 @@ export default class CanvasRenderer {
       maskRects.push({ x, y, width, height });
     }
 
-    // Apply clip-path to all non-mask elements
+    // Apply clip-path to all non-mask, non-interactive elements
     for (const domElement of this.attachedDOMElements) {
       if (domElement.hasAttribute('data-mask')) continue;
+      if (domElement.hasAttribute('data-interactive')) continue;
 
       if (maskRects.length === 0) {
         domElement.style.clipPath = '';

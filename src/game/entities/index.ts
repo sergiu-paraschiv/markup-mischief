@@ -1,4 +1,4 @@
-import LayoutFlex from './LayoutFlex';
+import LayoutFlex, { FixedSizeLayoutFlex } from './LayoutFlex';
 import Layout3Slice from './Layout3Slice';
 import Layout9Slice from './Layout9Slice';
 import {
@@ -19,9 +19,12 @@ import PaperBoard from './PaperBoard';
 import Board from './Board';
 import Box from './Box';
 import Platform from './Platform';
+import Input from './Input';
+import FormLayout from './FormLayout';
 
 export {
   LayoutFlex,
+  FixedSizeLayoutFlex,
   Layout3Slice,
   Layout9Slice,
   Text,
@@ -40,6 +43,8 @@ export {
   Board,
   Box,
   Platform,
+  Input,
+  FormLayout,
 };
 
 export type { ButtonVariant };

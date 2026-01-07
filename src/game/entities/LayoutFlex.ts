@@ -1,5 +1,6 @@
+import { Vector, ElementAddedEvent, ElementRemovedEvent } from '@engine/core';
+import Box from './Box';
 import { Node2D } from '@engine/elements';
-import { Vector } from '@engine/core';
 
 type FlexDirection = 'row' | 'column';
 type JustifyContent =
@@ -10,35 +11,124 @@ type JustifyContent =
   | 'space-around';
 type AlignItems = 'flex-start' | 'flex-end' | 'center' | 'stretch';
 
-export default class LayoutFlex extends Node2D {
-  private _size: Vector;
+export default class LayoutFlex extends Box {
   public flexDirection: FlexDirection = 'row';
   public justifyContent: JustifyContent = 'flex-start';
   public alignItems: AlignItems = 'flex-start';
-  public gap = 0;
-  public padding = new Vector(0, 0);
+  private _needsLayout = true;
+  private _cachedContentSize: Vector | null = null;
 
-  constructor(position: Vector, size: Vector) {
-    super(position);
-    this._size = size;
+  constructor(position: Vector = new Vector(0, 0)) {
+    // Box constructor handles padding and gap
+    super(position, {}, {}, 0);
+
+    // Listen for descendant add/remove events to trigger layout recomputation
+    this.on(ElementAddedEvent, () => {
+      this.markLayoutDirty();
+      this.layout();
+    });
+    this.on(ElementRemovedEvent, () => {
+      this.markLayoutDirty();
+      this.layout();
+    });
+
+    // Perform initial layout
+    this.layout();
+  }
+
+  /**
+   * Mark layout as dirty so it will recompute on next access
+   */
+  public markLayoutDirty(): void {
+    this._needsLayout = true;
+    this._cachedContentSize = null;
   }
 
   override get width(): number {
-    return this._size.width;
+    if (this._needsLayout) {
+      this.layout();
+    }
+    return super.width;
   }
 
   override get height(): number {
-    return this._size.height;
+    if (this._needsLayout) {
+      this.layout();
+    }
+    return super.height;
   }
 
   override addChild(child: Node2D): void {
-    super.addChild(child);
+    // Don't call super.addChild to avoid Box's layoutChildren
+    // We'll handle layout ourselves
+    Node2D.prototype.addChild.call(this, child);
+    this.markLayoutDirty();
+    // Eagerly layout to ensure children are positioned immediately
     this.layout();
   }
 
   override removeChild(child: Node2D): void {
-    super.removeChild(child);
+    // Don't call super.removeChild to avoid Box's layoutChildren
+    Node2D.prototype.removeChild.call(this, child);
+    this.markLayoutDirty();
+    // Eagerly layout to ensure remaining children are repositioned immediately
     this.layout();
+  }
+
+  /**
+   * Override Box's dimension computation to compute based on flex direction
+   * Cache the result and mark as dirty when children change
+   */
+  protected override computeContentSize(): Vector {
+    // Return cached size if available and layout is not dirty
+    if (this._cachedContentSize && !this._needsLayout) {
+      return this._cachedContentSize;
+    }
+    const children = this.children.filter(
+      child => child instanceof Node2D
+    ) as Node2D[];
+
+    if (children.length === 0) {
+      this._cachedContentSize = new Vector(0, 0);
+      return this._cachedContentSize;
+    }
+
+    const isRow = this.flexDirection === 'row';
+    let size: Vector;
+
+    if (isRow) {
+      // Row: sum widths, max height
+      let totalWidth = 0;
+      let maxHeight = 0;
+
+      for (const child of children) {
+        totalWidth += child.width;
+        maxHeight = Math.max(maxHeight, child.height);
+      }
+
+      // Add gaps between children
+      totalWidth += this.gap * (children.length - 1);
+
+      size = new Vector(totalWidth, maxHeight);
+    } else {
+      // Column: max width, sum heights
+      let maxWidth = 0;
+      let totalHeight = 0;
+
+      for (const child of children) {
+        maxWidth = Math.max(maxWidth, child.width);
+        totalHeight += child.height;
+      }
+
+      // Add gaps between children
+      totalHeight += this.gap * (children.length - 1);
+
+      size = new Vector(maxWidth, totalHeight);
+    }
+
+    // Cache the computed size
+    this._cachedContentSize = size;
+    return size;
   }
 
   public layout(): void {
@@ -46,16 +136,19 @@ export default class LayoutFlex extends Node2D {
     const children = this.children.filter(
       child => child instanceof Node2D
     ) as Node2D[];
-    if (children.length === 0) return;
+    if (children.length === 0) {
+      this._needsLayout = false;
+      return;
+    }
 
     const isRow = this.flexDirection === 'row';
-    // Account for padding on both sides (x for width, y for height)
-    const paddingMain = isRow ? this.padding.x : this.padding.y;
-    const paddingCross = isRow ? this.padding.y : this.padding.x;
-    const containerSize =
-      (isRow ? this._size.width : this._size.height) - paddingMain * 2;
-    const crossSize =
-      (isRow ? this._size.height : this._size.width) - paddingCross * 2;
+    const contentSize = this.contentSize;
+
+    // Account for padding on both sides
+    const paddingMain = isRow ? this.padding.left : this.padding.top;
+    const paddingCross = isRow ? this.padding.top : this.padding.left;
+    const containerSize = isRow ? contentSize.width : contentSize.height;
+    const crossSize = isRow ? contentSize.height : contentSize.width;
 
     // Calculate total size of children along main axis
     let totalChildSize = 0;
@@ -105,6 +198,9 @@ export default class LayoutFlex extends Node2D {
       // Move to next position
       mainAxisPosition += childMainSize + this.gap + spacing;
     }
+
+    // Clear the dirty flag after layout is complete
+    this._needsLayout = false;
   }
 
   private calculateJustifyStart(
@@ -165,5 +261,40 @@ export default class LayoutFlex extends Node2D {
       default:
         return 0;
     }
+  }
+}
+
+/**
+ * FixedSizeLayoutFlex - A layout flex container with a fixed explicit size
+ */
+export class FixedSizeLayoutFlex extends LayoutFlex {
+  private _fixedSize: Vector;
+
+  constructor(position: Vector, size: Vector) {
+    // Set fixed size BEFORE calling super to ensure computeContentSize works correctly
+    // We need to use Object.defineProperty to set it before super() is called
+    super(position);
+    this._fixedSize = size;
+    // Re-layout now that fixed size is set
+    this.layout();
+  }
+
+  /**
+   * Override to return fixed size instead of computed size
+   */
+  protected override computeContentSize(): Vector {
+    // Return fixed size if set, otherwise fall back to 0,0
+    if (!this._fixedSize) {
+      return new Vector(0, 0);
+    }
+    return new Vector(this._fixedSize.width, this._fixedSize.height);
+  }
+
+  /**
+   * Update the fixed size
+   */
+  public setSize(size: Vector): void {
+    this._fixedSize = size;
+    this.markLayoutDirty();
   }
 }

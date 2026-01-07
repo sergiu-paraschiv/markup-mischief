@@ -2,11 +2,11 @@ import { GlobalContext, Scene, Vector } from '@engine/core';
 import { AssetsInfo, AssetsLoader, CharsInfo } from '@engine/loaders';
 import { AnimatedSprite } from '@engine/elements';
 
-import { LayoutFlex, Text } from '@game/entities';
+import { FixedSizeLayoutFlex, Text } from '@game/entities';
 
 export default class Loading extends Scene {
   private progressText?: Text;
-  private contentLayout?: LayoutFlex;
+  private contentLayout?: FixedSizeLayoutFlex;
 
   constructor(
     private loadingAssetPath: string,
@@ -39,7 +39,7 @@ export default class Loading extends Scene {
     this.progressText.setText('0%');
 
     // Create a vertical layout for animation and text
-    this.contentLayout = new LayoutFlex(
+    this.contentLayout = new FixedSizeLayoutFlex(
       new Vector(0, 0),
       new Vector(animation.width, animation.height + 50) // Extra space for text
     );
@@ -51,7 +51,7 @@ export default class Loading extends Scene {
     this.contentLayout.addChild(this.progressText);
 
     // Create main layout to center everything
-    const mainLayout = new LayoutFlex(
+    const mainLayout = new FixedSizeLayoutFlex(
       new Vector(0, 0),
       GlobalContext.get<Vector>('viewport')
     );

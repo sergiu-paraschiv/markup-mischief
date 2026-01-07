@@ -17,8 +17,11 @@ import {
   GameLevelScene,
   LEVELS,
   type MenuItem,
+  LoginScene,
+  RegisterScene,
 } from '@game/scenes';
 import { LevelProgressionManager, GameMode } from '@game/progression';
+import { AuthStateManager } from '@game/services';
 
 import ASSETS from '../assets.json';
 
@@ -163,9 +166,43 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       );
     };
 
-    // Create main menu scene
-    const mainMenuScene = new MainMenuScene(
-      [
+    // Create register scene
+    const registerScene = new RegisterScene({
+      onRegisterSuccess: () => {
+        console.log('Registration successful!');
+        // Recreate main menu to show logout button
+        engine.loadScene(createMainMenu());
+      },
+      onLoginRequest: () => {
+        console.log('Login requested from register');
+        engine.loadScene(loginScene);
+      },
+      onBack: () => {
+        console.log('Back from register');
+        engine.loadScene(createMainMenu());
+      },
+    });
+
+    // Create login scene
+    const loginScene = new LoginScene({
+      onLoginSuccess: () => {
+        console.log('Login successful!');
+        // Recreate main menu to show logout button
+        engine.loadScene(createMainMenu());
+      },
+      onRegisterRequest: () => {
+        console.log('Register requested from login');
+        engine.loadScene(registerScene);
+      },
+      onBack: () => {
+        console.log('Back from login');
+        engine.loadScene(createMainMenu());
+      },
+    });
+
+    // Helper function to create main menu with dynamic auth buttons
+    const createMainMenu = () => {
+      const menuItems: MenuItem[] = [
         {
           type: 'button',
           label: 'HTML Mode',
@@ -182,9 +219,62 @@ export class AppComponent implements AfterViewInit, OnDestroy {
             engine.loadScene(createLevelsMenu('css'));
           },
         },
-      ],
-      undefined
-    );
+      ];
+
+      // Add auth-related buttons based on current auth state
+      if (AuthStateManager.isAuthenticated) {
+        // User is logged in - show logout button
+        menuItems.push({
+          type: 'button',
+          label: 'Logout',
+          variant: 'secondary',
+          action: async () => {
+            await AuthStateManager.logout();
+            console.log('User logged out');
+            // Recreate menu to show login/register buttons
+            engine.loadScene(createMainMenu());
+          },
+        });
+      } else {
+        // User is not logged in - show login and register buttons
+        menuItems.push(
+          {
+            type: 'button',
+            label: 'Login',
+            variant: 'secondary',
+            action: () => {
+              engine.loadScene(loginScene);
+            },
+          },
+          {
+            type: 'button',
+            label: 'Register',
+            variant: 'secondary',
+            action: () => {
+              engine.loadScene(registerScene);
+            },
+          }
+        );
+      }
+
+      return new MainMenuScene(menuItems, undefined);
+    };
+
+    // Initialize authentication state (check for existing session)
+    await AuthStateManager.initialize();
+
+    // Create and load main menu scene
+    // The menu will show logout if authenticated, or login/register if not
+    const mainMenuScene = createMainMenu();
+
+    if (AuthStateManager.isAuthenticated) {
+      console.log(
+        'User already logged in:',
+        AuthStateManager.currentUser?.email
+      );
+    } else {
+      console.log('No active session');
+    }
 
     engine.loadScene(mainMenuScene);
   }

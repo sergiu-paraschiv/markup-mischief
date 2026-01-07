@@ -1,7 +1,7 @@
 import { Engine, SceneLoadedEvent } from '@engine';
 import { Element, Query, Vector } from '@engine/core';
 import { CanvasItem, Node2D } from '@engine/elements';
-import { LayoutFlex } from '@game/entities';
+import { FixedSizeLayoutFlex } from '@game/entities';
 import { TickEvent } from '@engine/renderer';
 import { DebugLine, PhysicsTickEvent } from '@engine/physics';
 import { MouseMoveEvent } from '@engine/input';
@@ -291,7 +291,10 @@ export default class Debugger extends CanvasItem {
   private drawFlexDebugLines(context: CanvasRenderingContext2D) {
     if (!this.previousScene) return;
 
-    const flexContainers = Query.childrenByType(LayoutFlex, this.previousScene);
+    const flexContainers = Query.childrenByType(
+      FixedSizeLayoutFlex,
+      this.previousScene
+    );
 
     for (const container of flexContainers) {
       const containerPos = container.position;

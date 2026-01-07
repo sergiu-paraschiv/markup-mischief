@@ -34,26 +34,43 @@ const TILE_INDEXES = {
 
 export default class Board extends Node2D {
   private outline?: Node2D;
-  private board: Node2D;
-  public readonly paper: Node2D;
+  private board: Node2D | undefined;
+  public readonly paper: Node2D | undefined;
+  private variant: BoardVariant;
+  private outlined: boolean;
+  private paperVariant: PaperBoardVariant | 'none';
+  private overlayElements: Node2D[] = [];
 
   constructor(
     position: Vector,
     size: Vector,
     variant: BoardVariant = 'primary',
     outlined = false,
-    paperVariant: PaperBoardVariant = 'default'
+    paperVariant: PaperBoardVariant | 'none' = 'default'
   ) {
     super(position);
+    this.variant = variant;
+    this.outlined = outlined;
+    this.paperVariant = paperVariant;
 
+    this.createBoard(size);
+
+    if (paperVariant !== 'none') {
+      // Create paper overlay
+      this.paper = new PaperBoard(new Vector(0, 0), size, paperVariant);
+      this.addChild(this.paper);
+    }
+  }
+
+  private createBoard(size: Vector): void {
     const assets = GlobalContext.get<AssetsMap>('assets');
     const tilemap =
       assets['Wood and Paper UI - Boards'].tilemaps['Wood and Paper'];
 
-    const tiles = TILE_INDEXES[variant];
+    const tiles = TILE_INDEXES[this.variant];
 
     // Create outline if requested
-    if (outlined) {
+    if (this.outlined) {
       const outlineThicknessX = 1;
       const outlineThicknessY = 2;
       const scaledSize = new Vector(
@@ -93,19 +110,49 @@ export default class Board extends Node2D {
       tilemap.get(tiles.bottomCenter),
       tilemap.get(tiles.bottomRight)
     );
-
-    // Create paper overlay
-    this.paper = new PaperBoard(new Vector(0, 0), size, paperVariant);
-
     this.addChild(this.board);
-    this.addChild(this.paper);
   }
 
   override get width() {
-    return this.board.width;
+    return this.board?.width ?? 0;
   }
 
   override get height() {
-    return this.board.height;
+    return this.board?.height ?? 0;
+  }
+
+  /**
+   * Add an overlay element that will always render on top of the board
+   */
+  public addOverlay(element: Node2D): void {
+    this.overlayElements.push(element);
+    this.addChild(element);
+  }
+
+  /**
+   * Update the board size by recreating the Layout9Slice
+   */
+  public setSize(newSize: Vector): void {
+    // Remove old board and outline if they exist
+    if (this.board) {
+      this.removeChild(this.board);
+    }
+    if (this.outline) {
+      this.removeChild(this.outline);
+    }
+
+    // Recreate board with new size
+    this.createBoard(newSize);
+
+    // Resize paper if it exists
+    if (this.paper && this.paper instanceof PaperBoard) {
+      this.paper.setSize(newSize);
+    }
+
+    // Re-add overlay elements to ensure they render on top
+    for (const overlay of this.overlayElements) {
+      this.removeChild(overlay);
+      this.addChild(overlay);
+    }
   }
 }

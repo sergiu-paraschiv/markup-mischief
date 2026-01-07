@@ -161,6 +161,7 @@ class AuthServiceSingleton {
   private parseError(error: unknown): string {
     if (error instanceof AppwriteException) {
       switch (error.code) {
+        case 400:
         case 401:
           return 'Invalid email or password';
         case 409:

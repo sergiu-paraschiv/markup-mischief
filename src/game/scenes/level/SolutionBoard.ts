@@ -17,7 +17,8 @@ export default class SolutionBoard extends Node2D {
       'white'
     );
     htmlPreview.position = padding;
-    this.board.paper.addChild(htmlPreview);
+
+    (this.board.paper || this.board).addChild(htmlPreview);
 
     this.addChild(this.board);
   }
