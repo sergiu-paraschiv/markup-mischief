@@ -127,8 +127,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       levelMenuItems.push({
         type: 'button',
         label: progression.hasSavedProgress() ? 'New Game' : 'Start Game',
-        action: () => {
-          progression.resetProgress();
+        action: async () => {
+          await progression.resetProgress();
           loadLevel(1, mode);
         },
       });
@@ -168,8 +168,10 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
     // Create register scene
     const registerScene = new RegisterScene({
-      onRegisterSuccess: () => {
+      onRegisterSuccess: async () => {
         console.log('Registration successful!');
+        // Initialize progression after successful registration
+        await progression.initialize();
         // Recreate main menu to show logout button
         engine.loadScene(createMainMenu());
       },
@@ -185,8 +187,10 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
     // Create login scene
     const loginScene = new LoginScene({
-      onLoginSuccess: () => {
+      onLoginSuccess: async () => {
         console.log('Login successful!');
+        // Initialize progression after successful login
+        await progression.initialize();
         // Recreate main menu to show logout button
         engine.loadScene(createMainMenu());
       },
@@ -263,11 +267,9 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     // Initialize authentication state (check for existing session)
     await AuthStateManager.initialize();
 
-    // Create and load main menu scene
-    // The menu will show logout if authenticated, or login/register if not
-    const mainMenuScene = createMainMenu();
-
+    // Initialize level progression after authentication
     if (AuthStateManager.isAuthenticated) {
+      await progression.initialize();
       console.log(
         'User already logged in:',
         AuthStateManager.currentUser?.email
@@ -275,6 +277,10 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     } else {
       console.log('No active session');
     }
+
+    // Create and load main menu scene
+    // The menu will show logout if authenticated, or login/register if not
+    const mainMenuScene = createMainMenu();
 
     engine.loadScene(mainMenuScene);
   }

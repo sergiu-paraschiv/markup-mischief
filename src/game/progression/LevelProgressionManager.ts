@@ -1,9 +1,9 @@
 /**
- * Manages level progression using localStorage
+ * Manages level progression using AppWrite database
  * Tracks the furthest level the player has reached for each game mode
  */
 
-const STORAGE_KEY = 'markup-mischief-progress';
+import { DatabaseService, AuthStateManager } from '@game/services';
 
 export type GameMode = 'html' | 'css';
 
@@ -14,17 +14,20 @@ interface ModeProgress {
 interface ProgressionData {
   html: ModeProgress;
   css: ModeProgress;
-  lastMode?: GameMode; // Remember which mode was played last
 }
 
 export class LevelProgressionManager {
   private static instance: LevelProgressionManager;
   private data: ProgressionData;
   private currentMode: GameMode = 'html'; // Default mode
+  private currentLevelStartTime: Date | null = null;
 
   private constructor() {
-    this.data = this.loadFromStorage();
-    this.currentMode = this.data.lastMode || 'html';
+    this.data = {
+      html: { currentLevel: 1 },
+      css: { currentLevel: 1 },
+    };
+    // Data will be loaded asynchronously via initialize()
   }
 
   /**
@@ -38,12 +41,39 @@ export class LevelProgressionManager {
   }
 
   /**
+   * Initialize progression data from database
+   * Must be called after authentication
+   */
+  public async initialize(): Promise<void> {
+    if (!AuthStateManager.isAuthenticated || !AuthStateManager.userEmail) {
+      console.warn('Cannot initialize progression: user not authenticated');
+      return;
+    }
+
+    try {
+      const htmlLevel = await DatabaseService.getHighestLevelForMode(
+        AuthStateManager.userEmail,
+        'html'
+      );
+      const cssLevel = await DatabaseService.getHighestLevelForMode(
+        AuthStateManager.userEmail,
+        'css'
+      );
+
+      this.data = {
+        html: { currentLevel: htmlLevel + 1 },
+        css: { currentLevel: cssLevel + 1 },
+      };
+    } catch (error) {
+      console.error('Failed to initialize progression data:', error);
+    }
+  }
+
+  /**
    * Set the current game mode (html or css)
    */
   public setMode(mode: GameMode): void {
     this.currentMode = mode;
-    this.data.lastMode = mode;
-    this.saveToStorage();
   }
 
   /**
@@ -82,31 +112,105 @@ export class LevelProgressionManager {
   }
 
   /**
-   * Advance to the next level (called when current level is completed)
+   * Start tracking a level (call when level begins)
    */
-  public advanceToNextLevel(): void {
-    this.data[this.currentMode].currentLevel++;
-    this.saveToStorage();
+  public startLevel(): void {
+    this.currentLevelStartTime = new Date();
+  }
+
+  /**
+   * Advance to the next level (called when current level is completed)
+   * Creates a database record for the completed level
+   */
+  public async advanceToNextLevel(): Promise<void> {
+    if (!AuthStateManager.isAuthenticated || !AuthStateManager.userEmail) {
+      console.warn('Cannot advance level: user not authenticated');
+      return;
+    }
+
+    const currentLevel = this.data[this.currentMode].currentLevel;
+    const finishTime = new Date();
+    const startTime = this.currentLevelStartTime || finishTime;
+
+    try {
+      // Create a record for the completed level
+      await DatabaseService.createLevelRecord({
+        mode: this.currentMode,
+        level: currentLevel,
+        startTime: startTime.toISOString(),
+        finishTime: finishTime.toISOString(),
+        userEmail: AuthStateManager.userEmail,
+        isLatestRun: true,
+      });
+
+      // Advance to next level in memory
+      this.data[this.currentMode].currentLevel++;
+
+      // Reset start time for next level
+      this.currentLevelStartTime = null;
+    } catch (error) {
+      console.error('Failed to advance level:', error);
+    }
   }
 
   /**
    * Reset progress back to level 1 for the active mode (New Game)
+   * Marks all existing records as old (not latest run)
    */
-  public resetProgress(): void {
-    this.data[this.currentMode] = {
-      currentLevel: 1,
-    };
-    this.saveToStorage();
+  public async resetProgress(): Promise<void> {
+    if (!AuthStateManager.isAuthenticated || !AuthStateManager.userEmail) {
+      console.warn('Cannot reset progress: user not authenticated');
+      return;
+    }
+
+    try {
+      // Mark all existing records as old
+      await DatabaseService.markAllRecordsAsOld(
+        AuthStateManager.userEmail,
+        this.currentMode
+      );
+
+      // Reset in-memory data
+      this.data[this.currentMode] = {
+        currentLevel: 1,
+      };
+
+      // Reset start time
+      this.currentLevelStartTime = null;
+    } catch (error) {
+      console.error('Failed to reset progress:', error);
+    }
   }
 
   /**
    * Reset progress for a specific mode
+   * Marks all existing records as old (not latest run)
    */
-  public resetProgressForMode(mode: GameMode): void {
-    this.data[mode] = {
-      currentLevel: 1,
-    };
-    this.saveToStorage();
+  public async resetProgressForMode(mode: GameMode): Promise<void> {
+    if (!AuthStateManager.isAuthenticated || !AuthStateManager.userEmail) {
+      console.warn('Cannot reset progress: user not authenticated');
+      return;
+    }
+
+    try {
+      // Mark all existing records as old
+      await DatabaseService.markAllRecordsAsOld(
+        AuthStateManager.userEmail,
+        mode
+      );
+
+      // Reset in-memory data
+      this.data[mode] = {
+        currentLevel: 1,
+      };
+
+      // Reset start time if resetting current mode
+      if (mode === this.currentMode) {
+        this.currentLevelStartTime = null;
+      }
+    } catch (error) {
+      console.error('Failed to reset progress:', error);
+    }
   }
 
   /**
@@ -117,82 +221,5 @@ export class LevelProgressionManager {
       throw new Error('Level must be at least 1');
     }
     this.data[this.currentMode].currentLevel = level;
-    this.saveToStorage();
-  }
-
-  /**
-   * Load progression data from localStorage
-   */
-  private loadFromStorage(): ProgressionData {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        const parsed = JSON.parse(stored);
-
-        // Check if it's the old format (single currentLevel)
-        if (typeof parsed.currentLevel === 'number') {
-          // Migrate old format to new format
-          return {
-            html: {
-              currentLevel: parsed.currentLevel,
-            },
-            css: {
-              currentLevel: 1,
-            },
-            lastMode: 'html',
-          };
-        }
-
-        // Validate new format
-        if (
-          parsed.html &&
-          parsed.css &&
-          typeof parsed.html.currentLevel === 'number' &&
-          typeof parsed.css.currentLevel === 'number' &&
-          parsed.html.currentLevel >= 1 &&
-          parsed.css.currentLevel >= 1
-        ) {
-          return parsed as ProgressionData;
-        }
-      }
-    } catch (error) {
-      console.warn('Failed to load progression data:', error);
-    }
-
-    // Default: start at level 1 for both modes
-    return {
-      html: {
-        currentLevel: 1,
-      },
-      css: {
-        currentLevel: 1,
-      },
-    };
-  }
-
-  /**
-   * Save progression data to localStorage
-   */
-  private saveToStorage(): void {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(this.data));
-    } catch (error) {
-      console.error('Failed to save progression data:', error);
-    }
-  }
-
-  /**
-   * Clear all saved data (for debugging/testing)
-   */
-  public clearStorage(): void {
-    try {
-      localStorage.removeItem(STORAGE_KEY);
-      this.data = {
-        html: { currentLevel: 1 },
-        css: { currentLevel: 1 },
-      };
-    } catch (error) {
-      console.error('Failed to clear progression data:', error);
-    }
   }
 }

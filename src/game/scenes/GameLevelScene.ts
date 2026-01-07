@@ -91,6 +91,10 @@ export default class GameLevelScene extends Scene {
     );
 
     this.setupEventHandlers();
+
+    // Start tracking level time
+    const progression = LevelProgressionManager.getInstance();
+    progression.startLevel();
   }
 
   private setupEventHandlers(): void {
@@ -124,7 +128,9 @@ export default class GameLevelScene extends Scene {
 
           // Advance progression immediately when level is won
           const progression = LevelProgressionManager.getInstance();
-          progression.advanceToNextLevel();
+          progression.advanceToNextLevel().catch(error => {
+            console.error('Failed to advance level:', error);
+          });
 
           this.uiManager?.showWinMenu();
         }
