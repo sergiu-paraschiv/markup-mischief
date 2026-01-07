@@ -11,7 +11,7 @@ import { Keyboard, Mouse, TouchButton } from '@engine/input';
 import { CanvasRenderer } from '@engine/renderer';
 import { PhysicsSimulation } from '@engine/physics';
 import { DeviceDetection } from '@engine/utils';
-import { Debugger } from '@debugger';
+// import { Debugger } from '@debugger';
 import {
   LoadingScene,
   MainMenuScene,
@@ -117,13 +117,13 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       inputDevices
     );
 
-    const dbgr = new Debugger(gameElement);
-    dbgr.attachTo(engine);
+    // const dbgr = new Debugger(gameElement);
+    // dbgr.attachTo(engine);
     // dbgr.enableGridLines = true;
     // dbgr.enablePhysicsDebugLines = true;
     // dbgr.enableHoverHighlight = true;
     // dbgr.enableFlexDebugLines = true;
-    dbgr.enableRenderGraph = true;
+    // dbgr.enableRenderGraph = true;
 
     // Listen for scene changes to show/hide touch controls
     // Only show controls on mobile/touch devices

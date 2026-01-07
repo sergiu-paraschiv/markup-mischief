@@ -98,7 +98,7 @@ export default class Button extends Node2D {
     // Scale up buttons on mobile devices for better touch targets
     const deviceInfo = GlobalContext.get<DeviceInfo>('deviceInfo');
     if (deviceInfo?.isMobile) {
-      this.textComponent.scale = new Vector(2, 2);
+      this.textComponent.scale = new Vector(1.7, 1.7);
     }
 
     this.textDefaultPosition = this.textComponent.position;

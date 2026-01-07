@@ -57,15 +57,7 @@ export default class Node2D extends CanvasItem {
   }
 
   get scale(): Vector {
-    let accumulatedScale = this._scale;
-    const parent = Query.parentByType(Node2D, this);
-    if (parent) {
-      accumulatedScale = new Vector(
-        accumulatedScale.x * parent.scale.x,
-        accumulatedScale.y * parent.scale.y
-      );
-    }
-    return accumulatedScale;
+    return this._scale;
   }
 
   set scale(value: Vector) {

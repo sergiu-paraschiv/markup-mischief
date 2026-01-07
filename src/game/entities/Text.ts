@@ -75,6 +75,7 @@ export default class Text extends Node2D {
         texture,
         new Vector(this._width, this._height)
       );
+      charSprite.scale = this.scale;
 
       // Apply fillColor from parent if set
       if (this.fillColor) {
