@@ -1,7 +1,7 @@
-import { Scene, Event, GlobalContext, Vector } from '@engine/core';
+import { Scene, Event } from '@engine/core';
 import { CharacterGrabEvent, Character, Player1 } from '@game/entities';
 import { TickEvent } from '@engine/renderer';
-import { KeyboardInputEvent, KeyAction, TouchButton } from '@engine/input';
+import { KeyboardInputEvent, KeyAction } from '@engine/input';
 import { LevelData, LevelsData } from './level/LevelData';
 import LEVELS_DATA from './level/levels.json';
 import { LevelBuilder } from './level/LevelBuilder';
@@ -10,8 +10,6 @@ import { PlayerTagInteraction } from './level/PlayerTagInteraction';
 import { GameUIManager } from './level/GameUIManager';
 import { LevelProgressionManager, type GameMode } from '@game/progression';
 import { CharacterSelectionManager } from '@game';
-import { TouchControls } from '@game/entities';
-import type { DeviceInfo } from '@engine/utils';
 
 /**
  * Base class for game level scenes
@@ -91,25 +89,6 @@ export default class GameLevelScene extends Scene {
       this.currentLevel,
       this.mode
     );
-
-    // Add touch controls for mobile devices
-    const deviceInfo = GlobalContext.get<DeviceInfo>('deviceInfo');
-    if (deviceInfo?.isMobile || deviceInfo?.hasTouch) {
-      const touchButton = GlobalContext.get<TouchButton>('touchButton');
-      if (touchButton) {
-        const touchControls = new TouchControls(
-          new Vector(0, 0),
-          (key: string, pressed: boolean) => {
-            if (pressed) {
-              touchButton.pressKey(key);
-            } else {
-              touchButton.releaseKey(key);
-            }
-          }
-        );
-        this.addChild(touchControls);
-      }
-    }
 
     this.setupEventHandlers();
 

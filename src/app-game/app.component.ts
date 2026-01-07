@@ -5,7 +5,7 @@ import {
   ElementRef,
   OnDestroy,
 } from '@angular/core';
-import { Engine } from '@engine';
+import { Engine, SceneLoadedEvent } from '@engine';
 import { GlobalContext, Vector } from '@engine/core';
 import { Keyboard, Mouse, TouchButton } from '@engine/input';
 import { CanvasRenderer } from '@engine/renderer';
@@ -23,6 +23,7 @@ import {
 } from '@game/scenes';
 import { LevelProgressionManager, GameMode } from '@game/progression';
 import { AuthStateManager, SettingsService } from '@game/services';
+import { TouchControlsComponent } from './touch-controls.component';
 
 import ASSETS from '../assets.json';
 import InputDevice from '../engine/input/InputDevice';
@@ -30,12 +31,16 @@ import InputDevice from '../engine/input/InputDevice';
 @Component({
   selector: 'app-root',
   standalone: true,
+  imports: [TouchControlsComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })
 export class AppComponent implements AfterViewInit, OnDestroy {
   @ViewChild('game') gameElement: ElementRef<HTMLElement> | undefined;
   @ViewChild('canvas') canvasElement: ElementRef<HTMLCanvasElement> | undefined;
+  @ViewChild('touchControls') touchControlsComponent:
+    | TouchControlsComponent
+    | undefined;
 
   private renderer?: CanvasRenderer;
   private viewport = new Vector(768, 512);
@@ -90,8 +95,19 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     if (deviceInfo?.isMobile || deviceInfo?.hasTouch) {
       const touchButton = new TouchButton();
       inputDevices.push(touchButton);
-      // Store reference for TouchControls to use
-      GlobalContext.set('touchButton', touchButton);
+
+      // Register callback with TouchControls component
+      if (this.touchControlsComponent) {
+        this.touchControlsComponent.setCallback(
+          (key: string, pressed: boolean) => {
+            if (pressed) {
+              touchButton.pressKey(key);
+            } else {
+              touchButton.releaseKey(key);
+            }
+          }
+        );
+      }
     }
 
     const engine = new Engine(
@@ -107,7 +123,23 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     // dbgr.enablePhysicsDebugLines = true;
     // dbgr.enableHoverHighlight = true;
     // dbgr.enableFlexDebugLines = true;
-    // dbgr.enableRenderGraph = true;
+    dbgr.enableRenderGraph = true;
+
+    // Listen for scene changes to show/hide touch controls
+    // Only show controls on mobile/touch devices
+    const shouldShowControls = deviceInfo?.isMobile || deviceInfo?.hasTouch;
+    if (shouldShowControls) {
+      engine.on(SceneLoadedEvent, event => {
+        if (event instanceof SceneLoadedEvent) {
+          const isGameLevel = event.scene instanceof GameLevelScene;
+          if (isGameLevel) {
+            this.touchControlsComponent?.show();
+          } else {
+            this.touchControlsComponent?.hide();
+          }
+        }
+      });
+    }
 
     engine.start(120, 120);
 
