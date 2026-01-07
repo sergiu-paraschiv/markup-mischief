@@ -65,7 +65,7 @@ export default class MainMenu extends Node2D {
       let element: Node2D;
 
       if (menuItem.type === 'button') {
-        const buttonText = new Text(menuItem.label);
+        const buttonText = new Text(menuItem.label, 2);
         const button = new Button(
           new Vector(0, 0),
           buttonText,

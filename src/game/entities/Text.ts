@@ -20,9 +20,12 @@ export default class Text extends Node2D {
   private letterSpacing: number;
   private style: TextStyle;
   private _text = '';
+  private textures: Texture[] = [];
+  private _padding = new Vector(0, 0);
 
   constructor(text?: string, letterSpacing = 1, style: TextStyle = 'regular') {
     super();
+
     this.letterSpacing = letterSpacing;
     this.style = style;
     if (text) {
@@ -37,7 +40,7 @@ export default class Text extends Node2D {
       return undefined;
     }
     const color = this.fillColor || 'none';
-    return `text:${this._text}:${this.style}:${this.letterSpacing}:${color}`;
+    return `text:${this._text}:${this.style}:${this.letterSpacing}:${this.scale.x}:${this.scale.y}:${color}`;
   }
 
   override get fillColor(): string | undefined {
@@ -55,7 +58,7 @@ export default class Text extends Node2D {
     }
   }
 
-  private setTextFromTextures(textures: Texture[]): void {
+  private setTextFromTextures(): void {
     // Remove all existing children
     const children = [...this.children];
     for (const child of children) {
@@ -63,12 +66,15 @@ export default class Text extends Node2D {
     }
 
     // Reset dimensions
-    this._width = 0;
-    this._height = 0;
+    this._width = this._padding.x * this.scale.x;
+    this._height = this._padding.y * this.scale.y;
 
-    for (let i = 0; i < textures.length; i += 1) {
-      const texture = textures[i];
-      const charSprite = new Sprite(texture, new Vector(this._width, 0));
+    for (let i = 0; i < this.textures.length; i += 1) {
+      const texture = this.textures[i];
+      const charSprite = new Sprite(
+        texture,
+        new Vector(this._width, this._height)
+      );
 
       // Apply fillColor from parent if set
       if (this.fillColor) {
@@ -77,13 +83,16 @@ export default class Text extends Node2D {
 
       this.addChild(charSprite);
 
-      this._width += charSprite.width;
-      if (i < textures.length - 1) {
+      this._width += charSprite.width * this.scale.x;
+      if (i < this.textures.length - 1) {
         this._width += this.letterSpacing;
       }
-
-      this._height = charSprite.height;
     }
+
+    this._height += this.textures[0].height * this.scale.y;
+
+    this._width += this._padding.x * this.scale.x;
+    this._height += this._padding.y * this.scale.y;
   }
 
   public setText(text: string): void {
@@ -92,7 +101,7 @@ export default class Text extends Node2D {
     const config = STYLE_CONFIG[this.style];
     const chars = text.toLowerCase().split('');
 
-    const textures: Texture[] = chars
+    this.textures = chars
       .map(char => {
         return (
           charsMap[config.charsMapKey][char] ||
@@ -101,7 +110,7 @@ export default class Text extends Node2D {
       })
       .filter(item => item !== undefined);
 
-    this.setTextFromTextures(textures);
+    this.setTextFromTextures();
   }
 
   public setTextFromCodes(
@@ -129,7 +138,27 @@ export default class Text extends Node2D {
       textures.push(texture);
     }
 
-    this.setTextFromTextures(textures);
+    this.textures = textures;
+
+    this.setTextFromTextures();
+  }
+
+  public set padding(padding: Vector) {
+    this._padding = padding;
+    this.setTextFromTextures();
+  }
+
+  public get padding(): Vector {
+    return this._padding;
+  }
+
+  public override set scale(scale: Vector) {
+    super.scale = scale;
+    this.setTextFromTextures();
+  }
+
+  public override get scale(): Vector {
+    return super.scale;
   }
 
   override get width() {

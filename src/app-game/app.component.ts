@@ -7,9 +7,10 @@ import {
 } from '@angular/core';
 import { Engine } from '@engine';
 import { GlobalContext, Vector } from '@engine/core';
-import { Keyboard, Mouse } from '@engine/input';
+import { Keyboard, Mouse, TouchButton } from '@engine/input';
 import { CanvasRenderer } from '@engine/renderer';
 import { PhysicsSimulation } from '@engine/physics';
+import { DeviceDetection } from '@engine/utils';
 import { Debugger } from '@debugger';
 import {
   LoadingScene,
@@ -24,6 +25,7 @@ import { LevelProgressionManager, GameMode } from '@game/progression';
 import { AuthStateManager, SettingsService } from '@game/services';
 
 import ASSETS from '../assets.json';
+import InputDevice from '../engine/input/InputDevice';
 
 @Component({
   selector: 'app-root',
@@ -41,6 +43,19 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
   constructor() {
     GlobalContext.set('viewport', this.viewport);
+
+    // Detect and store device information
+    const deviceInfo = DeviceDetection.getDeviceInfo();
+    GlobalContext.set('deviceInfo', deviceInfo);
+
+    console.log('Device detection:', {
+      isMobile: deviceInfo.isMobile,
+      isTablet: deviceInfo.isTablet,
+      isDesktop: deviceInfo.isDesktop,
+      hasTouch: deviceInfo.hasTouch,
+      orientation: DeviceDetection.getOrientation(),
+      isPWA: DeviceDetection.isPWA(),
+    });
   }
 
   async ngAfterViewInit(): Promise<void> {
@@ -61,17 +76,29 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
     this.renderer = new CanvasRenderer(canvasElement, gameElement, zoom);
 
+    // Create input devices - add TouchButton for mobile
+    const deviceInfo = GlobalContext.get('deviceInfo');
+    const inputDevices: InputDevice[] = [
+      new Keyboard(document.documentElement),
+      new Mouse(
+        canvasElement,
+        this.renderer.globalToLocalPoint.bind(this.renderer)
+      ),
+    ];
+
+    // Add TouchButton input device for mobile/touch devices
+    if (deviceInfo?.isMobile || deviceInfo?.hasTouch) {
+      const touchButton = new TouchButton();
+      inputDevices.push(touchButton);
+      // Store reference for TouchControls to use
+      GlobalContext.set('touchButton', touchButton);
+    }
+
     const engine = new Engine(
       this.viewport,
       this.renderer,
       new PhysicsSimulation(),
-      [
-        new Keyboard(document.documentElement),
-        new Mouse(
-          canvasElement,
-          this.renderer.globalToLocalPoint.bind(this.renderer)
-        ),
-      ]
+      inputDevices
     );
 
     const dbgr = new Debugger(gameElement);
@@ -206,27 +233,26 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
     // Helper function to create main menu with dynamic auth buttons
     const createMainMenu = async () => {
-      const menuItems: MenuItem[] = [
-        {
+      const menuItems: MenuItem[] = [];
+
+      if (AuthStateManager.isAuthenticated) {
+        menuItems.push({
           type: 'button',
           label: 'HTML Mode',
           action: () => {
             // Recreate levels menu each time to show current progression state
             engine.loadScene(createLevelsMenu('html'));
           },
-        },
-        {
+        });
+        menuItems.push({
           type: 'button',
           label: 'CSS Mode',
           action: () => {
             // Recreate levels menu each time to show current progression state
             engine.loadScene(createLevelsMenu('css'));
           },
-        },
-      ];
+        });
 
-      // Add auth-related buttons based on current auth state
-      if (AuthStateManager.isAuthenticated) {
         // User is logged in - show logout button
         menuItems.push({
           type: 'button',
@@ -244,7 +270,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         menuItems.push({
           type: 'button',
           label: 'Login',
-          variant: 'secondary',
+          variant: 'primary',
           action: () => {
             engine.loadScene(loginScene);
           },
@@ -257,7 +283,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
           menuItems.push({
             type: 'button',
             label: 'Register',
-            variant: 'secondary',
+            variant: 'primary',
             action: () => {
               engine.loadScene(registerScene);
             },

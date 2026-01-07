@@ -69,6 +69,45 @@ export default class Layout9Slice extends Node2D {
       size.height - brSprite.height
     );
 
+    // Clip right corners from the left if they would overlap with left corners
+    const clipHorizontally = trSprite.position.x < 3 || brSprite.position.x < 3;
+
+    if (trSprite.position.x < 3) {
+      trSprite.clipRegion = {
+        x: 3,
+        y: 0,
+        width: trSprite.width,
+        height: trSprite.height,
+      };
+    }
+    if (brSprite.position.x < 3) {
+      brSprite.clipRegion = {
+        x: 3,
+        y: 0,
+        width: brSprite.width,
+        height: brSprite.height,
+      };
+    }
+
+    // Clip bottom corners from the top if they would overlap with top corners
+    if (blSprite.position.y < 3) {
+      blSprite.clipRegion = {
+        x: 0,
+        y: 3,
+        width: blSprite.width,
+        height: blSprite.height,
+      };
+    }
+    if (brSprite.position.y < 3) {
+      // If already clipped horizontally, we need to preserve x: 3
+      brSprite.clipRegion = {
+        x: clipHorizontally ? 3 : 0,
+        y: 3,
+        width: brSprite.width,
+        height: brSprite.height,
+      };
+    }
+
     // Calculate available space for edges and center
     const leftWidth = tlSprite.width;
     const rightWidth = trSprite.width;
@@ -78,26 +117,47 @@ export default class Layout9Slice extends Node2D {
     const availableWidth = size.width - leftWidth - rightWidth;
     const availableHeight = size.height - topHeight - bottomHeight;
 
+    // Determine if we need to clip edges due to overlapping corners
+    const clipVertically = blSprite.position.y < 3 || brSprite.position.y < 3;
+
     // Tile top edge
-    this.tileHorizontal(topCenter, leftWidth, 0, availableWidth);
+    this.tileHorizontal(
+      topCenter,
+      leftWidth,
+      0,
+      availableWidth,
+      clipHorizontally,
+      false
+    );
 
     // Tile bottom edge
     this.tileHorizontal(
       bottomCenter,
       leftWidth,
       size.height - bottomHeight,
-      availableWidth
+      availableWidth,
+      clipHorizontally,
+      clipVertically // Bottom edge doesn't need vertical clipping
     );
 
     // Tile left edge
-    this.tileVertical(middleLeft, 0, topHeight, availableHeight);
+    this.tileVertical(
+      middleLeft,
+      0,
+      topHeight,
+      availableHeight,
+      clipHorizontally,
+      clipVertically
+    );
 
     // Tile right edge
     this.tileVertical(
       middleRight,
       size.width - rightWidth,
       topHeight,
-      availableHeight
+      availableHeight,
+      false,
+      clipVertically
     );
 
     // Fill center
@@ -106,7 +166,9 @@ export default class Layout9Slice extends Node2D {
       leftWidth,
       topHeight,
       availableWidth,
-      availableHeight
+      availableHeight,
+      clipHorizontally,
+      clipVertically
     );
   }
 
@@ -117,7 +179,9 @@ export default class Layout9Slice extends Node2D {
     texture: Texture | undefined,
     startX: number,
     y: number,
-    totalWidth: number
+    totalWidth: number,
+    clipFromLeft = false,
+    clipFromTop = false
   ): void {
     if (!texture || totalWidth <= 0) return;
 
@@ -128,11 +192,14 @@ export default class Layout9Slice extends Node2D {
       const sprite = new Sprite(texture);
       sprite.position = new Vector(currentX, y);
 
-      if (remainingWidth < sprite.width) {
+      const needsClipping =
+        remainingWidth < sprite.width || clipFromLeft || clipFromTop;
+
+      if (needsClipping) {
         sprite.clipRegion = {
-          x: 0,
-          y: 0,
-          width: remainingWidth,
+          x: clipFromLeft ? 3 : 0,
+          y: clipFromTop ? 3 : 0,
+          width: remainingWidth < sprite.width ? remainingWidth : sprite.width,
           height: sprite.height,
         };
       }
@@ -150,7 +217,9 @@ export default class Layout9Slice extends Node2D {
     texture: Texture | undefined,
     x: number,
     startY: number,
-    totalHeight: number
+    totalHeight: number,
+    clipFromLeft = false,
+    clipFromTop = false
   ): void {
     if (!texture || totalHeight <= 0) return;
 
@@ -161,12 +230,16 @@ export default class Layout9Slice extends Node2D {
       const sprite = new Sprite(texture);
       sprite.position = new Vector(x, currentY);
 
-      if (remainingHeight < sprite.height) {
+      const needsClipping =
+        remainingHeight < sprite.height || clipFromLeft || clipFromTop;
+
+      if (needsClipping) {
         sprite.clipRegion = {
-          x: 0,
-          y: 0,
+          x: clipFromLeft ? 3 : 0,
+          y: clipFromTop ? 3 : 0,
           width: sprite.width,
-          height: remainingHeight,
+          height:
+            remainingHeight < sprite.height ? remainingHeight : sprite.height,
         };
       }
 
@@ -184,7 +257,9 @@ export default class Layout9Slice extends Node2D {
     startX: number,
     startY: number,
     totalWidth: number,
-    totalHeight: number
+    totalHeight: number,
+    clipFromLeft = false,
+    clipFromTop = false
   ): void {
     if (!texture || totalWidth <= 0 || totalHeight <= 0) return;
 
@@ -202,10 +277,16 @@ export default class Layout9Slice extends Node2D {
         const clipWidth = Math.min(remainingWidth, sprite.width);
         const clipHeight = Math.min(remainingHeight, sprite.height);
 
-        if (clipWidth < sprite.width || clipHeight < sprite.height) {
+        const needsClipping =
+          clipWidth < sprite.width ||
+          clipHeight < sprite.height ||
+          clipFromLeft ||
+          clipFromTop;
+
+        if (needsClipping) {
           sprite.clipRegion = {
-            x: 0,
-            y: 0,
+            x: clipFromLeft ? 3 : 0,
+            y: clipFromTop ? 3 : 0,
             width: clipWidth,
             height: clipHeight,
           };

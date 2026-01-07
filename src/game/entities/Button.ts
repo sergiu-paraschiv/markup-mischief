@@ -7,8 +7,10 @@ import {
   MouseLeaveEvent,
   MouseClickEvent,
 } from '@engine/input';
+import type { DeviceInfo } from '@engine/utils';
 import Text from './Text';
 import Layout3Slice from './Layout3Slice';
+import Layout9Slice from './Layout9Slice';
 
 type ActionFn = () => void;
 export type ButtonVariant = 'primary' | 'secondary' | 'text';
@@ -21,24 +23,59 @@ const TEXT_DISABLED = 'rgba(128, 128, 128, 0.5)';
 
 const TILE_INDEXES = {
   primary: {
-    multiChar: { left: 2, center: 3, right: 4 },
-    multiCharHover: { left: 44, center: 45, right: 46 },
-    singleChar: 1,
-    singleCharHover: 43,
+    regular: {
+      topLeft: 14,
+      topCenter: 15,
+      topRight: 16,
+      middleLeft: 23,
+      middleCenter: 24,
+      middleRight: 25,
+      bottomLeft: 32,
+      bottomCenter: 33,
+      bottomRight: 34,
+    },
+    hover: {
+      topLeft: 52,
+      topCenter: 53,
+      topRight: 54,
+      middleLeft: 23,
+      middleCenter: 24,
+      middleRight: 25,
+      bottomLeft: 60,
+      bottomCenter: 61,
+      bottomRight: 62,
+    },
   },
   secondary: {
-    multiChar: { left: 6, center: 7, right: 8 },
-    multiCharHover: { left: 48, center: 49, right: 50 },
-    singleChar: 5,
-    singleCharHover: 47,
+    regular: {
+      topLeft: 18,
+      topCenter: 19,
+      topRight: 20,
+      middleLeft: 27,
+      middleCenter: 28,
+      middleRight: 29,
+      bottomLeft: 36,
+      bottomCenter: 37,
+      bottomRight: 38,
+    },
+    hover: {
+      topLeft: 56,
+      topCenter: 57,
+      topRight: 58,
+      middleLeft: 27,
+      middleCenter: 28,
+      middleRight: 29,
+      bottomLeft: 64,
+      bottomCenter: 65,
+      bottomRight: 66,
+    },
   },
 };
 
 export default class Button extends Node2D {
-  private outline: Layout3Slice | Sprite | undefined;
-  private background: Layout3Slice | Sprite | undefined;
-  private hoverBackground: Layout3Slice | Sprite | undefined;
-  private textComponent: Text;
+  private outline: Layout9Slice | Sprite | undefined;
+  private background: Layout9Slice | Sprite | undefined;
+  private hoverBackground: Layout9Slice | Sprite | undefined;
   private textDefaultPosition: Vector;
   private variant: ButtonVariant;
   public readonly mouseInteraction: MouseInteractionManager;
@@ -51,11 +88,20 @@ export default class Button extends Node2D {
 
   constructor(
     initialPosition: Vector,
-    textComponent: Text,
+    private textComponent: Text,
     variant: ButtonVariant = 'primary'
   ) {
     super(initialPosition);
-    this.textComponent = textComponent;
+    this.textComponent.position = new Vector(0, -1);
+    this.textComponent.padding = new Vector(6, 6);
+
+    // Scale up buttons on mobile devices for better touch targets
+    const deviceInfo = GlobalContext.get<DeviceInfo>('deviceInfo');
+    if (deviceInfo?.isMobile) {
+      this.textComponent.scale = new Vector(2, 2);
+    }
+
+    this.textDefaultPosition = this.textComponent.position;
     this.variant = variant;
 
     const assets = GlobalContext.get<AssetsMap>('assets');
@@ -63,18 +109,19 @@ export default class Button extends Node2D {
     // Text variant - no background, just text with underline on hover
     if (variant === 'text') {
       const tilemap = assets['Chars'].tilemaps['Chars'];
-      textComponent.position = new Vector(0, 0);
-      this.textDefaultPosition = new Vector(0, 0);
-      this.addChild(textComponent);
+      this.addChild(this.textComponent);
 
       // Create underline using 3-slice (tiles 282, 283, 284)
       this.underline = new Layout3Slice(
-        textComponent.width,
+        this.textComponent.width,
         tilemap.get(90),
         tilemap.get(90),
         tilemap.get(90)
       );
-      this.underline.position = new Vector(0, textComponent.height + 2);
+      this.underline.position = new Vector(
+        0,
+        this.textComponent.height - this.textComponent.padding.y + 1
+      );
       this.underline.isVisible = false;
       this.addChild(this.underline);
     } else {
@@ -87,48 +134,49 @@ export default class Button extends Node2D {
 
       const tiles = TILE_INDEXES[variant];
 
+      const backgroundSize = this.textComponent.size;
       // Create backgrounds first to get dimensions
-      if (textComponent.children.length > 1) {
-        const buttonWidth = textComponent.width + 12;
 
-        this.background = new Layout3Slice(
-          buttonWidth,
-          tilemap.get(tiles.multiChar.left),
-          tilemap.get(tiles.multiChar.center),
-          tilemap.get(tiles.multiChar.right)
-        );
+      this.background = new Layout9Slice(
+        backgroundSize,
+        tilemap.get(tiles.regular.topLeft),
+        tilemap.get(tiles.regular.topCenter),
+        tilemap.get(tiles.regular.topRight),
+        tilemap.get(tiles.regular.middleLeft),
+        tilemap.get(tiles.regular.middleCenter),
+        tilemap.get(tiles.regular.middleRight),
+        tilemap.get(tiles.regular.bottomLeft),
+        tilemap.get(tiles.regular.bottomCenter),
+        tilemap.get(tiles.regular.bottomRight)
+      );
 
-        this.hoverBackground = new Layout3Slice(
-          buttonWidth,
-          tilemap.get(tiles.multiCharHover.left),
-          tilemap.get(tiles.multiCharHover.center),
-          tilemap.get(tiles.multiCharHover.right)
-        );
+      this.hoverBackground = new Layout9Slice(
+        backgroundSize,
+        tilemap.get(tiles.hover.topLeft),
+        tilemap.get(tiles.hover.topCenter),
+        tilemap.get(tiles.hover.topRight),
+        tilemap.get(tiles.hover.middleLeft),
+        tilemap.get(tiles.hover.middleCenter),
+        tilemap.get(tiles.hover.middleRight),
+        tilemap.get(tiles.hover.bottomLeft),
+        tilemap.get(tiles.hover.bottomCenter),
+        tilemap.get(tiles.hover.bottomRight)
+      );
 
-        this.outline = new Layout3Slice(
-          buttonWidth + outlineThicknessX * 2,
-          tilemap.get(tiles.multiChar.left),
-          tilemap.get(tiles.multiChar.center),
-          tilemap.get(tiles.multiChar.right)
-        );
-
-        textComponent.position = new Vector(6, 4);
-        this.textDefaultPosition = new Vector(6, 4);
-      } else {
-        this.background = new Sprite(tilemap.get(tiles.singleChar));
-
-        this.hoverBackground = new Sprite(tilemap.get(tiles.singleCharHover));
-
-        this.outline = new Layout3Slice(
-          this.background.width + outlineThicknessX * 2,
-          tilemap.get(tiles.multiChar.left),
-          tilemap.get(tiles.multiChar.center),
-          tilemap.get(tiles.multiChar.right)
-        );
-
-        textComponent.position = new Vector(5, 4);
-        this.textDefaultPosition = new Vector(5, 4);
-      }
+      this.outline = new Layout9Slice(
+        backgroundSize.add(
+          new Vector(outlineThicknessX * 2, outlineThicknessY * 2)
+        ),
+        tilemap.get(tiles.regular.topLeft),
+        tilemap.get(tiles.regular.topCenter),
+        tilemap.get(tiles.regular.topRight),
+        tilemap.get(tiles.regular.middleLeft),
+        tilemap.get(tiles.regular.middleCenter),
+        tilemap.get(tiles.regular.middleRight),
+        tilemap.get(tiles.regular.bottomLeft),
+        tilemap.get(tiles.regular.bottomCenter),
+        tilemap.get(tiles.regular.bottomRight)
+      );
 
       // Position outline with desired thickness
       this.outline.position = new Vector(
@@ -149,7 +197,7 @@ export default class Button extends Node2D {
       // Hide hover background by default
       this.hoverBackground.isVisible = false;
 
-      this.addChild(textComponent);
+      this.addChild(this.textComponent);
     }
 
     // Create HTML button element

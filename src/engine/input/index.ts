@@ -16,6 +16,7 @@ import {
   MouseClickEvent,
 } from './MouseInteractionEvent';
 import CursorManager, { CursorStyle } from './CursorManager';
+import TouchButton from './TouchButton';
 
 export {
   InputDevice,
@@ -36,6 +37,7 @@ export {
   MouseLeaveEvent,
   MouseClickEvent,
   CursorManager,
+  TouchButton,
 };
 
 export type { CursorStyle };

@@ -60,11 +60,11 @@ export default class Layout3Slice extends Node2D {
   }
 
   override get width() {
-    return this._width;
+    return this._width * this.scale.x;
   }
 
   override get height() {
-    return this._height;
+    return this._height * this.scale.y;
   }
 
   /**

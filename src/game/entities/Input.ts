@@ -1,7 +1,7 @@
-import { Vector, GlobalContext, Event } from '@engine/core';
-import { AssetsMap } from '@engine/loaders';
+import { Vector, Event, GlobalContext } from '@engine/core';
 import { Node2D } from '@engine/elements';
-import Layout3Slice from './Layout3Slice';
+import type { DeviceInfo } from '@engine/utils';
+import PaperBoard from './PaperBoard';
 
 /**
  * Input value change event
@@ -44,15 +44,21 @@ export interface InputOptions {
 
 export default class Input extends Node2D {
   private inputElement: HTMLInputElement;
-  private background: Layout3Slice;
-  private outline: Layout3Slice;
+  private background: PaperBoard;
+  private outline: PaperBoard;
   private _isFocused = false;
   private _width: number;
   private _height: number;
-  private capWidth: number; // Width of left/right caps
 
   constructor(initialPosition: Vector, options: InputOptions = {}) {
     super(initialPosition);
+
+    // Scale up buttons on mobile devices for better touch targets
+    const deviceInfo = GlobalContext.get<DeviceInfo>('deviceInfo');
+    let scale = new Vector(1, 1);
+    if (deviceInfo?.isMobile) {
+      scale = new Vector(1.2, 1.4);
+    }
 
     const {
       width = 150,
@@ -64,48 +70,25 @@ export default class Input extends Node2D {
     } = options;
 
     this._width = width;
-    this._height = 16; // Standard input height
-
-    const assets = GlobalContext.get<AssetsMap>('assets');
-    const tilemap = assets['Wood and Paper UI'].tilemaps['Wood and Paper'];
+    this._height = 48 * scale.y; // Standard input height
 
     const outlineThicknessX = 1;
     const outlineThicknessY = 1;
 
-    // Get cap width from the tile texture
-    const leftCap = tilemap.get(13);
-    this.capWidth = leftCap ? leftCap.width : 4; // Default to 4 if not found
-
-    // Create background using 3-slice layout (tiles 13, 14, 15)
-    this.background = new Layout3Slice(
-      this._width,
-      tilemap.get(13), // left
-      tilemap.get(15), // middle
-      tilemap.get(14) // right
-    );
+    this.background = new PaperBoard(new Vector(0, 0), this.size);
 
     // Create outline slightly larger
-    this.outline = new Layout3Slice(
-      this._width + outlineThicknessX * 2,
-      tilemap.get(13),
-      tilemap.get(15),
-      tilemap.get(14)
+    this.outline = new PaperBoard(
+      new Vector(-outlineThicknessX, -outlineThicknessY),
+      this.size.add(new Vector(outlineThicknessX * 2, outlineThicknessY * 2))
     );
 
     // Position outline with desired thickness
     this.outline.position = new Vector(-outlineThicknessX, -outlineThicknessY);
     this.outline.fillColor = OUTLINE_DEFAULT;
 
-    // Scale outline to achieve desired vertical thickness
-    const scaleY =
-      (this.background.height + outlineThicknessY * 2) / this.outline.height;
-    this.outline.scale = new Vector(1, scaleY);
-
     this.addChild(this.outline);
     this.addChild(this.background);
-
-    // Store actual rendered height from background
-    this._height = this.background.height;
 
     // Create HTML input element
     this.inputElement = document.createElement('input');
@@ -117,7 +100,14 @@ export default class Input extends Node2D {
     this.attachedDOM = this.inputElement;
 
     // Set up input element
-    this.setupInputElement(placeholder, type, maxLength, name, autocomplete);
+    this.setupInputElement(
+      placeholder,
+      type,
+      maxLength,
+      name,
+      autocomplete,
+      scale
+    );
   }
 
   private setupInputElement(
@@ -125,7 +115,8 @@ export default class Input extends Node2D {
     type: string,
     maxLength: number | undefined,
     name: string | undefined,
-    autocomplete: AutoFill | undefined
+    autocomplete: AutoFill | undefined,
+    scale: Vector | undefined = new Vector(1, 1)
   ): void {
     const input = this.inputElement;
 
@@ -153,10 +144,11 @@ export default class Input extends Node2D {
     input.style.outline = 'none';
     input.style.background = 'transparent';
     input.style.fontFamily = 'monospace';
-    input.style.fontSize = '8px';
+    input.style.fontSize = `${8 * scale.y}px`;
+    input.style.lineHeight = `${this._height}px`;
     input.style.color = '#2d2d2d';
-    input.style.paddingLeft = `${this.capWidth}px`; // Push text away from left cap
-    input.style.paddingRight = `${this.capWidth}px`; // Push text away from right cap
+    input.style.paddingLeft = `${24 * scale.x}px`; // Push text away from left cap
+    input.style.paddingRight = `${24 * scale.y}px`; // Push text away from right cap
     input.style.paddingTop = '0';
     input.style.paddingBottom = '0';
     input.style.margin = '0';

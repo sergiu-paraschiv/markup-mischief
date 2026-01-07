@@ -21,6 +21,7 @@ import Box from './Box';
 import Platform from './Platform';
 import Input from './Input';
 import FormLayout from './FormLayout';
+import TouchControls from './TouchControls';
 
 export {
   LayoutFlex,
@@ -45,6 +46,7 @@ export {
   Platform,
   Input,
   FormLayout,
+  TouchControls,
 };
 
 export type { ButtonVariant };

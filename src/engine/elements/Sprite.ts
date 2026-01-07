@@ -23,11 +23,11 @@ export default class Sprite extends Node2D {
   }
 
   override get width() {
-    return this._texture.width;
+    return this._texture.width * this.scale.x;
   }
 
   override get height() {
-    return this._texture.height;
+    return this._texture.height * this.scale.y;
   }
 
   withMeta(meta: object | undefined) {
