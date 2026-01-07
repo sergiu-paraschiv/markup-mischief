@@ -281,13 +281,24 @@ export class FixedSizeLayoutFlex extends LayoutFlex {
 
   /**
    * Override to return fixed size instead of computed size
+   * The fixed size represents the TOTAL size, so we need to subtract padding
+   * to get the content size (since Box's width/height getters add padding back)
    */
   protected override computeContentSize(): Vector {
     // Return fixed size if set, otherwise fall back to 0,0
     if (!this._fixedSize) {
       return new Vector(0, 0);
     }
-    return new Vector(this._fixedSize.width, this._fixedSize.height);
+    // Subtract padding from fixed size to get content size
+    const contentWidth = Math.max(
+      0,
+      this._fixedSize.width - this.padding.left - this.padding.right
+    );
+    const contentHeight = Math.max(
+      0,
+      this._fixedSize.height - this.padding.top - this.padding.bottom
+    );
+    return new Vector(contentWidth, contentHeight);
   }
 
   /**
