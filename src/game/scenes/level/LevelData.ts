@@ -36,6 +36,7 @@ export interface PlatformConfig {
 
 export interface CodeSection {
   tags: string[]; // Array of tag text (positions generated randomly, solution is tags.join(' '))
+  alternativeSolutions?: string[][]; // Optional array of alternative valid solutions
 }
 
 export interface LevelData {

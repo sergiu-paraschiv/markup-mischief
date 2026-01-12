@@ -4,231 +4,126 @@
       "id": 1,
       "name": "Link It Up",
       "html": {
-        "tags": [
-          "<a>",
-          "text",
-          "</a>"
-        ]
+        "tags": ["<a>", "text", "</a>"]
       }
     },
     {
       "id": 2,
       "name": "Emphasis Required",
       "html": {
-        "tags": [
-          "<em>",
-          "text",
-          "</em>"
-        ]
+        "tags": ["<em>", "text", "</em>"]
       }
     },
     {
       "id": 3,
       "name": "Strong Foundation",
       "html": {
-        "tags": [
-          "<strong>",
-          "text",
-          "</strong>"
-        ]
+        "tags": ["<strong>", "text", "</strong>"]
       }
     },
     {
       "id": 4,
       "name": "Emphatic Links",
       "html": {
-        "tags": [
-          "<em>",
-          "<a>",
-          "text",
-          "</a>",
-          "</em>"
-        ]
+        "tags": ["<em>", "<a>", "text", "</a>", "</em>"]
       }
     },
     {
       "id": 5,
       "name": "Bold Connections",
       "html": {
-        "tags": [
-          "<strong>",
-          "<a>",
-          "text",
-          "</a>",
-          "</strong>"
-        ]
+        "tags": ["<strong>", "<a>", "text", "</a>", "</strong>"]
       }
     },
     {
       "id": 6,
       "name": "Strongly Emphasized",
       "html": {
-        "tags": [
-          "<strong>",
-          "<em>",
-          "text",
-          "</em>",
-          "</strong>"
-        ]
+        "tags": ["<strong>", "<em>", "text", "</em>", "</strong>"]
       }
     },
     {
       "id": 7,
       "name": "Double Trouble",
       "html": {
-        "tags": [
-          "<a>",
-          "text",
-          "</a>",
-          "<em>",
-          "text",
-          "</em>"
-        ]
+        "tags": ["<a>", "text", "</a>", "<em>", "text", "</em>"]
       }
     },
     {
       "id": 8,
       "name": "Bold & Linked",
       "html": {
-        "tags": [
-          "<strong>",
-          "text",
-          "</strong>",
-          "<a>",
-          "text",
-          "</a>"
-        ]
+        "tags": ["<strong>", "text", "</strong>", "<a>", "text", "</a>"]
       }
     },
     {
       "id": 9,
       "name": "Nested Navigation",
       "html": {
-        "tags": [
-          "<em>",
-          "text",
-          "<a>",
-          "text",
-          "</a>",
-          "</em>"
-        ]
+        "tags": ["<em>", "text", "<a>", "text", "</a>", "</em>"]
       }
     },
     {
       "id": 10,
       "name": "Emphasis Sandwich",
       "html": {
-        "tags": [
-          "<em>",
-          "text",
-          "<strong>",
-          "text",
-          "</strong>",
-          "</em>"
-        ]
+        "tags": ["<em>", "text", "<strong>", "text", "</strong>", "</em>"]
       }
     },
     {
       "id": 11,
       "name": "Line Break Basics",
       "html": {
-        "tags": [
-          "text",
-          "<br/>",
-          "text"
-        ]
+        "tags": ["text", "<br/>", "text"]
       }
     },
     {
       "id": 12,
       "name": "Triple Line Stack",
       "html": {
-        "tags": [
-          "text",
-          "<br/>",
-          "text",
-          "<br/>",
-          "text"
-        ]
+        "tags": ["text", "<br/>", "text", "<br/>", "text"]
       }
     },
     {
       "id": 13,
       "name": "Link Break",
       "html": {
-        "tags": [
-          "<a>",
-          "text",
-          "</a>",
-          "<br/>",
-          "text"
-        ]
+        "tags": ["<a>", "text", "</a>", "<br/>", "text"]
       }
     },
     {
       "id": 14,
       "name": "Emphasized Lines",
       "html": {
-        "tags": [
-          "text",
-          "<br/>",
-          "<em>",
-          "text",
-          "</em>"
-        ]
+        "tags": ["text", "<br/>", "<em>", "text", "</em>"]
       }
     },
     {
       "id": 15,
       "name": "Strong Line Break",
       "html": {
-        "tags": [
-          "<strong>",
-          "text",
-          "<br/>",
-          "text",
-          "</strong>"
-        ]
+        "tags": ["<strong>", "text", "<br/>", "text", "</strong>"]
       }
     },
     {
       "id": 16,
       "name": "Paragraph Intro",
       "html": {
-        "tags": [
-          "text",
-          "<p>",
-          "text",
-          "</p>"
-        ]
+        "tags": ["text", "<p>", "text", "</p>"]
       }
     },
     {
       "id": 17,
       "name": "Paragraph Sandwich",
       "html": {
-        "tags": [
-          "text",
-          "<p>",
-          "text",
-          "</p>",
-          "text"
-        ]
+        "tags": ["text", "<p>", "text", "</p>", "text"]
       }
     },
     {
       "id": 18,
       "name": "Emphasis and Paragraph",
       "html": {
-        "tags": [
-          "<em>",
-          "text",
-          "</em>",
-          "<p>",
-          "text",
-          "text",
-          "</p>"
-        ]
+        "tags": ["<em>", "text", "</em>", "<p>", "text", "text", "</p>"]
       }
     },
     {
@@ -251,136 +146,70 @@
       "id": 20,
       "name": "Breaking Paragraphs",
       "html": {
-        "tags": [
-          "text",
-          "<p>",
-          "text",
-          "<br/>",
-          "text",
-          "</p>"
-        ]
+        "tags": ["text", "<p>", "text", "<br/>", "text", "</p>"]
       }
     },
     {
       "id": 21,
       "name": "Image Debut",
       "html": {
-        "tags": [
-          "<img/>",
-          "<p>",
-          "text",
-          "text",
-          "</p>"
-        ]
+        "tags": ["<img/>", "<p>", "text", "text", "</p>"]
       }
     },
     {
       "id": 22,
       "name": "Picture Perfect Break",
       "html": {
-        "tags": [
-          "<img/>",
-          "<p>",
-          "text",
-          "<br/>",
-          "text",
-          "</p>"
-        ]
+        "tags": ["<img/>", "<p>", "text", "<br/>", "text", "</p>"]
       }
     },
     {
       "id": 23,
       "name": "Linked Image Break",
       "html": {
-        "tags": [
-          "<a>",
-          "text",
-          "</a>",
-          "<br/>",
-          "<img/>"
-        ]
+        "tags": ["<a>", "text", "</a>", "<br/>", "<img/>"]
       }
     },
     {
       "id": 24,
       "name": "Clickable Image Link",
       "html": {
-        "tags": [
-          "<a>",
-          "<img/>",
-          "<br/>",
-          "text",
-          "</a>"
-        ]
+        "tags": ["<a>", "<img/>", "<br/>", "text", "</a>"]
       }
     },
     {
       "id": 25,
       "name": "Double Vision",
       "html": {
-        "tags": [
-          "<img/>",
-          "text",
-          "<p>",
-          "<img/>",
-          "text",
-          "</p>"
-        ]
+        "tags": ["<img/>", "text", "<p>", "<img/>", "text", "</p>"]
       }
     },
     {
       "id": 26,
       "name": "Main Heading",
       "html": {
-        "tags": [
-          "<h1>",
-          "text",
-          "</h1>",
-          "text"
-        ]
+        "tags": ["<h1>", "text", "</h1>", "text"]
       }
     },
     {
       "id": 27,
       "name": "Heading Hierarchy",
       "html": {
-        "tags": [
-          "<h1>",
-          "text",
-          "</h1>",
-          "<h2>",
-          "text",
-          "</h2>"
-        ]
+        "tags": ["<h1>", "text", "</h1>", "<h2>", "text", "</h2>"]
       }
     },
     {
       "id": 28,
       "name": "Emphasized Heading",
       "html": {
-        "tags": [
-          "<h1>",
-          "<em>",
-          "text",
-          "</em>",
-          "</h1>",
-          "<img/>"
-        ]
+        "tags": ["<h1>", "<em>", "text", "</em>", "</h1>", "<img/>"]
       }
     },
     {
       "id": 29,
       "name": "Visual Story",
       "html": {
-        "tags": [
-          "<h2>",
-          "text",
-          "</h2>",
-          "<img/>",
-          "<p>",
-          "text",
-          "</p>"
-        ]
+        "tags": ["<h2>", "text", "</h2>", "<img/>", "<p>", "text", "</p>"]
       }
     },
     {
@@ -403,94 +232,49 @@
       "id": 31,
       "name": "Horizontal Divide",
       "html": {
-        "tags": [
-          "text",
-          "<hr/>",
-          "text"
-        ]
+        "tags": ["text", "<hr/>", "text"]
       }
     },
     {
       "id": 32,
       "name": "Rule and Break",
       "html": {
-        "tags": [
-          "text",
-          "<hr/>",
-          "text",
-          "<br/>",
-          "text"
-        ]
+        "tags": ["text", "<hr/>", "text", "<br/>", "text"]
       }
     },
     {
       "id": 33,
       "name": "Boxed Image",
       "html": {
-        "tags": [
-          "<p>",
-          "<img/>",
-          "</p>",
-          "text",
-          "<hr/>",
-          "text"
-        ]
+        "tags": ["<p>", "<img/>", "</p>", "text", "<hr/>", "text"]
       }
     },
     {
       "id": 34,
       "name": "Rule Sandwich",
       "html": {
-        "tags": [
-          "<hr/>",
-          "<img/>",
-          "<hr/>",
-          "text",
-          "<p>",
-          "text",
-          "</p>"
-        ]
+        "tags": ["<hr/>", "<img/>", "<hr/>", "text", "<p>", "text", "</p>"]
       }
     },
     {
       "id": 35,
       "name": "Linked Picture Division",
       "html": {
-        "tags": [
-          "text",
-          "<hr/>",
-          "<a>",
-          "<img/>",
-          "</a>",
-          "<br/>",
-          "text"
-        ]
+        "tags": ["text", "<hr/>", "<a>", "<img/>", "</a>", "<br/>", "text"]
       }
     },
     {
       "id": 36,
       "name": "Button Basics",
       "html": {
-        "tags": [
-          "<button>",
-          "text",
-          "</button>",
-          "<br/>",
-          "<img/>"
-        ]
+        "tags": ["<button>", "text", "</button>", "<br/>", "<img/>"]
       }
     },
     {
       "id": 37,
       "name": "Strong Button",
       "html": {
-        "tags": [
-          "<button>",
-          "<strong>",
-          "text",
-          "</strong>",
-          "</button>"
-        ]
+        "tags": ["<button>", "<strong>", "text", "</strong>", "</button>"]
       }
     },
     {
@@ -529,13 +313,7 @@
       "id": 40,
       "name": "List Inception",
       "html": {
-        "tags": [
-          "<ul>",
-          "<li>",
-          "text",
-          "</li>",
-          "</ul>"
-        ]
+        "tags": ["<ul>", "<li>", "text", "</li>", "</ul>"]
       }
     },
     {
@@ -558,13 +336,7 @@
       "id": 42,
       "name": "Ordered Start",
       "html": {
-        "tags": [
-          "<ol>",
-          "<li>",
-          "text",
-          "</li>",
-          "</ol>"
-        ]
+        "tags": ["<ol>", "<li>", "text", "</li>", "</ol>"]
       }
     },
     {
@@ -667,16 +439,16 @@
           "<h2>",
           "text",
           "</h2>",
-          "<ol>",
           "<em>",
+          "<ol>",
           "<li>",
           "text",
           "</li>",
           "<li>",
           "text",
           "</li>",
-          "</em>",
           "</ol>",
+          "</em>",
           "<hr/>",
           "text"
         ]
@@ -722,7 +494,6 @@
           "</li>",
           "<li>",
           "text",
-          "</li>",
           "<ul>",
           "<li>",
           "text",
@@ -731,6 +502,7 @@
           "text",
           "</li>",
           "</ul>",
+          "</li>",
           "<li>",
           "<button>",
           "text",
@@ -746,341 +518,161 @@
       "id": 1,
       "name": "Green Link Styling",
       "html": {
-        "tags": [
-          "<a>",
-          "text",
-          "</a>"
-        ]
+        "tags": ["<a>", "text", "</a>"]
       },
       "css": {
-        "tags": [
-          "a{",
-          "color:",
-          "green;",
-          "}"
-        ]
+        "tags": ["a{", "color:", "green;", "}"]
       }
     },
     {
       "id": 2,
       "name": "Red Span",
       "html": {
-        "tags": [
-          "<span>",
-          "text",
-          "</span>"
-        ]
+        "tags": ["<span>", "text", "</span>"]
       },
       "css": {
-        "tags": [
-          "span{",
-          "color:",
-          "red;",
-          "}"
-        ]
+        "tags": ["span{", "color:", "red;", "}"]
       }
     },
     {
       "id": 3,
       "name": "Orange Highlight",
       "html": {
-        "tags": [
-          "text",
-          "<span>",
-          "text",
-          "</span>",
-          "text"
-        ]
+        "tags": ["text", "<span>", "text", "</span>", "text"]
       },
       "css": {
-        "tags": [
-          "span{",
-          "color:",
-          "orange;",
-          "}"
-        ]
+        "tags": ["span{", "color:", "orange;", "}"]
       }
     },
     {
       "id": 4,
       "name": "Blue Division",
       "html": {
-        "tags": [
-          "text",
-          "<div>",
-          "text",
-          "</div>",
-          "text"
-        ]
+        "tags": ["text", "<div>", "text", "</div>", "text"]
       },
       "css": {
-        "tags": [
-          "div{",
-          "color:",
-          "blue;",
-          "}"
-        ]
+        "tags": ["div{", "color:", "blue;", "}"]
       }
     },
     {
       "id": 5,
       "name": "Italic Block",
       "html": {
-        "tags": [
-          "<div>",
-          "text",
-          "<br/>",
-          "text",
-          "</div>"
-        ]
+        "tags": ["<div>", "text", "<br/>", "text", "</div>"]
       },
       "css": {
-        "tags": [
-          "div{",
-          "font-style:",
-          "italic;",
-          "}"
-        ]
+        "tags": ["div{", "font-style:", "italic;", "}"]
       }
     },
     {
       "id": 6,
       "name": "Green Italic Section",
       "html": {
-        "tags": [
-          "<div>",
-          "text",
-          "<p>",
-          "text",
-          "</p>",
-          "</div>"
-        ]
+        "tags": ["<div>", "text", "<p>", "text", "</p>", "</div>"]
       },
       "css": {
-        "tags": [
-          "div{",
-          "font-style:",
-          "italic;",
-          "color:",
-          "green;",
-          "}"
-        ]
+        "tags": ["div{", "font-style:", "italic;", "color:", "green;", "}"]
       }
     },
     {
       "id": 7,
       "name": "Big Normal Span",
       "html": {
-        "tags": [
-          "<em>",
-          "text",
-          "<span>",
-          "text",
-          "</span>",
-          "text",
-          "</em>"
-        ]
+        "tags": ["<em>", "text", "<span>", "text", "</span>", "text", "</em>"]
       },
       "css": {
-        "tags": [
-          "span{",
-          "font-style:",
-          "normal;",
-          "font-size:",
-          "40px;",
-          "}"
-        ]
+        "tags": ["span{", "font-style:", "normal;", "font-size:", "40px;", "}"]
       }
     },
     {
       "id": 8,
       "name": "Tiny Blue Emphasis",
       "html": {
-        "tags": [
-          "text",
-          "<em>",
-          "text",
-          "</em>",
-          "text"
-        ]
+        "tags": ["text", "<em>", "text", "</em>", "text"]
       },
       "css": {
-        "tags": [
-          "em{",
-          "color:",
-          "blue;",
-          "font-size:",
-          "10px;",
-          "}"
-        ]
+        "tags": ["em{", "color:", "blue;", "font-size:", "10px;", "}"]
       }
     },
     {
       "id": 9,
       "name": "Yellow Background",
       "html": {
-        "tags": [
-          "<div>",
-          "text",
-          "text",
-          "</div>"
-        ]
+        "tags": ["<div>", "text", "text", "</div>"]
       },
       "css": {
-        "tags": [
-          "div{",
-          "background:",
-          "yellow;",
-          "font-size:",
-          "40px;",
-          "}"
-        ]
+        "tags": ["div{", "background:", "yellow;", "font-size:", "40px;", "}"]
       }
     },
     {
       "id": 10,
       "name": "Red Right Align",
       "html": {
-        "tags": [
-          "<div>",
-          "text",
-          "<br/>",
-          "text",
-          "</div>"
-        ]
+        "tags": ["<div>", "text", "<br/>", "text", "</div>"]
       },
       "css": {
-        "tags": [
-          "div{",
-          "background:",
-          "red;",
-          "text-align:",
-          "right;",
-          "}"
-        ]
+        "tags": ["div{", "background:", "red;", "text-align:", "right;", "}"]
       }
     },
     {
       "id": 11,
       "name": "Centered Transparent",
       "html": {
-        "tags": [
-          "<div>",
-          "<img/>",
-          "<br/>",
-          "text",
-          "</div>"
-        ]
+        "tags": ["<div>", "<img/>", "<br/>", "text", "</div>"]
       },
       "css": {
-        "tags": [
-          "div{",
-          "text-align:",
-          "center;",
-          "opacity:",
-          "0.5;",
-          "}"
-        ]
+        "tags": ["div{", "text-align:", "center;", "opacity:", "0.5;", "}"]
       }
     },
     {
       "id": 12,
       "name": "Faded Wide Image",
       "html": {
-        "tags": [
-          "<h2>",
-          "text",
-          "</h2>",
-          "<img/>"
-        ]
+        "tags": ["<h2>", "text", "</h2>", "<img/>"]
       },
       "css": {
-        "tags": [
-          "img{",
-          "opacity:",
-          "0.25;",
-          "width:",
-          "100%;",
-          "}"
-        ]
+        "tags": ["img{", "opacity:", "0.25;", "width:", "100%;", "}"]
       }
     },
     {
       "id": 13,
       "name": "Block Image Quarter",
       "html": {
-        "tags": [
-          "text",
-          "<img/>",
-          "text"
-        ]
+        "tags": ["text", "<img/>", "text"]
       },
       "css": {
-        "tags": [
-          "img{",
-          "display:",
-          "block;",
-          "width:",
-          "25%;",
-          "}"
-        ]
+        "tags": ["img{", "display:", "block;", "width:", "25%;", "}"]
       }
     },
     {
       "id": 14,
       "name": "Block Span Fade",
       "html": {
-        "tags": [
-          "text",
-          "<span>",
-          "text",
-          "</span>",
-          "text"
-        ]
+        "tags": ["text", "<span>", "text", "</span>", "text"]
       },
       "css": {
-        "tags": [
-          "span{",
-          "display:",
-          "block;",
-          "opacity:",
-          "0.25;",
-          "}"
-        ]
+        "tags": ["span{", "display:", "block;", "opacity:", "0.25;", "}"]
       }
     },
     {
       "id": 15,
       "name": "Inline Green Div",
       "html": {
-        "tags": [
-          "text",
-          "<div>",
-          "text",
-          "</div>",
-          "text"
-        ]
+        "tags": ["text", "<div>", "text", "</div>", "text"]
       },
       "css": {
-        "tags": [
-          "div{",
-          "background:",
-          "green;",
-          "display:",
-          "inline;",
-          "}"
-        ]
+        "tags": ["div{", "background:", "green;", "display:", "inline;", "}"]
       }
     },
     {
       "id": 16,
       "name": "Hidden Image",
       "html": {
-        "tags": [
-          "<h1>",
-          "text",
-          "</h1>",
-          "<img/>"
+        "tags": ["<h1>", "text", "</h1>", "<img/>"],
+        "alternativeSolutions": [
+          ["<img/>", "<h1>", "text", "</h1>"],
+          ["<h1>", "<img/>", "text", "</h1>"],
+          ["<h1>", "text", "<img/>", "</h1>"]
         ]
       },
       "css": {
@@ -1100,14 +692,10 @@
       "id": 17,
       "name": "Big Link Only",
       "html": {
-        "tags": [
-          "<a>",
-          "text",
-          "</a>",
-          "<div>",
-          "<img/>",
-          "text",
-          "</div>"
+        "tags": ["<a>", "text", "</a>", "<div>", "<img/>", "text", "</div>"],
+        "alternativeSolutions": [
+          ["<div>", "<img/>", "text", "</div>", "<a>", "text", "</a>"],
+          ["<div>", "text", "<img/>", "</div>", "<a>", "text", "</a>"]
         ]
       },
       "css": {
@@ -1127,14 +715,7 @@
       "id": 18,
       "name": "Sized Header Right Para",
       "html": {
-        "tags": [
-          "<h1>",
-          "text",
-          "</h1>",
-          "<p>",
-          "text",
-          "</p>"
-        ]
+        "tags": ["<h1>", "text", "</h1>", "<p>", "text", "</p>"]
       },
       "css": {
         "tags": [
@@ -1153,14 +734,7 @@
       "id": 19,
       "name": "Half Button Faded Para",
       "html": {
-        "tags": [
-          "<button>",
-          "text",
-          "</button>",
-          "<p>",
-          "text",
-          "</p>"
-        ]
+        "tags": ["<button>", "text", "</button>", "<p>", "text", "</p>"]
       },
       "css": {
         "tags": [
@@ -1208,13 +782,7 @@
       "id": 21,
       "name": "Orange Padded Center",
       "html": {
-        "tags": [
-          "<hr/>",
-          "<div>",
-          "text",
-          "</div>",
-          "<hr/>"
-        ]
+        "tags": ["<hr/>", "<div>", "text", "</div>", "<hr/>"]
       },
       "css": {
         "tags": [
@@ -1233,13 +801,7 @@
       "id": 22,
       "name": "Black Box White Text",
       "html": {
-        "tags": [
-          "text",
-          "<hr/>",
-          "<p>",
-          "text",
-          "</p>"
-        ]
+        "tags": ["text", "<hr/>", "<p>", "text", "</p>"]
       },
       "css": {
         "tags": [
@@ -1284,14 +846,7 @@
       "id": 24,
       "name": "Red Margin Right Divs",
       "html": {
-        "tags": [
-          "<div>",
-          "text",
-          "</div>",
-          "<div>",
-          "text",
-          "</div>"
-        ]
+        "tags": ["<div>", "text", "</div>", "<div>", "text", "</div>"]
       },
       "css": {
         "tags": [
@@ -1310,14 +865,7 @@
       "id": 25,
       "name": "Faded Margin Images",
       "html": {
-        "tags": [
-          "text",
-          "<hr/>",
-          "<img/>",
-          "<img/>",
-          "<br/>",
-          "<img/>"
-        ]
+        "tags": ["text", "<hr/>", "<img/>", "<img/>", "<br/>", "<img/>"]
       },
       "css": {
         "tags": [
@@ -1396,14 +944,7 @@
       "id": 28,
       "name": "Big Red Half Button",
       "html": {
-        "tags": [
-          "<button>",
-          "text",
-          "<p>",
-          "text",
-          "</p>",
-          "</button>"
-        ]
+        "tags": ["<button>", "text", "<p>", "text", "</p>", "</button>"]
       },
       "css": {
         "tags": [
@@ -1424,14 +965,7 @@
       "id": 29,
       "name": "Faded Tiny Image",
       "html": {
-        "tags": [
-          "<img/>",
-          "<strong>",
-          "<a>",
-          "text",
-          "</a>",
-          "</strong>"
-        ]
+        "tags": ["<img/>", "<strong>", "<a>", "text", "</a>", "</strong>"]
       },
       "css": {
         "tags": [
@@ -1450,14 +984,7 @@
       "id": 30,
       "name": "Orange Scroll Box",
       "html": {
-        "tags": [
-          "<div>",
-          "<h2>",
-          "text",
-          "</h2>",
-          "<img/>",
-          "</div>"
-        ]
+        "tags": ["<div>", "<h2>", "text", "</h2>", "<img/>", "</div>"]
       },
       "css": {
         "tags": [
@@ -1476,14 +1003,7 @@
       "id": 31,
       "name": "Green Hidden Overflow",
       "html": {
-        "tags": [
-          "<div>",
-          "<img/>",
-          "</div>",
-          "<button>",
-          "text",
-          "</button>"
-        ]
+        "tags": ["<div>", "<img/>", "</div>", "<button>", "text", "</button>"]
       },
       "css": {
         "tags": [
@@ -1506,14 +1026,7 @@
       "id": 32,
       "name": "Black Half Box Small Images",
       "html": {
-        "tags": [
-          "<div>",
-          "<img/>",
-          "</div>",
-          "<p>",
-          "<img/>",
-          "</p>"
-        ]
+        "tags": ["<div>", "<img/>", "</div>", "<p>", "<img/>", "</p>"]
       },
       "css": {
         "tags": [
@@ -1536,14 +1049,7 @@
       "id": 33,
       "name": "Blue Padded Right Button",
       "html": {
-        "tags": [
-          "<div>",
-          "<button>",
-          "text",
-          "text",
-          "</button>",
-          "</div>"
-        ]
+        "tags": ["<div>", "<button>", "text", "text", "</button>", "</div>"]
       },
       "css": {
         "tags": [
@@ -1599,15 +1105,7 @@
       "id": 35,
       "name": "Faded Padded Right Left Header",
       "html": {
-        "tags": [
-          "<div>",
-          "text",
-          "<h1>",
-          "text",
-          "</h1>",
-          "text",
-          "</div>"
-        ]
+        "tags": ["<div>", "text", "<h1>", "text", "</h1>", "text", "</div>"]
       },
       "css": {
         "tags": [
@@ -1701,26 +1199,24 @@
           "<ol>",
           "<li>",
           "text",
-          "</li>",
           "<ul>",
           "<li>",
           "text",
           "</li>",
           "</ul>",
+          "</li>",
           "</ol>"
         ]
       },
       "css": {
         "tags": [
-          "ol",
-          "{",
+          "ol{",
           "color:",
           "green;",
           "width:",
           "50%;",
           "}",
-          "ul",
-          "{",
+          "ul{",
           "color:",
           "red;",
           "font-style:",
@@ -1782,15 +1278,13 @@
       },
       "css": {
         "tags": [
-          "hr",
-          "{",
+          "hr{",
           "height:",
           "10px;",
           "width:",
           "50%;",
           "}",
-          "li",
-          "{",
+          "li{",
           "color:",
           "blue;",
           "display:",
@@ -1812,6 +1306,58 @@
           "text",
           "</span>",
           "</div>"
+        ],
+        "alternativeSolutions": [
+          [
+            "<div>",
+            "<button>",
+            "text",
+            "</button>",
+            "</div>",
+            "<span>",
+            "text",
+            "</span>"
+          ],
+          [
+            "<span>",
+            "text",
+            "</span>",
+            "<div>",
+            "<button>",
+            "text",
+            "</button>",
+            "</div>"
+          ],
+          [
+            "<div>",
+            "<span>",
+            "text",
+            "</span>",
+            "<button>",
+            "text",
+            "</button>",
+            "</div>"
+          ],
+          [
+            "<div>",
+            "<button>",
+            "<span>",
+            "text",
+            "</span>",
+            "text",
+            "</button>",
+            "</div>"
+          ],
+          [
+            "<div>",
+            "<button>",
+            "text",
+            "<span>",
+            "text",
+            "</span>",
+            "</button>",
+            "</div>"
+          ]
         ]
       },
       "css": {
@@ -1846,8 +1392,7 @@
           "</button>",
           "<p>",
           "text",
-          "</p>",
-          "<hr/>"
+          "</p>"
         ]
       },
       "css": {
@@ -1861,10 +1406,6 @@
           "black;",
           "color:",
           "white;",
-          "}",
-          "hr{",
-          "display:",
-          "none;",
           "}"
         ]
       }
@@ -2156,7 +1697,6 @@
           "</li>",
           "<li>",
           "text",
-          "</li>",
           "<ul>",
           "<li>",
           "text",
@@ -2165,6 +1705,7 @@
           "text",
           "</li>",
           "</ul>",
+          "</li>",
           "</ol>",
           "</div>"
         ]

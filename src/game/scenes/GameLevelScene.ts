@@ -143,8 +143,8 @@ export default class GameLevelScene extends Scene {
   private handleKeyboardInput(event: Event): void {
     if (!(event instanceof KeyboardInputEvent)) return;
 
-    if (event.key === 'Control') {
-      this.uiManager?.setCtrlPressed(event.action === KeyAction.DOWN);
+    if (event.action === KeyAction.DOWN && event.key === 'Control') {
+      this.uiManager?.setCtrlPressed();
     }
 
     if (event.action === KeyAction.DOWN && event.key === 'Escape') {

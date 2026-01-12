@@ -31,8 +31,7 @@ export class GameUIManager {
 
   // State
   private isPaused = false;
-  private showSolutionToggle = false;
-  private isCtrlPressed = false;
+  private showSolutionToggle = true;
   private hasNextLevel: boolean;
   private isCssMode: boolean;
 
@@ -138,13 +137,13 @@ export class GameUIManager {
   private createTopRightUI(): void {
     this.htmlPreview = new HtmlPreview(
       new Vector(0, 0),
-      new Vector(200, 160),
+      new Vector(200, 200),
       ''
     );
 
     const solutionBoard = new SolutionBoard(new Vector(0, 0), this.htmlPreview);
 
-    this.solutionToggleButtonText = new Text('Show Solution');
+    this.solutionToggleButtonText = new Text('Solution         ');
     this.solutionToggleButton = new Button(
       new Vector(0, 0),
       this.solutionToggleButtonText,
@@ -156,7 +155,7 @@ export class GameUIManager {
       // Update button text based on toggle state
       if (this.solutionToggleButtonText) {
         this.solutionToggleButtonText.setText(
-          this.showSolutionToggle ? 'Hide Solution' : 'Show Solution'
+          this.showSolutionToggle ? 'Solution' : 'Current result'
         );
       }
     };
@@ -191,7 +190,7 @@ export class GameUIManager {
     let displayHtml: string;
     let displayCss = '';
 
-    if (this.isCtrlPressed || this.showSolutionToggle) {
+    if (this.showSolutionToggle) {
       // Show solution when Ctrl is pressed or toggle is on
       displayHtml = solutionHtml;
       displayCss = solutionCss || '';
@@ -207,19 +206,15 @@ export class GameUIManager {
   }
 
   /**
-   * Handles Ctrl key press/release
+   * Handles Ctrl key
    */
-  setCtrlPressed(pressed: boolean): void {
-    this.isCtrlPressed = pressed;
+  setCtrlPressed(): void {
+    this.showSolutionToggle = !this.showSolutionToggle;
 
     if (this.solutionToggleButtonText) {
-      if (this.isCtrlPressed) {
-        this.solutionToggleButtonText.setText('Hide Solution');
-      } else {
-        this.solutionToggleButtonText.setText(
-          this.showSolutionToggle ? 'Hide Solution' : 'Show Solution'
-        );
-      }
+      this.solutionToggleButtonText.setText(
+        this.showSolutionToggle ? 'Solution' : 'Current result'
+      );
     }
   }
 

@@ -61,6 +61,14 @@ export default class HtmlPreview extends Node2D {
     // Wrap HTML in a minimal document with basic styling
     // Scale all dimensions by 4x to match internal canvas resolution
     const scale = 4;
+
+    const scaledCSS = this.cssContent
+      .replaceAll(': 50px;', ': 65px;')
+      .replaceAll(': 40px;', ': 55px;')
+      .replaceAll(': 30px;', ': 45px;')
+      .replaceAll(': 20px;', ': 35px;')
+      .replaceAll(': 10px;', ': 25px;');
+
     const wrappedHtml = `
       <!DOCTYPE html>
       <html>
@@ -69,28 +77,33 @@ export default class HtmlPreview extends Node2D {
             body {
               margin: ${16 * scale}px;
               font-family: Arial, sans-serif;
-              font-size: ${12 * scale}px;
+              font-size: ${20 * scale}px;
               line-height: 1.4;
+              height: 700px;
+            }
+
+            img {
+              width: ${50 * scale}px;
+              height: ${50 * scale}px;
+              border: ${2 * scale}px solid #000000;
             }
 
             a {
               color: blue;
               text-decoration: underline;
             }
-
-            img {
-              width: ${50 * scale}px;
-              height: ${50 * scale}px;
-              border: ${1 * scale}px solid #000000;
+            
+            a img {
+             border-color: blue;
             }
             
             button {
-              font-size: ${12 * scale}px;
+              font-size: ${20 * scale}px;
               line-height: 1.4;
             }
 
             /* User-provided CSS */
-            ${this.cssContent}
+            ${scaledCSS}
           </style>
         </head>
         <body>${finalHTML}</body>
