@@ -1,24 +1,14 @@
 import { Vector, GlobalContext } from '@engine/core';
 import { AssetsMap } from '@engine/loaders';
-import { Node2D, Sprite } from '@engine/elements';
-import {
-  MouseInteractionManager,
-  MouseEnterEvent,
-  MouseLeaveEvent,
-  MouseClickEvent,
-} from '@engine/input';
 import type { DeviceInfo } from '@engine/utils';
 import Text from './Text';
 import Layout3Slice from './Layout3Slice';
 import Layout9Slice from './Layout9Slice';
+import SpriteButton from './SpriteButton';
 
-type ActionFn = () => void;
 export type ButtonVariant = 'primary' | 'secondary' | 'text';
 
 const OUTLINE_DEFAULT = 'rgba(0, 0, 0, 0.3)';
-const OUTLINE_HOVER = 'rgba(255, 255, 255, 0.3)';
-const OUTLINE_FOCUSED = 'rgba(100, 150, 255, 0.6)';
-const OUTLINE_DISABLED = 'rgba(0, 0, 0, 0.1)';
 const TEXT_DISABLED = 'rgba(128, 128, 128, 0.5)';
 
 const TILE_INDEXES = {
@@ -72,55 +62,46 @@ const TILE_INDEXES = {
   },
 };
 
-export default class Button extends Node2D {
-  private outline: Layout9Slice | Sprite | undefined;
-  private background: Layout9Slice | Sprite | undefined;
-  private hoverBackground: Layout9Slice | Sprite | undefined;
+export default class Button extends SpriteButton {
   private textDefaultPosition: Vector;
+  private textComponent: Text;
   private variant: ButtonVariant;
-  public readonly mouseInteraction: MouseInteractionManager;
-  public action: ActionFn | undefined = undefined;
-  private _isFocused = false;
-  private _isHovered = false;
-  private _isDisabled = false;
   private underline: Layout3Slice | undefined;
-  private buttonElement: HTMLButtonElement;
 
   constructor(
     initialPosition: Vector,
-    private textComponent: Text,
+    textComponent: Text,
     variant: ButtonVariant = 'primary'
   ) {
-    super(initialPosition);
-    this.textComponent.position = new Vector(0, -1);
-    this.textComponent.padding = new Vector(6, 6);
+    textComponent.position = new Vector(0, -1);
+    textComponent.padding = new Vector(6, 6);
 
     // Scale up buttons on mobile devices for better touch targets
     const deviceInfo = GlobalContext.get<DeviceInfo>('deviceInfo');
     if (deviceInfo?.isMobile) {
-      this.textComponent.scale = new Vector(1.7, 1.7);
+      textComponent.scale = new Vector(1.7, 1.7);
     }
-
-    this.textDefaultPosition = this.textComponent.position;
-    this.variant = variant;
 
     const assets = GlobalContext.get<AssetsMap>('assets');
 
     // Text variant - no background, just text with underline on hover
     if (variant === 'text') {
       const tilemap = assets['Chars'].tilemaps['Chars'];
-      this.addChild(this.textComponent);
+
+      super(initialPosition, undefined, undefined, undefined);
+
+      this.addChild(textComponent);
 
       // Create underline using 3-slice (tiles 282, 283, 284)
       this.underline = new Layout3Slice(
-        this.textComponent.width,
+        textComponent.width,
         tilemap.get(90),
         tilemap.get(90),
         tilemap.get(90)
       );
       this.underline.position = new Vector(
         0,
-        this.textComponent.height - this.textComponent.padding.y + 1
+        textComponent.height - textComponent.padding.y + 1
       );
       this.underline.isVisible = false;
       this.addChild(this.underline);
@@ -134,36 +115,10 @@ export default class Button extends Node2D {
 
       const tiles = TILE_INDEXES[variant];
 
-      const backgroundSize = this.textComponent.size;
+      const backgroundSize = textComponent.size;
       // Create backgrounds first to get dimensions
 
-      this.background = new Layout9Slice(
-        backgroundSize,
-        tilemap.get(tiles.regular.topLeft),
-        tilemap.get(tiles.regular.topCenter),
-        tilemap.get(tiles.regular.topRight),
-        tilemap.get(tiles.regular.middleLeft),
-        tilemap.get(tiles.regular.middleCenter),
-        tilemap.get(tiles.regular.middleRight),
-        tilemap.get(tiles.regular.bottomLeft),
-        tilemap.get(tiles.regular.bottomCenter),
-        tilemap.get(tiles.regular.bottomRight)
-      );
-
-      this.hoverBackground = new Layout9Slice(
-        backgroundSize,
-        tilemap.get(tiles.hover.topLeft),
-        tilemap.get(tiles.hover.topCenter),
-        tilemap.get(tiles.hover.topRight),
-        tilemap.get(tiles.hover.middleLeft),
-        tilemap.get(tiles.hover.middleCenter),
-        tilemap.get(tiles.hover.middleRight),
-        tilemap.get(tiles.hover.bottomLeft),
-        tilemap.get(tiles.hover.bottomCenter),
-        tilemap.get(tiles.hover.bottomRight)
-      );
-
-      this.outline = new Layout9Slice(
+      const outline = new Layout9Slice(
         backgroundSize.add(
           new Vector(outlineThicknessX * 2, outlineThicknessY * 2)
         ),
@@ -178,94 +133,55 @@ export default class Button extends Node2D {
         tilemap.get(tiles.regular.bottomRight)
       );
 
-      // Position outline with desired thickness
-      this.outline.position = new Vector(
-        -outlineThicknessX,
-        -outlineThicknessY
+      const background = new Layout9Slice(
+        backgroundSize,
+        tilemap.get(tiles.regular.topLeft),
+        tilemap.get(tiles.regular.topCenter),
+        tilemap.get(tiles.regular.topRight),
+        tilemap.get(tiles.regular.middleLeft),
+        tilemap.get(tiles.regular.middleCenter),
+        tilemap.get(tiles.regular.middleRight),
+        tilemap.get(tiles.regular.bottomLeft),
+        tilemap.get(tiles.regular.bottomCenter),
+        tilemap.get(tiles.regular.bottomRight)
       );
-      this.outline.fillColor = OUTLINE_DEFAULT;
+
+      const hoverBackground = new Layout9Slice(
+        backgroundSize,
+        tilemap.get(tiles.hover.topLeft),
+        tilemap.get(tiles.hover.topCenter),
+        tilemap.get(tiles.hover.topRight),
+        tilemap.get(tiles.hover.middleLeft),
+        tilemap.get(tiles.hover.middleCenter),
+        tilemap.get(tiles.hover.middleRight),
+        tilemap.get(tiles.hover.bottomLeft),
+        tilemap.get(tiles.hover.bottomCenter),
+        tilemap.get(tiles.hover.bottomRight)
+      );
+
+      super(initialPosition, outline, background, hoverBackground);
+
+      this.addChild(textComponent);
+
+      // Position outline with desired thickness
+      outline.position = new Vector(-outlineThicknessX, -outlineThicknessY);
+      outline.fillColor = OUTLINE_DEFAULT;
 
       // Scale outline to achieve desired vertical thickness
       const scaleY =
-        (this.background.height + outlineThicknessY * 2) / this.outline.height;
-      this.outline.scale = new Vector(1, scaleY);
-
-      this.addChild(this.outline);
-      this.addChild(this.background);
-      this.addChild(this.hoverBackground);
-
-      // Hide hover background by default
-      this.hoverBackground.isVisible = false;
-
-      this.addChild(this.textComponent);
+        (background.height + outlineThicknessY * 2) / outline.height;
+      outline.scale = new Vector(1, scaleY);
     }
 
-    // Create HTML button element
-    this.buttonElement = document.createElement('button');
-    this.attachedDOM = this.buttonElement;
-    this.setupButtonElement();
-
-    // Set up mouse interaction
-    this.mouseInteraction = new MouseInteractionManager(this);
-
-    this.mouseInteraction.on(MouseEnterEvent, this.handleMouseEnter.bind(this));
-    this.mouseInteraction.on(MouseLeaveEvent, this.handleMouseLeave.bind(this));
-    this.mouseInteraction.on(MouseClickEvent, this.handleMouseClick.bind(this));
+    this.textComponent = textComponent;
+    this.textDefaultPosition = this.textComponent.position;
+    this.variant = variant;
   }
 
-  private setupButtonElement(): void {
-    const button = this.buttonElement;
+  protected override updateVisualState(): void {
+    super.updateVisualState();
 
-    // Mark as interactive element to exclude from masking system
-    button.setAttribute('data-interactive', 'true');
-
-    // Basic styling - transparent overlay
-    button.style.position = 'absolute';
-    button.style.left = '0';
-    button.style.top = '0';
-    button.style.width = `${this.width}px`;
-    button.style.height = `${this.height}px`;
-    button.style.border = 'none';
-    button.style.outline = 'none';
-    button.style.background = 'transparent';
-    button.style.cursor = 'pointer';
-    button.style.padding = '0';
-    button.style.margin = '0';
-    button.style.zIndex = '1000';
-    button.style.tabSize = '0';
-
-    // Prevent default browser styling
-    button.style.appearance = 'none';
-    button.style.webkitAppearance = 'none';
-
-    // Event listeners
-    button.addEventListener('mouseenter', this.handleMouseEnter.bind(this));
-    button.addEventListener('mouseleave', this.handleMouseLeave.bind(this));
-    button.addEventListener('click', this.handleMouseClick.bind(this));
-    button.addEventListener('focus', () => this.setFocused(true));
-    button.addEventListener('blur', () => this.setFocused(false));
-  }
-
-  private handleMouseEnter(): void {
-    if (this._isDisabled) return;
-    this._isHovered = true;
-    this.updateVisualState();
-  }
-
-  private handleMouseLeave(): void {
-    if (this._isDisabled) return;
-    this._isHovered = false;
-    this.updateVisualState();
-  }
-
-  private updateVisualState(): void {
     if (this._isDisabled) {
-      // Disabled state
-      if (this.outline && this.background && this.hoverBackground) {
-        this.outline.fillColor = OUTLINE_DISABLED;
-        this.background.isVisible = true;
-        this.hoverBackground.isVisible = false;
-      }
       if (this.underline) {
         this.underline.isVisible = false;
       }
@@ -288,90 +204,21 @@ export default class Button extends Node2D {
     } else {
       // Primary/Secondary variants: move text down and swap background
       if (isActive) {
-        if (this.outline && this.background && this.hoverBackground) {
-          this.outline.fillColor = this._isFocused
-            ? OUTLINE_FOCUSED
-            : OUTLINE_HOVER;
-          this.background.isVisible = false;
-          this.hoverBackground.isVisible = true;
-        }
         this.textComponent.position = new Vector(
           this.textDefaultPosition.x,
           this.textDefaultPosition.y + 1
         );
       } else {
-        if (this.outline && this.background && this.hoverBackground) {
-          this.outline.fillColor = OUTLINE_DEFAULT;
-          this.background.isVisible = true;
-          this.hoverBackground.isVisible = false;
-        }
         this.textComponent.position = this.textDefaultPosition;
       }
     }
   }
 
-  public setFocused(focused: boolean): void {
-    this._isFocused = focused;
-    this.updateVisualState();
-  }
-
-  public get isFocused(): boolean {
-    return this._isFocused;
-  }
-
-  public focus(): void {
-    setTimeout(() => {
-      this.buttonElement.focus();
-    }, 100);
-  }
-
-  public setDisabled(disabled: boolean): void {
-    this._isDisabled = disabled;
-    this.buttonElement.disabled = disabled;
-    if (disabled) {
-      this.buttonElement.style.cursor = 'not-allowed';
-    } else {
-      this.buttonElement.style.cursor = 'pointer';
-    }
-    this.updateVisualState();
-  }
-
-  public get isDisabled(): boolean {
-    return this._isDisabled;
-  }
-
-  public activate(): void {
-    if (this._isDisabled) return;
-    if (this.action) {
-      this.action();
-    }
-  }
-
-  private handleMouseClick(): void {
-    if (this._isDisabled) return;
-    this.activate();
-  }
-
-  /**
-   * Get the underlying HTML button element
-   * Useful for nesting in a parent form element
-   */
-  public getButtonElement(): HTMLButtonElement {
-    return this.buttonElement;
-  }
-
-  /**
-   * Set the button type (button, submit, reset)
-   */
-  public setButtonType(type: 'button' | 'submit' | 'reset'): void {
-    this.buttonElement.type = type;
-  }
-
   override get width() {
-    return this.background?.width || this.textComponent.width;
+    return this.background?.width || this.textComponent?.width || 0;
   }
 
   override get height() {
-    return this.background?.height || this.textComponent.height;
+    return this.background?.height || this.textComponent?.height || 0;
   }
 }

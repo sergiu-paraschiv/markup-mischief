@@ -2,14 +2,14 @@ import { Scene, Event } from '@engine/core';
 import { CharacterGrabEvent, Character, Player1 } from '@game/entities';
 import { TickEvent } from '@engine/renderer';
 import { KeyboardInputEvent, KeyAction } from '@engine/input';
+import { LevelProgressionManager, type GameMode } from '@game/progression';
+import { CharacterSelectionManager } from '@game';
 import { LevelData, LevelsData } from './level/LevelData';
 import LEVELS_DATA from './level/levels.json';
 import { LevelBuilder } from './level/LevelBuilder';
 import { WinConditionChecker } from './level/WinConditionChecker';
 import { PlayerTagInteraction } from './level/PlayerTagInteraction';
 import { GameUIManager } from './level/GameUIManager';
-import { LevelProgressionManager, type GameMode } from '@game/progression';
-import { CharacterSelectionManager } from '@game';
 
 /**
  * Base class for game level scenes
@@ -78,7 +78,9 @@ export default class GameLevelScene extends Scene {
       this.onExit,
       this.onWin,
       this.hasNextLevel,
-      () => this.changePlayer1Character()
+      () => this.changePlayer1Character(),
+      this.mode === 'css',
+      () => this.switchActivePlayer()
     );
     this.uiManager.initialize();
 
@@ -167,10 +169,12 @@ export default class GameLevelScene extends Scene {
       this.player1.enabled = false;
       this.player2.enabled = true;
       this.activePlayer = this.player2;
+      this.uiManager?.setActivePlayer('player2');
     } else {
       this.player2.enabled = false;
       this.player1.enabled = true;
       this.activePlayer = this.player1;
+      this.uiManager?.setActivePlayer('player1');
     }
 
     this.activePlayer.showExclamation();

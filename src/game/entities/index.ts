@@ -21,6 +21,8 @@ import Box from './Box';
 import Platform from './Platform';
 import Input from './Input';
 import FormLayout from './FormLayout';
+import AbsoluteLayout from './AbsoluteLayout';
+import SpriteButton from './SpriteButton';
 
 export {
   LayoutFlex,
@@ -45,6 +47,8 @@ export {
   Platform,
   Input,
   FormLayout,
+  AbsoluteLayout,
+  SpriteButton,
 };
 
 export type { ButtonVariant };

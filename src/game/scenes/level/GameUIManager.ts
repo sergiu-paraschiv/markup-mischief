@@ -1,6 +1,7 @@
 import { GlobalContext, Scene, Vector } from '@engine/core';
 import { Node2D } from '@engine/elements';
 import { Button, HtmlPreview, FixedSizeLayoutFlex, Text } from '@game/entities';
+import PlayerSwitchButton from './PlayerSwitchButton';
 import CharacterPicker from './CharacterPicker';
 
 import { LevelData } from './LevelData';
@@ -26,17 +27,20 @@ export class GameUIManager {
   private solutionToggleButtonText?: Text;
   private pauseMenu?: Node2D;
   private winMenu?: Node2D;
+  private playerSwitchButton?: PlayerSwitchButton;
 
   // State
   private isPaused = false;
   private showSolutionToggle = false;
   private isCtrlPressed = false;
+  private hasNextLevel: boolean;
+  private isCssMode: boolean;
 
   // Callbacks
   private onExit?: () => void;
   private onWin?: () => void;
   private onCharacterChange?: () => void;
-  private hasNextLevel: boolean;
+  private onPlayerSwitch?: () => void;
 
   constructor(
     scene: Scene,
@@ -44,7 +48,9 @@ export class GameUIManager {
     onExit?: () => void,
     onWin?: () => void,
     hasNextLevel = false,
-    onCharacterChange?: () => void
+    onCharacterChange?: () => void,
+    isCssMode = false,
+    onPlayerSwitch?: () => void
   ) {
     this.scene = scene;
     this.levelData = levelData;
@@ -52,12 +58,17 @@ export class GameUIManager {
     this.onWin = onWin;
     this.hasNextLevel = hasNextLevel;
     this.onCharacterChange = onCharacterChange;
+    this.isCssMode = isCssMode;
+    this.onPlayerSwitch = onPlayerSwitch;
     this.viewport = GlobalContext.get<Vector>('viewport');
   }
 
   initialize(): void {
     this.createBottomRightUI();
     this.createTopRightUI();
+    if (this.isCssMode) {
+      this.createPlayerSwitchButtons();
+    }
   }
 
   /**
@@ -79,7 +90,7 @@ export class GameUIManager {
     this.uiLayout.flexDirection = 'column';
     this.uiLayout.justifyContent = 'flex-end';
     this.uiLayout.alignItems = 'flex-end';
-    this.uiLayout.padding = { top: 8, right: 0, bottom: 8, left: 0 };
+    this.uiLayout.padding = { top: 8, right: 8, bottom: 8, left: 8 };
     this.uiLayout.gap = 6;
 
     // Add elements to layout
@@ -87,6 +98,38 @@ export class GameUIManager {
     this.uiLayout.addChild(this.levelNameText);
 
     this.scene.addChild(this.uiLayout);
+  }
+
+  /**
+   * Creates the player switch buttons
+   */
+  private createPlayerSwitchButtons(): void {
+    const buttonText = new Text('Switch');
+    this.playerSwitchButton = new PlayerSwitchButton(
+      new Vector(34, 200),
+      new Vector(320, 280),
+      buttonText
+    );
+    this.playerSwitchButton.action = () => {
+      if (this.onPlayerSwitch) {
+        this.onPlayerSwitch();
+      }
+    };
+
+    this.scene.addChild(this.playerSwitchButton);
+  }
+
+  public setActivePlayer(activePlayer: 'player1' | 'player2') {
+    if (!this.playerSwitchButton) {
+      return;
+    }
+    if (activePlayer === 'player1') {
+      this.playerSwitchButton.position = new Vector(34, 200);
+    } else {
+      this.playerSwitchButton.position = new Vector(384, 200);
+    }
+
+    this.playerSwitchButton.blur();
   }
 
   /**
