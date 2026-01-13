@@ -90,6 +90,7 @@
         "deploy": {
           "builder": "angular-cli-ghpages:deploy",
           "options": {
+            "cname": "mm.platforme-digitale.com",
             "baseHref": "https://mm.platforme-digitale.com/"
           }
         }
