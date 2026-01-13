@@ -270,23 +270,27 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       const menuItems: MenuItem[] = [];
 
       if (AuthStateManager.isAuthenticated) {
-        menuItems.push({
-          type: 'button',
-          label: 'HTML Mode',
-          autofocus: true,
-          action: () => {
-            // Recreate levels menu each time to show current progression state
-            engine.loadScene(createLevelsMenu('html'));
-          },
-        });
-        menuItems.push({
-          type: 'button',
-          label: 'CSS Mode',
-          action: () => {
-            // Recreate levels menu each time to show current progression state
-            engine.loadScene(createLevelsMenu('css'));
-          },
-        });
+        const isPlayEnabled = await SettingsService.isPlayEnabled();
+
+        if (isPlayEnabled) {
+          menuItems.push({
+            type: 'button',
+            label: 'HTML Mode',
+            autofocus: true,
+            action: () => {
+              // Recreate levels menu each time to show current progression state
+              engine.loadScene(createLevelsMenu('html'));
+            },
+          });
+          menuItems.push({
+            type: 'button',
+            label: 'CSS Mode',
+            action: () => {
+              // Recreate levels menu each time to show current progression state
+              engine.loadScene(createLevelsMenu('css'));
+            },
+          });
+        }
 
         // User is logged in - show logout button
         menuItems.push({

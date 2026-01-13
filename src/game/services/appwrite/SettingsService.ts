@@ -6,6 +6,7 @@ import { getAppwriteDatabases, APPWRITE_CONFIG } from './AppwriteConfig';
  */
 export const SETTING_KEYS = {
   REGISTRATION_ENABLED: 'registrationEnabled',
+  PLAY_ENABLED: 'playEnabled',
 } as const;
 
 /**
@@ -110,6 +111,10 @@ class SettingsServiceSingleton {
    */
   public async isRegistrationEnabled(): Promise<boolean> {
     return this.getBooleanSetting(SETTING_KEYS.REGISTRATION_ENABLED, false);
+  }
+
+  public async isPlayEnabled(): Promise<boolean> {
+    return this.getBooleanSetting(SETTING_KEYS.PLAY_ENABLED, false);
   }
 
   /**

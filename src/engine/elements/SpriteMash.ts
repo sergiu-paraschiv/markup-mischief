@@ -42,7 +42,7 @@ export default class SpriteMash extends Node2D {
   }
 
   getLayer(index: number) {
-    return this.children.at(index);
+    return this.children[index];
   }
 
   get numLayers() {
