@@ -105,8 +105,8 @@ export class GameUIManager {
   private createPlayerSwitchButtons(): void {
     const buttonText = new Text('Switch');
     this.playerSwitchButton = new PlayerSwitchButton(
-      new Vector(34, 200),
-      new Vector(320, 280),
+      new Vector(34, 260),
+      new Vector(320, 220),
       buttonText
     );
     this.playerSwitchButton.action = () => {
@@ -116,6 +116,7 @@ export class GameUIManager {
     };
 
     this.scene.addChild(this.playerSwitchButton);
+    this.setActivePlayer('player1');
   }
 
   public setActivePlayer(activePlayer: 'player1' | 'player2') {
@@ -123,9 +124,9 @@ export class GameUIManager {
       return;
     }
     if (activePlayer === 'player1') {
-      this.playerSwitchButton.position = new Vector(34, 200);
+      this.playerSwitchButton.position = new Vector(384, 260);
     } else {
-      this.playerSwitchButton.position = new Vector(384, 200);
+      this.playerSwitchButton.position = new Vector(34, 260);
     }
 
     this.playerSwitchButton.blur();
@@ -137,7 +138,7 @@ export class GameUIManager {
   private createTopRightUI(): void {
     this.htmlPreview = new HtmlPreview(
       new Vector(0, 0),
-      new Vector(200, 200),
+      new Vector(300, 260),
       ''
     );
 
@@ -167,7 +168,7 @@ export class GameUIManager {
     this.targetLayout.flexDirection = 'column';
     this.targetLayout.justifyContent = 'flex-start';
     this.targetLayout.alignItems = 'flex-end';
-    this.targetLayout.padding = { top: 20, right: 20, bottom: 20, left: 20 };
+    this.targetLayout.padding = { top: 0, right: 20, bottom: 20, left: 20 };
     this.targetLayout.gap = 4;
 
     this.targetLayout.addChild(solutionBoard);

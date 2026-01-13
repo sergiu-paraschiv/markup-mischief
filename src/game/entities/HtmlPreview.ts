@@ -63,11 +63,11 @@ export default class HtmlPreview extends Node2D {
     const scale = 4;
 
     const scaledCSS = this.cssContent
-      .replaceAll(': 50px;', ': 65px;')
-      .replaceAll(': 40px;', ': 55px;')
-      .replaceAll(': 30px;', ': 45px;')
-      .replaceAll(': 20px;', ': 35px;')
-      .replaceAll(': 10px;', ': 25px;');
+      .replaceAll(': 50px;', ': 61px;')
+      .replaceAll(': 40px;', ': 51px;')
+      .replaceAll(': 30px;', ': 41px;')
+      .replaceAll(': 20px;', ': 31px;')
+      .replaceAll(': 10px;', ': 21px;');
 
     const wrappedHtml = `
       <!DOCTYPE html>

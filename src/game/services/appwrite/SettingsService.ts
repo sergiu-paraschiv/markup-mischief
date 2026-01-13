@@ -110,11 +110,19 @@ class SettingsServiceSingleton {
    * @returns True if registration is enabled
    */
   public async isRegistrationEnabled(): Promise<boolean> {
-    return this.getBooleanSetting(SETTING_KEYS.REGISTRATION_ENABLED, false);
+    return (
+      (await this.getBooleanSetting(
+        SETTING_KEYS.REGISTRATION_ENABLED,
+        false
+      )) || window.location.hostname === 'localhost'
+    );
   }
 
   public async isPlayEnabled(): Promise<boolean> {
-    return this.getBooleanSetting(SETTING_KEYS.PLAY_ENABLED, false);
+    return (
+      (await this.getBooleanSetting(SETTING_KEYS.PLAY_ENABLED, false)) ||
+      window.location.hostname === 'localhost'
+    );
   }
 
   /**

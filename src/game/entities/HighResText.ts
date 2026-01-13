@@ -10,7 +10,7 @@ export interface HighResTextStyle {
 
 const DEFAULT_STYLE: Required<HighResTextStyle> = {
   fontFamily: 'monospace',
-  fontSize: 8,
+  fontSize: 12,
   fontWeight: 'normal',
   color: '#000000',
   letterSpacing: 0,
@@ -24,8 +24,8 @@ export default class HighResText extends Node2D {
   private _height = 0;
 
   // Character dimensions in game space (matching sprite-based Text component)
-  private readonly CHAR_WIDTH = 6;
-  private readonly CHAR_HEIGHT = 8;
+  private readonly CHAR_WIDTH = DEFAULT_STYLE.fontSize * 0.6;
+  private readonly CHAR_HEIGHT = DEFAULT_STYLE.fontSize;
 
   constructor(text = '', style: HighResTextStyle = {}) {
     super();

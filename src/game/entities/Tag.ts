@@ -1,5 +1,6 @@
 import { Vector, GlobalContext } from '@engine/core';
 import { AssetsMap } from '@engine/loaders';
+import type { DeviceInfo } from '@engine/utils';
 import { DynamicBody } from '@engine/physics';
 import HighResText from './HighResText';
 import Layout3Slice from './Layout3Slice';
@@ -22,6 +23,12 @@ export default class Tag extends DynamicBody {
       fontWeight: '700',
       color: '#000000',
     });
+
+    // Scale up buttons on mobile devices for better touch targets
+    const deviceInfo = GlobalContext.get<DeviceInfo>('deviceInfo');
+    if (deviceInfo?.isMobile) {
+      ts.scale = new Vector(1.7, 1.7);
+    }
 
     this.slice = new Layout3Slice(
       ts.width + 4,

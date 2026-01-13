@@ -8,7 +8,7 @@ export default class SolutionBoard extends Node2D {
   constructor(position: Vector, htmlPreview: HtmlPreview) {
     super(position);
 
-    const padding = new Vector(10, 10);
+    const padding = new Vector(4, 4);
     this.board = new Board(
       new Vector(0, 0),
       htmlPreview.size.add(padding.mul(2)),
