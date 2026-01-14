@@ -1,4 +1,4 @@
-import { Component, OnDestroy, ElementRef } from '@angular/core';
+import { Component, OnDestroy, ElementRef, ChangeDetectorRef } from '@angular/core';
 
 /**
  * TouchControls Angular Component
@@ -147,7 +147,10 @@ export class TouchControlsComponent implements OnDestroy {
   >();
 
   // eslint-disable-next-line @angular-eslint/prefer-inject
-  constructor(private elementRef: ElementRef) {}
+  constructor(
+    private elementRef: ElementRef,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnDestroy(): void {
     this.cleanup();
@@ -250,6 +253,7 @@ export class TouchControlsComponent implements OnDestroy {
   show(): void {
     this.ensureInitialized();
     this.isVisible = true;
+    this.cdr.markForCheck();
   }
 
   /**
@@ -257,5 +261,6 @@ export class TouchControlsComponent implements OnDestroy {
    */
   hide(): void {
     this.isVisible = false;
+    this.cdr.markForCheck();
   }
 }

@@ -24,12 +24,12 @@ export default class LayoutFlex extends Box {
 
     // Listen for descendant add/remove events to trigger layout recomputation
     this.on(ElementAddedEvent, () => {
-      this.markLayoutDirty();
-      this.layout();
+      // this.markLayoutDirty();
+      // this.layout();
     });
     this.on(ElementRemovedEvent, () => {
-      this.markLayoutDirty();
-      this.layout();
+      // this.markLayoutDirty();
+      // this.layout();
     });
 
     // Perform initial layout
