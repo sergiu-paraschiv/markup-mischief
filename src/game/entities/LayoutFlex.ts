@@ -28,7 +28,8 @@ export default class LayoutFlex extends Box {
       this.layout();
     });
     this.on(ElementRemovedEvent, () => {
-      this.markLayoug();
+      this.markLayoutDirty();
+      this.layout();
     });
 
     // Perform initial layout
