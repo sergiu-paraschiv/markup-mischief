@@ -141,7 +141,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       });
     }
 
-    engine.start(120, 120);
+    engine.start(60, 60);
 
     const loadingScene = new LoadingScene(
       ASSETS.loading,
@@ -223,7 +223,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
             }
           },
           hasNextLevel
-        )
+        ),
+        true
       );
     };
 

@@ -28,6 +28,7 @@ export default class PhysicsSimulation {
   } = { x: [], y: [] };
   private wakeUpInterval = 250; // Wake up sleeping objects every 250ms
   private timeSinceLastWakeUp = 0;
+  public pause = true;
 
   constructor(public readonly gravity = new Vector(0, 1024)) {
     this.workLoop = new WorkLoop(this.step.bind(this));
@@ -367,7 +368,7 @@ export default class PhysicsSimulation {
   }
 
   private step(currentTime: number, deltaTime: number) {
-    if (!this.rootElement) {
+    if (!this.rootElement || this.pause) {
       return;
     }
 

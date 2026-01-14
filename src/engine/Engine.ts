@@ -16,9 +16,17 @@ export default class Engine extends EventEmitter {
     physicsSimulation.setViewport(viewport);
   }
 
-  loadScene(scene: Scene) {
+  loadScene(scene: Scene, enablePhysics = false) {
     this.renderer.setRootElement(scene);
     this.physicsSimulation.setRootElement(scene);
+
+    if (!enablePhysics) {
+      this.physicsSimulation.pause = true;
+    } else {
+      setTimeout(() => {
+        this.physicsSimulation.pause = false;
+      }, 500);
+    }
 
     this.inputDevices.forEach(inputDevice => inputDevice.setRootElement(scene));
 
